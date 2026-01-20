@@ -1,0 +1,30 @@
+r{
+  "appId": "com.cloudhop.desktop",
+  "productName": "CloudHop",
+  "directories": {
+    "output": "release",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "electron/**/*"
+  ],
+  "win": {
+    "target": ["nsis", "msix"],
+    "icon": "build/icons/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
+  "mac": {
+    "target": ["dmg"],
+    "icon": "build/icons/icon.icns",
+    "category": "public.app-category.social-networking"
+  },
+  "linux": {
+    "target": ["AppImage"],
+    "icon": "build/icons",
+    "category": "Network"
+  }
+}
