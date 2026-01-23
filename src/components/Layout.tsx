@@ -79,12 +79,12 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
       {/* Sidebar */}
       <aside className={`${isSidebarOpen ? 'w-64' : 'w-24'} bg-[#080C22] flex flex-col transition-all duration-500 border-r border-white/5 relative z-20 shadow-[20px_0_60px_rgba(0,0,0,0.5)]`}>
         <button 
-          className="p-4 flex items-center gap-3 h-20 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-all overflow-hidden w-full text-left" 
+          className="p-4 flex items-center gap-3 h-16 border-b border-white/5 cursor-pointer hover:bg-white/5 transition-all overflow-hidden w-full text-left" 
           onClick={() => onNavigate(View.DASHBOARD)}
           aria-label="Go to Dashboard"
         >
-            <CloudHopLogo size={36} variant="neon" className="gpu-accelerated shrink-0" />
-            {isSidebarOpen && <span className="font-black text-2xl tracking-tighter animate-fade-in italic uppercase">CloudHop</span>}
+            <CloudHopLogo size={28} variant="neon" className="gpu-accelerated shrink-0" />
+            {isSidebarOpen && <span className="font-bold text-lg tracking-tight animate-fade-in italic uppercase">CloudHop</span>}
         </button>
 
         <nav className="flex-1 px-4 mt-8 space-y-1.5 overflow-y-auto custom-scrollbar">
@@ -96,25 +96,25 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 aria-label={`Navigate to ${item.label}`}
-                className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group ${
+                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group ${
                   isActive 
-                    ? 'bg-[#1A2348] text-[#53C8FF] shadow-[0_8px_20px_rgba(0,0,0,0.4)] ring-1 ring-[#53C8FF]/20' 
+                    ? 'bg-[#1A2348] text-[#53C8FF] shadow-[0_4px_12px_rgba(0,0,0,0.4)] ring-1 ring-[#53C8FF]/20' 
                     : 'text-white/80 hover:bg-white/5 hover:text-white'
                 }`}
               >
                 <Icon className={`w-5 h-5 shrink-0 transition-transform duration-500 ${isActive ? 'text-[#53C8FF] scale-110' : 'group-hover:scale-110'}`} />
-                {isSidebarOpen && <span className="font-black uppercase tracking-[0.2em] text-[10px] whitespace-nowrap animate-fade-in italic">{item.label}</span>}
+                {isSidebarOpen && <span className="font-semibold uppercase tracking-wide text-sm whitespace-nowrap animate-fade-in italic">{item.label}</span>}
               </button>
             );
           })}
         </nav>
 
-        <div className="p-6 mt-auto">
-           <div className={`p-4 bg-white/5 rounded-2xl border border-white/5 flex flex-col items-center gap-3 ${!isSidebarOpen && 'p-2 hidden md:flex'}`}>
-              <div className="text-[8px] font-black uppercase tracking-widest text-white/80 italic">Cloud Core</div>
+        <div className="p-4 mt-auto">
+           <div className={`p-3 bg-white/5 rounded-xl border border-white/5 flex flex-col items-center gap-2 ${!isSidebarOpen && 'p-2 hidden md:flex'}`}>
+              <div className="text-xs font-semibold uppercase tracking-wide text-white/80 italic">Cloud Core</div>
               <div className="flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 rounded-full bg-[#3DD68C] animate-pulse"></div>
-                 {isSidebarOpen && <span className="text-[8px] font-black uppercase tracking-widest text-[#3DD68C] italic">Optimized</span>}
+                 <div className="w-2 h-2 rounded-full bg-[#3DD68C] animate-pulse"></div>
+                 {isSidebarOpen && <span className="text-xs font-semibold uppercase tracking-wide text-[#3DD68C] italic">Optimized</span>}
               </div>
            </div>
         </div>

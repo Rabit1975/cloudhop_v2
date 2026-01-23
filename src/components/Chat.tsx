@@ -6,7 +6,7 @@ import CallOverlay from './CallOverlay';
 import Modal from './Modal';
 import { useWebRTC } from '../hooks/useWebRTC';
 import { supabase } from '../lib/supabaseClient';
-import { CallHistory, Message, ReactionSummary, Chat } from '../types';
+import { CallHistory, Message, ReactionSummary, Chat as ChatType } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ChatProps {

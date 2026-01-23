@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        historyApiFallback: true,
       },
       plugins: [react()],
       define: {
@@ -21,6 +22,10 @@ export default defineConfig(({ mode }) => {
       },
       build: {
         chunkSizeWarningLimit: 1600,
+      },
+      // Add history API fallback for SPA routing in preview
+      preview: {
+        port: 3000,
       }
     };
 });
