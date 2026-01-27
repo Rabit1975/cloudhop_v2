@@ -1,0 +1,97 @@
+{
+  "hash": "db2ee28b",
+  "configHash": "5f94a52c",
+  "lockfileHash": "0555ccf2",
+  "browserHash": "a2f3c369",
+  "optimized": {
+    "react": {
+      "src": "../../../../../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "d348b4df",
+      "needsInterop": true
+    },
+    "react-dom": {
+      "src": "../../../../../../node_modules/react-dom/index.js",
+      "file": "react-dom.js",
+      "fileHash": "4a55bd97",
+      "needsInterop": true
+    },
+    "framer-motion": {
+      "src": "../../../../../../node_modules/framer-motion/dist/es/index.mjs",
+      "file": "framer-motion.js",
+      "fileHash": "00665ddd",
+      "needsInterop": false
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../../../../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "26a4994b",
+      "needsInterop": true
+    },
+    "react/jsx-runtime": {
+      "src": "../../../../../../node_modules/react/jsx-runtime.js",
+      "file": "react_jsx-runtime.js",
+      "fileHash": "e862d484",
+      "needsInterop": true
+    },
+    "@ai-sdk/openai": {
+      "src": "../../../../../../node_modules/@ai-sdk/openai/dist/index.mjs",
+      "file": "@ai-sdk_openai.js",
+      "fileHash": "a5631031",
+      "needsInterop": false
+    },
+    "@google/genai": {
+      "src": "../../../../../../node_modules/@google/genai/dist/web/index.mjs",
+      "file": "@google_genai.js",
+      "fileHash": "405c381f",
+      "needsInterop": false
+    },
+    "@supabase/supabase-js": {
+      "src": "../../../../../../node_modules/@supabase/supabase-js/dist/index.mjs",
+      "file": "@supabase_supabase-js.js",
+      "fileHash": "fd166b7e",
+      "needsInterop": false
+    },
+    "@vercel/speed-insights/react": {
+      "src": "../../../../../../node_modules/@vercel/speed-insights/dist/react/index.mjs",
+      "file": "@vercel_speed-insights_react.js",
+      "fileHash": "18b94d57",
+      "needsInterop": false
+    },
+    "ai": {
+      "src": "../../../../../../node_modules/ai/dist/index.mjs",
+      "file": "ai.js",
+      "fileHash": "1dc8f484",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../../../../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "acde2290",
+      "needsInterop": true
+    },
+    "react-hot-toast": {
+      "src": "../../../../../../node_modules/react-hot-toast/dist/index.mjs",
+      "file": "react-hot-toast.js",
+      "fileHash": "b1668710",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-HNQGM72I": {
+      "file": "chunk-HNQGM72I.js"
+    },
+    "chunk-6QWN3PYS": {
+      "file": "chunk-6QWN3PYS.js"
+    },
+    "chunk-TEEK4CSY": {
+      "file": "chunk-TEEK4CSY.js"
+    },
+    "chunk-PAOEIV6W": {
+      "file": "chunk-PAOEIV6W.js"
+    },
+    "chunk-G3PMV62Z": {
+      "file": "chunk-G3PMV62Z.js"
+    }
+  }
+}

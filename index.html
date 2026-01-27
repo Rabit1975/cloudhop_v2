@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>CloudHop — Chat, Meet, Play in the Cloud</title>
     
     <!-- Chrome Desktop Optimization -->
@@ -32,6 +33,10 @@
         }
         html {
             font-size: 16px; /* Prevent scaling issues */
+            box-sizing: border-box;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -40,6 +45,7 @@
             background-color: var(--bg-deep);
             color: #FFFFFF;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             overscroll-behavior-y: none;
         }
         h1, h2, h3, h4, h5, h6 {

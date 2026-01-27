@@ -1,10 +1,12 @@
 export enum View {
   SPECTRUM = 'spectrum', // Landing / Overview
   DASHBOARD = 'dashboard',
-  CHAT = 'chat', // Unified HopHub (RabbitChat + Communities)
+  CHAT = 'chat', // Unified HopHub (RabbitChat + Communities + Spaces)
   MEETINGS = 'meetings',
-  CORE = 'core',   // Hop Core - Private Hybrid Hub
   ARCADE = 'arcade',
+  GAME_SERVICE = 'game_service', // New Game Service section
+  YOUTUBE_MUSIC = 'youtube_music', // New YouTube Music section
+  TWITCH = 'twitch', // New Twitch section
   PROFILE = 'profile',
   SETTINGS = 'settings',
   AI_TOOLS = 'ai_tools',

@@ -215,5 +215,32 @@ export const api = {
           return { type: space.streamType, link: space.streamLink };
       }
       return null;
+  },
+
+  // Meetings API
+  getMeetings: async (): Promise<Meeting[]> => {
+    return new Promise(resolve => setTimeout(() => resolve([
+      {
+        id: '1',
+        title: 'Daily Standup',
+        time: '9:00 AM',
+        participants: ['Alice', 'Bob', 'Charlie'],
+        type: 'video'
+      },
+      {
+        id: '2', 
+        title: 'Design Review',
+        time: '2:00 PM',
+        participants: ['Design Team'],
+        type: 'video'
+      },
+      {
+        id: '3',
+        title: 'Sprint Planning',
+        time: '4:00 PM', 
+        participants: ['Dev Team'],
+        type: 'audio'
+      }
+    ]), 300));
   }
 };

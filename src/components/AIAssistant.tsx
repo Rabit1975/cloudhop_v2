@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View } from '../types';
-import { GoogleGenAI } from '@google/genai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { generateText } from 'ai';
 import { Icons } from '../constants';
 
 interface AIAssistantProps {

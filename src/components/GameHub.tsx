@@ -34,7 +34,9 @@ const GAMES: Game[] = [
   { id: 'tinyfishing', name: 'Tiny Fishing', desc: 'Relaxing fishing game. Catch rare fish.', icon: '🎣', url: 'https://poki.com/en/g/tiny-fishing', category: 'Arcade', color: '#53C8FF' },
   { id: 'moto', name: 'Moto X3M', desc: 'Extreme motorbike racing with crazy stunts.', icon: '🏍️', url: 'https://poki.com/en/g/moto-x3m', category: 'Racing', color: '#FF4D4D' },
   { id: 'wordle', name: 'Wordle Unlimited', desc: 'Guess the word. Unlimited play.', icon: '📝', url: 'https://wordleunlimited.org/', category: 'Puzzle', color: '#3DD68C' },
-  { id: 'cutrope', name: 'Cut The Rope', desc: 'Feed Candy to Om Nom. Physics puzzle.', icon: '🍬', url: 'https://poki.com/en/g/cut-the-rope', category: 'Puzzle', color: '#3DD68C' }
+  { id: 'cutrope', name: 'Cut The Rope', desc: 'Feed Candy to Om Nom. Physics puzzle.', icon: '🍬', url: 'https://poki.com/en/g/cut-the-rope', category: 'Puzzle', color: '#3DD68C' },
+  // CloudHop Special: StrikeZone
+  { id: 'strikezone', name: 'StrikeZone', desc: 'Professional baseball training simulator. Step up to the plate!', icon: '⚾', url: 'https://www.mlb.com/gameday', category: 'Sports', color: '#FF4D4D', xpMultiplier: 3 }
 ];
 
 const GameHub: React.FC = () => {

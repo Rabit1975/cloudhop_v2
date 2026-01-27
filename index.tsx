@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import './src/index.css';
 import App from './App';
 import ToastProvider from './src/components/ToastProvider';
 import ErrorBoundary from './src/components/ErrorBoundary';

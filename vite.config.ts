@@ -9,6 +9,14 @@ export default defineConfig(({ mode }) => {
         port: 3000,
         host: '0.0.0.0',
         historyApiFallback: true,
+        hmr: {
+          overlay: false // Reduce CPU usage
+        },
+        watch: {
+          usePolling: false, // Better for external drives
+          interval: 1000, // Reduce file watching frequency
+          ignored: ['**/node_modules/**', '**/.git/**'] // Ignore heavy folders
+        }
       },
       plugins: [react()],
       define: {
@@ -22,8 +30,19 @@ export default defineConfig(({ mode }) => {
       },
       build: {
         chunkSizeWarningLimit: 1600,
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              vendor: ['react', 'react-dom'],
+              ui: ['framer-motion']
+            }
+          }
+        }
       },
-      // Add history API fallback for SPA routing in preview
+      optimizeDeps: {
+        include: ['react', 'react-dom', 'framer-motion']
+      },
+      cacheDir: path.resolve('C:', 'Users', 'rebel', 'AppData', 'Local', 'vite-cache'), // Use local drive for cache
       preview: {
         port: 3000,
       }

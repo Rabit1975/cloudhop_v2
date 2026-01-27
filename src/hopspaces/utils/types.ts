@@ -14,6 +14,8 @@ export interface HopSpace {
   galaxy_position: { x: number; y: number; layer: number };
   glow_intensity: number;
   metadata: Record<string, unknown>; // type-specific data keys
+  description?: string;
+  tags?: string[];
 }
 
 export interface PlanetState {

@@ -24,7 +24,6 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           password,
         });
         if (error) throw error;
-        // For simple email/pass, we might want to auto-login or alert to check email
         alert('Check your email for the confirmation link!');
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -42,68 +41,64 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#050819] p-4 font-sans text-white">
-      <div className="w-full max-w-md p-8 bg-[#0E1430] rounded-3xl border border-white/5 shadow-2xl animate-fade-in">
-        <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-tr from-[#53C8FF] to-purple-500 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(83,200,255,0.3)]">
-                <span className="text-3xl">🐰</span>
-            </div>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="flex flex-col items-center">
+        {/* Centered Rabbit Logo */}
+        <div className="mb-6">
+          <div className="text-5xl">🐰</div>
         </div>
         
-        <h2 className="text-2xl font-black text-center mb-2 uppercase tracking-wide">
-          {isSignUp ? 'Join RabbitChat' : 'Welcome Back'}
-        </h2>
-        <p className="text-center text-white/40 text-sm mb-8 font-medium">
-          {isSignUp ? 'Create your identity.' : 'Hop back into the conversation.'}
-        </p>
+        <div className="w-full max-w-xs p-4 bg-[#0E1430] rounded-xl border border-white/5 shadow-xl">
+          <h2 className="text-lg font-bold text-center mb-4 text-white">
+            {isSignUp ? 'Join CloudHop' : 'Welcome Back'}
+          </h2>
 
-        <form onSubmit={handleAuth} className="space-y-4">
-          <div>
-            <label className="text-xs font-black uppercase tracking-widest text-[#53C8FF] ml-2 mb-2 block">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); }}
-              className="w-full bg-[#050819] border border-white/10 rounded-xl p-4 text-white focus:border-[#53C8FF] outline-none font-bold transition-all"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-          
-          <div>
-            <label className="text-xs font-black uppercase tracking-widest text-[#53C8FF] ml-2 mb-2 block">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#050819] border border-white/10 rounded-xl p-4 text-white focus:border-[#53C8FF] outline-none font-bold transition-all"
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-bold text-center">
-              {error}
+          <form onSubmit={handleAuth} className="space-y-3">
+            <div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); }}
+                className="w-full bg-[#050819] border border-white/10 rounded-lg p-2 text-white text-sm focus:border-[#53C8FF] outline-none"
+                placeholder="Email"
+                required
+              />
             </div>
-          )}
+            
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-[#050819] border border-white/10 rounded-lg p-2 text-white text-sm focus:border-[#53C8FF] outline-none"
+                placeholder="Password"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-4 bg-[#53C8FF] text-[#0A0F1F] rounded-xl font-black uppercase tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-[#53C8FF]/20 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
-          </button>
-        </form>
+            {error && (
+              <div className="p-2 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs text-center">
+                {error}
+              </div>
+            )}
 
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => { setIsSignUp(!isSignUp); }}
-            className="text-xs text-white/40 hover:text-[#53C8FF] font-bold uppercase tracking-widest transition-colors"
-          >
-            {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
-          </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 bg-[#53C8FF] text-[#0A0F1F] rounded-lg text-sm font-semibold hover:scale-[1.02] transition-transform disabled:opacity-50"
+            >
+              {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+            </button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => { setIsSignUp(!isSignUp); }}
+              className="text-xs text-white/40 hover:text-[#53C8FF] transition-colors"
+            >
+              {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
