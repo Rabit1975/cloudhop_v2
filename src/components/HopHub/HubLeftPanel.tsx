@@ -12,6 +12,9 @@ interface HubLeftPanelProps {
   onSpaceSelect: (space: HopSpace) => void;
   spaces: HopSpace[];
   user: any;
+  onCreateGroup?: () => void;
+  onCreateChannel?: () => void;
+  onCreateSpace?: () => void;
 }
 
 export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
@@ -21,7 +24,10 @@ export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
   onChatSelect,
   onSpaceSelect,
   spaces,
-  user
+  user,
+  onCreateGroup,
+  onCreateChannel,
+  onCreateSpace
 }) => {
   const { ref: leftPanelRef, visible: leftPanelVisible } = useVisibility('HubLeftPanel');
 
@@ -98,7 +104,15 @@ export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
       case 'groups':
         return (
           <div className="p-4 space-y-2">
-            <h3 className="text-white font-medium text-sm uppercase tracking-wider mb-4">Groups</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-medium text-sm uppercase tracking-wider">Groups</h3>
+              <button 
+                onClick={onCreateGroup}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-xs transition-colors"
+              >
+                + New Group
+              </button>
+            </div>
             {mockGroups.map((group) => (
               <button
                 key={group.id}
@@ -121,7 +135,15 @@ export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
       case 'channels':
         return (
           <div className="p-4 space-y-2">
-            <h3 className="text-white font-medium text-sm uppercase tracking-wider mb-4">Channels</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-medium text-sm uppercase tracking-wider">Channels</h3>
+              <button 
+                onClick={onCreateChannel}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-xs transition-colors"
+              >
+                + New Channel
+              </button>
+            </div>
             {mockChannels.map((channel) => (
               <button
                 key={channel.id}
@@ -146,7 +168,10 @@ export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
           <div className="p-4 space-y-2">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white font-medium text-sm uppercase tracking-wider">Spaces</h3>
-              <button className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-xs transition-colors">
+              <button 
+                onClick={onCreateSpace}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-xs transition-colors"
+              >
                 + New Space
               </button>
             </div>

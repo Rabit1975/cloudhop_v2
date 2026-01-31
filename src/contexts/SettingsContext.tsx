@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
+// Development flag for logging
+const DEBUG = import.meta.env.DEV;
+
 export interface UserSettings {
   // Appearance
   colorMode?: 'Deep Space (Dark)' | 'Light Mode' | 'System Default';
@@ -107,15 +110,33 @@ export const SettingsProvider: React.FC<{ children: ReactNode; userId?: string }
     }
 
     const fetchSettings = async () => {
+      if (DEBUG) console.log('Fetching settings for userId:', userId);
       const { data, error } = await supabase
         .from('users')
         .select('settings, display_name, avatar_url, bio, phone, username')
         .eq('id', userId)
         .single();
       
+      if (error) {
+        if (DEBUG) console.error('Error fetching settings:', error);
+        setLoading(false);
+        return;
+      }
+      
       if (data) {
-        if (data.settings) setSettings(data.settings);
+        if (DEBUG) console.log('Fetched user data:', data);
+        if (data.settings) {
+          if (DEBUG) console.log('Settings loaded:', data.settings);
+          setSettings(data.settings);
+        }
         setProfile({
+          display_name: data.display_name,
+          avatar_url: data.avatar_url,
+          bio: data.bio,
+          phone: data.phone,
+          username: data.username
+        });
+        if (DEBUG) console.log('Profile loaded:', {
           display_name: data.display_name,
           avatar_url: data.avatar_url,
           bio: data.bio,
@@ -160,51 +181,84 @@ export const SettingsProvider: React.FC<{ children: ReactNode; userId?: string }
   }, [userId]);
 
   const updateSetting = async (key: keyof UserSettings, value: any) => {
-    if (!userId) return;
+    if (!userId) {
+      if (DEBUG) console.error('No userId provided to updateSetting');
+      return;
+    }
     
+    if (DEBUG) console.log('Updating setting:', key, '=', value);
     const newSettings = { ...settings, [key]: value };
     setSettings(newSettings); // Optimistic update
 
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from('users')
       .update({ settings: newSettings })
-      .eq('id', userId);
+      .eq('id', userId)
+      .select();
 
     if (error) {
-      console.error('Error updating settings:', error);
-      // Revert optimistic update on error if needed, but for now we keep it simple
+      if (DEBUG) console.error('Error updating settings:', error);
+      // Revert optimistic update on error
+      setSettings(settings);
+      // In production, use a toast notification instead of alert
+      if (DEBUG) alert('Failed to update settings: ' + error.message);
+      throw error; // Let the calling component handle the error
+    } else {
+      if (DEBUG) console.log('Settings updated successfully:', data);
     }
   };
 
   const updateSettings = async (newValues: Partial<UserSettings>) => {
-      if (!userId) return;
+      if (!userId) {
+        if (DEBUG) console.error('No userId provided to updateSettings');
+        return;
+      }
 
+      if (DEBUG) console.log('Updating multiple settings:', newValues);
       const newSettings = { ...settings, ...newValues };
       setSettings(newSettings);
 
-      const { error } = await supabase
+      const { error, data } = await supabase
         .from('users')
         .update({ settings: newSettings })
-        .eq('id', userId);
+        .eq('id', userId)
+        .select();
         
       if (error) {
-          console.error('Error updating settings:', error);
+          if (DEBUG) console.error('Error updating settings:', error);
+          // Revert optimistic update on error
+          setSettings(settings);
+          if (DEBUG) alert('Failed to update settings: ' + error.message);
+          throw error; // Let the calling component handle the error
+      } else {
+        if (DEBUG) console.log('Multiple settings updated successfully:', data);
       }
   }
 
   const updateProfile = async (newValues: Partial<UserProfile>) => {
-    if (!userId) return;
+    if (!userId) {
+      if (DEBUG) console.error('No userId provided to updateProfile');
+      return;
+    }
     
+    if (DEBUG) console.log('Updating profile with:', newValues);
     const newProfile = { ...profile, ...newValues };
     setProfile(newProfile); // Optimistic update
 
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from('users')
       .update(newValues)
-      .eq('id', userId);
+      .eq('id', userId)
+      .select();
 
     if (error) {
-      console.error('Error updating profile:', error);
+      if (DEBUG) console.error('Error updating profile:', error);
+      // Revert optimistic update on error
+      setProfile(profile);
+      if (DEBUG) alert('Failed to update profile: ' + error.message);
+      throw error; // Let the calling component handle the error
+    } else {
+      if (DEBUG) console.log('Profile updated successfully:', data);
     }
   };
 

@@ -43,7 +43,15 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
               <button onClick={handleAvatarClick} className="absolute -bottom-3 -right-3 bg-[#53C8FF] text-[#0A0F1F] p-3 rounded-2xl shadow-[0_10px_20px_rgba(83,200,255,0.3)] hover:scale-110 transition-all z-20">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
               </button>
-              <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept="image/*" 
+                onChange={handleFileChange}
+                id="profile-avatar-upload"
+                name="profile_avatar_upload"
+              />
             </div>
             <h3 className="text-3xl font-black mb-1">{user?.name}</h3>
             <p className="text-sm text-[#53C8FF] font-bold mb-4 uppercase tracking-[0.2em]">@{user?.name.toLowerCase().replace(' ', '')}</p>
@@ -186,21 +194,26 @@ const Badge: React.FC<{ icon: string, label: string }> = ({ icon, label }) => (
   </div>
 );
 
-const InputGroup: React.FC<{ label: string; value: string; readOnly?: boolean }> = ({ label, value: initialValue, readOnly }) => {
-  const [value, setValue] = useState(initialValue);
+const InputGroup: React.FC<{ label: string, value: string, readOnly?: boolean }> = ({ label, value: initialValue, readOnly = false }) => {
+  const [inputValue, setInputValue] = useState(initialValue);
   
   // Update local state if initialValue changes (e.g. from parent prop)
   React.useEffect(() => {
-    setValue(initialValue);
+    setInputValue(initialValue);
   }, [initialValue]);
+
+  const inputId = label.toLowerCase().replace(/\s+/g, '-');
+  const inputName = label.toLowerCase().replace(/\s+/g, '_');
 
   return (
     <div className="space-y-3">
-      <label className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{label}</label>
+      <label htmlFor={inputId} className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] ml-1">{label}</label>
       <input 
+        id={inputId}
+        name={inputName}
         type="text" 
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         readOnly={readOnly}
         className={`w-full bg-[#080C22] border border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-white/80 focus:outline-none transition-all ${readOnly ? 'opacity-40 cursor-not-allowed' : 'focus:border-[#53C8FF]/50 focus:bg-[#0D1A2A]'}`}
       />

@@ -7,6 +7,7 @@ export enum View {
   GAME_SERVICE = 'game_service', // New Game Service section
   YOUTUBE_MUSIC = 'youtube_music', // New YouTube Music section
   TWITCH = 'twitch', // New Twitch section
+  SPOTIFY_CALLBACK = 'spotify_callback', // Spotify OAuth callback
   PROFILE = 'profile',
   SETTINGS = 'settings',
   AI_TOOLS = 'ai_tools',

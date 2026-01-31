@@ -8,6 +8,9 @@ import { HubNavTabs } from './HubNavTabs';
 import { HubLeftPanel } from './HubLeftPanel';
 import { HubCenter } from './HubCenter';
 import { HubRightPanel } from './HubRightPanel';
+import { CreateGroupModal } from './CreateGroupModal';
+import { CreateChannelModal } from './CreateChannelModal';
+import { CreateSpaceModal } from './CreateSpaceModal';
 
 interface HopHubProps {
   user: any;
@@ -15,11 +18,18 @@ interface HopHubProps {
 }
 
 type HubTab = 'messages' | 'groups' | 'channels' | 'spaces';
+type SpaceSubTab = 'creative' | 'music' | 'twitch';
 
 export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
   const [activeTab, setActiveTab] = useState<HubTab>('messages');
+  const [activeSpaceTab, setActiveSpaceTab] = useState<SpaceSubTab>('creative');
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [selectedSpace, setSelectedSpace] = useState<HopSpace | null>(null);
+  
+  // Modal states
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+  const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
+  const [showCreateSpaceModal, setShowCreateSpaceModal] = useState(false);
 
   // Use visibility manager for performance
   const { ref: hubRef, visible: hubVisible } = useVisibility('HopHub');
@@ -70,6 +80,36 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
   const handleSpaceSelect = (space: HopSpace) => {
     setSelectedSpace(space);
     VisibilityManager.setActiveScreen('hub-space-interior');
+  };
+
+  const handleCreateGroup = () => {
+    setShowCreateGroupModal(true);
+  };
+
+  const handleCreateChannel = () => {
+    setShowCreateChannelModal(true);
+  };
+
+  const handleCreateSpace = () => {
+    setShowCreateSpaceModal(true);
+  };
+
+  const handleCreateGroupSubmit = async (groupData: any) => {
+    // TODO: Implement actual group creation logic
+    console.log('Creating group:', groupData);
+    // Add to mock data or call API
+  };
+
+  const handleCreateChannelSubmit = async (channelData: any) => {
+    // TODO: Implement actual channel creation logic
+    console.log('Creating channel:', channelData);
+    // Add to mock data or call API
+  };
+
+  const handleCreateSpaceSubmit = async (spaceData: any) => {
+    // TODO: Implement actual space creation logic
+    console.log('Creating space:', spaceData);
+    // Add to mock data or call API
   };
 
   const handleChatSelect = (chatId: string) => {
@@ -139,7 +179,12 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
       </div>
 
       {/* HopHub Navigation Tabs */}
-      <HubNavTabs activeTab={activeTab} onTabChange={handleTabChange} />
+      <HubNavTabs 
+        activeTab={activeTab} 
+        activeSpaceTab={activeSpaceTab}
+        onTabChange={handleTabChange} 
+        onSpaceTabChange={setActiveSpaceTab}
+      />
 
       {/* Main HopHub Content */}
       <div className="flex-1 flex overflow-hidden">
@@ -152,11 +197,15 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
           onSpaceSelect={handleSpaceSelect}
           spaces={mockSpaces}
           user={user}
+          onCreateGroup={handleCreateGroup}
+          onCreateChannel={handleCreateChannel}
+          onCreateSpace={handleCreateSpace}
         />
 
         {/* Center Panel */}
         <HubCenter
           activeTab={activeTab}
+          activeSpaceTab={activeSpaceTab}
           selectedChatId={selectedChatId}
           selectedSpace={selectedSpace}
           user={user}
@@ -170,6 +219,23 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
           user={user}
         />
       </div>
+
+      {/* Modals */}
+      <CreateGroupModal
+        isOpen={showCreateGroupModal}
+        onClose={() => setShowCreateGroupModal(false)}
+        onCreateGroup={handleCreateGroupSubmit}
+      />
+      <CreateChannelModal
+        isOpen={showCreateChannelModal}
+        onClose={() => setShowCreateChannelModal(false)}
+        onCreateChannel={handleCreateChannelSubmit}
+      />
+      <CreateSpaceModal
+        isOpen={showCreateSpaceModal}
+        onClose={() => setShowCreateSpaceModal(false)}
+        onCreateSpace={handleCreateSpaceSubmit}
+      />
     </div>
   );
 };

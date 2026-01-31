@@ -9,23 +9,24 @@ import { useNebulaMorphing } from '../hooks/useNebulaMorphing';
 
 const Twitch: React.FC = () => {
   const fadeRef = useScrollFadeIn();
-  useNebulaDrift();
-  useNebulaColorShift(".twitch-section");
-  useNebulaPulse();
-  const { setEmotionalState } = useNebulaMorphing(".twitch-section");
+  // Temporarily disable nebula animations to reduce CPU usage
+  // useNebulaDrift();
+  // useNebulaColorShift(".twitch-section");
+  // useNebulaPulse();
+  // const { setEmotionalState } = useNebulaMorphing(".twitch-section");
 
   // Demo: Cycle through emotional states every 8 seconds (offset for variety)
-  React.useEffect(() => {
-    const emotions = ['surge', 'storm', 'bloom', 'drift', 'frost'] as const;
-    let index = 4; // Start with 'frost'
+  // React.useEffect(() => {
+  //   const emotions = ['surge', 'storm', 'bloom', 'drift', 'frost'] as const;
+  //   let index = 4; // Start with 'frost'
     
-    const interval = setInterval(() => {
-      setEmotionalState(emotions[index]);
-      index = (index + 1) % emotions.length;
-    }, 8000);
+  //   const interval = setInterval(() => {
+  //     setEmotionalState(emotions[index]);
+  //     index = (index + 1) % emotions.length;
+  //   }, 8000);
 
-    return () => clearInterval(interval);
-  }, [setEmotionalState]);
+  //   return () => clearInterval(interval);
+  // }, [setEmotionalState]);
 
   return (
     <section className="twitch-section nebula-shift relative overflow-hidden">

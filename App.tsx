@@ -10,6 +10,7 @@ import GameHub from './src/components/GameHub';
 import GameService from './src/components/GameService'; // New Game Service section
 import YouTubeMusic from './src/components/YouTubeMusic'; // New YouTube Music section
 import Twitch from './src/components/Twitch'; // New Twitch section
+import SpotifyCallback from './src/components/SpotifyCallback'; // Spotify OAuth callback
 import Profile from './src/components/Profile';
 import Settings from './src/components/Settings';
 import AITools from './src/components/AITools';
@@ -167,6 +168,7 @@ const App: React.FC = () => {
       case View.GAME_SERVICE: return <GameService />; // New Game Service section
       case View.YOUTUBE_MUSIC: return <YouTubeMusic />; // New YouTube Music section
       case View.TWITCH: return <Twitch />; // New Twitch section
+      case View.SPOTIFY_CALLBACK: return <SpotifyCallback />; // Spotify OAuth callback
       case View.PROFILE: return <Profile user={user} />;
       case View.SETTINGS: return <Settings userId={session?.user.id} />;
       case View.AUTH: return <Auth onAuthSuccess={() => { navigate(View.DASHBOARD); }} />; // Render Auth component

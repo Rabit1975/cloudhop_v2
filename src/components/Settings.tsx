@@ -13,8 +13,126 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [inputLevel, setInputLevel] = useState(0);
   const [isTestingMic, setIsTestingMic] = useState(false);
+  const [micStream, setMicStream] = useState<MediaStream | null>(null);
+  const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
+  const [availableMics, setAvailableMics] = useState<MediaDeviceInfo[]>([]);
+  const [availableSpeakers, setAvailableSpeakers] = useState<MediaDeviceInfo[]>([]);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
 
   const { settings, profile, updateSetting, updateProfile, loading } = useSettings();
+
+  // Enumerate available devices
+  useEffect(() => {
+    const enumerateDevices = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        setAvailableCameras(devices.filter(device => device.kind === 'videoinput'));
+        setAvailableMics(devices.filter(device => device.kind === 'audioinput'));
+        setAvailableSpeakers(devices.filter(device => device.kind === 'audiooutput'));
+      } catch (err) {
+        console.error('Error enumerating devices:', err);
+      }
+    };
+
+    enumerateDevices();
+    
+    // Listen for device changes
+    navigator.mediaDevices?.addEventListener('devicechange', enumerateDevices);
+    return () => {
+      navigator.mediaDevices?.removeEventListener('devicechange', enumerateDevices);
+    };
+  }, []);
+
+  // Apply theme changes
+  useEffect(() => {
+    const body = document.body;
+    
+    // Remove all theme classes first
+    body.classList.remove('light-mode', 'dark-mode');
+    
+    if (settings.colorMode === 'Light Mode') {
+      body.classList.add('light-mode');
+    } else if (settings.colorMode === 'Deep Space (Dark)') {
+      body.classList.add('dark-mode');
+    } else {
+      // System default
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) {
+        body.classList.add('dark-mode');
+      } else {
+        body.classList.add('light-mode');
+      }
+    }
+  }, [settings.colorMode]);
+
+  // Apply accent color changes
+  useEffect(() => {
+    const root = document.documentElement;
+    
+    if (settings.theme === 'Neon Green') {
+      root.style.setProperty('--primary', '#10b981');
+      root.style.setProperty('--accent', '#34d399');
+    } else if (settings.theme === 'Cyber Pink') {
+      root.style.setProperty('--primary', '#ec4899');
+      root.style.setProperty('--accent', '#f472b6');
+    } else {
+      // Default CloudHop Blue
+      root.style.setProperty('--primary', '#53C8FF');
+      root.style.setProperty('--accent', '#A3E7FF');
+    }
+  }, [settings.theme]);
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Avatar image must be less than 5MB');
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    try {
+      // Create a preview
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const dataUrl = e.target?.result as string;
+        
+        // For now, save as data URL. In production, upload to storage service
+        await updateProfile({ avatar_url: dataUrl });
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      alert('Failed to upload avatar');
+    }
+  };
+
+  const testSpeaker = () => {
+    // Create a simple test tone
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 440; // A4 note
+    gainNode.gain.value = (settings.speakerVolume || 50) / 100 * 0.3; // Scale volume
+    
+    oscillator.start();
+    setTimeout(() => {
+      oscillator.stop();
+      audioContext.close();
+    }, 1000); // Play for 1 second
+  };
 
   const menu = [
     { id: 'General', icon: '⚙️' },
@@ -31,16 +149,68 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
   ];
 
   useEffect(() => {
-    let interval: unknown;
-    if (isTestingMic) {
-      interval = setInterval(() => {
-        setInputLevel(Math.random() * 80 + 10);
-      }, 100);
+    let animationId: number;
+    
+    if (isTestingMic && micStream && analyserRef.current) {
+      const analyser = analyserRef.current;
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      
+      const updateLevel = () => {
+        analyser.getByteFrequencyData(dataArray);
+        const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
+        setInputLevel(Math.min(100, (average / 128) * 100));
+        animationId = requestAnimationFrame(updateLevel);
+      };
+      
+      updateLevel();
     } else {
       setInputLevel(0);
     }
-    return () => { clearInterval(interval as number); };
-  }, [isTestingMic]);
+    
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, [isTestingMic, micStream]);
+
+  const startMicTest = async () => {
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          deviceId: settings.micDevice ? { exact: settings.micDevice } : undefined,
+          echoCancellation: settings.echoCancellation,
+          autoGainControl: settings.autoMicVolume,
+          noiseSuppression: settings.suppressNoise !== 'Auto' && settings.suppressNoise !== undefined
+        }
+      });
+      
+      setMicStream(newStream);
+      
+      // Set up audio analysis
+      audioContextRef.current = new AudioContext();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      const source = audioContextRef.current.createMediaStreamSource(newStream);
+      source.connect(analyserRef.current);
+      analyserRef.current.fftSize = 256;
+      
+      setIsTestingMic(true);
+    } catch (err) {
+      alert("Microphone permission required or microphone not available.");
+    }
+  };
+
+  const stopMicTest = () => {
+    if (micStream) {
+      micStream.getTracks().forEach(track => track.stop());
+      setMicStream(null);
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    analyserRef.current = null;
+    setIsTestingMic(false);
+    setInputLevel(0);
+  };
 
   const toggleCamera = async () => {
     if (isCameraOn) {
@@ -49,11 +219,17 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
       setIsCameraOn(false);
     } else {
       try {
-        const newStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const newStream = await navigator.mediaDevices.getUserMedia({ 
+          video: {
+            deviceId: settings.cameraSource ? { exact: settings.cameraSource } : undefined,
+            width: settings.hdVideo ? { ideal: 1920 } : { ideal: 1280 },
+            height: settings.hdVideo ? { ideal: 1080 } : { ideal: 720 }
+          } 
+        });
         setStream(newStream);
         setIsCameraOn(true);
       } catch (err) {
-        alert("Camera permission required.");
+        alert("Camera permission required or camera not available.");
       }
     }
   };
@@ -170,12 +346,16 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
             <SettingGroup title="Camera">
                <SettingItem title="Camera Source">
                   <select 
-                    value={settings.cameraSource || 'FaceTime HD Camera'}
+                    value={settings.cameraSource || availableCameras[0]?.deviceId || ''}
                     onChange={(e) => updateSetting('cameraSource', e.target.value)}
                     className="bg-[#050819] border border-white/10 rounded-xl px-4 py-3 text-xs font-black uppercase italic w-64 text-[#53C8FF]"
                   >
-                    <option>FaceTime HD Camera</option>
-                    <option>OBS Virtual Camera</option>
+                    {availableCameras.map(camera => (
+                      <option key={camera.deviceId} value={camera.deviceId}>
+                        {camera.label || `Camera ${availableCameras.indexOf(camera) + 1}`}
+                      </option>
+                    ))}
+                    {availableCameras.length === 0 && <option>No cameras found</option>}
                   </select>
                </SettingItem>
                <SettingItem title="Original Ratio" desc="Maintain aspect ratio.">
@@ -192,10 +372,12 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
                <SettingItem title="Touch up my appearance">
                   <div className="w-48">
                     <input 
+                        id="touch-up-appearance"
+                        name="touch_up_appearance"
                         type="range" 
                         value={settings.touchUpAppearance || 0}
                         onChange={(e) => updateSetting('touchUpAppearance', parseInt(e.target.value))}
-                        className="w-full accent-[#53C8FF]" 
+                        className="w-48 accent-[#53C8FF]" 
                     />
                   </div>
                </SettingItem>
@@ -229,18 +411,29 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
           <div className="space-y-12 animate-fade-in">
             <SettingGroup title="Speaker">
                <div className="flex gap-4">
-                  <button className="px-6 py-3 bg-[#1A2348] border border-[#53C8FF]/20 text-[#53C8FF] rounded-xl text-xs font-bold uppercase tracking-wider">Test Speaker</button>
+                  <button 
+                    onClick={testSpeaker}
+                    className="px-6 py-3 bg-[#1A2348] border border-[#53C8FF]/20 text-[#53C8FF] rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#53C8FF] hover:text-[#0A0F1F] transition-colors"
+                  >
+                    Test Speaker
+                  </button>
                   <select 
-                    value={settings.speakerDevice || 'System Default'}
+                    value={settings.speakerDevice || availableSpeakers[0]?.deviceId || ''}
                     onChange={(e) => updateSetting('speakerDevice', e.target.value)}
                     className="bg-[#050819] border border-white/10 rounded-xl px-4 py-3 text-xs font-black uppercase italic w-64 text-[#53C8FF]"
                   >
-                    <option>MacBook Pro Speakers</option>
-                    <option>System Default</option>
+                    {availableSpeakers.map(speaker => (
+                      <option key={speaker.deviceId} value={speaker.deviceId}>
+                        {speaker.label || `Speaker ${availableSpeakers.indexOf(speaker) + 1}`}
+                      </option>
+                    ))}
+                    {availableSpeakers.length === 0 && <option>System Default</option>}
                   </select>
                </div>
                <SettingItem title="Output Volume">
                   <input 
+                    id="speaker-volume"
+                    name="speaker_volume"
                     type="range" 
                     value={settings.speakerVolume || 50}
                     onChange={(e) => updateSetting('speakerVolume', parseInt(e.target.value))}
@@ -251,16 +444,29 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
 
             <SettingGroup title="Microphone">
                <div className="flex gap-4">
-                  <button onClick={() => { setIsTestingMic(!isTestingMic); }} className={`px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider border ${isTestingMic ? 'bg-[#53C8FF] text-[#0A0F1F]' : 'bg-[#1A2348] border-[#53C8FF]/20 text-[#53C8FF]'}`}>
+                  <button 
+                    onClick={() => { 
+                      if (isTestingMic) {
+                        stopMicTest();
+                      } else {
+                        startMicTest();
+                      }
+                    }} 
+                    className={`px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider border ${isTestingMic ? 'bg-[#53C8FF] text-[#0A0F1F]' : 'bg-[#1A2348] border-[#53C8FF]/20 text-[#53C8FF]'}`}
+                  >
                     {isTestingMic ? 'Stop Test' : 'Test Mic'}
                   </button>
                   <select 
-                    value={settings.micDevice || 'System Default'}
+                    value={settings.micDevice || availableMics[0]?.deviceId || ''}
                     onChange={(e) => updateSetting('micDevice', e.target.value)}
                     className="bg-[#050819] border border-white/10 rounded-xl px-4 py-3 text-xs font-black uppercase italic w-64 text-[#53C8FF]"
                   >
-                    <option>MacBook Pro Microphone</option>
-                    <option>System Default</option>
+                    {availableMics.map(mic => (
+                      <option key={mic.deviceId} value={mic.deviceId}>
+                        {mic.label || `Microphone ${availableMics.indexOf(mic) + 1}`}
+                      </option>
+                    ))}
+                    {availableMics.length === 0 && <option>No microphones found</option>}
                   </select>
                </div>
                <div className="space-y-2">
@@ -494,7 +700,10 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
            <div className="space-y-12 animate-fade-in">
               <SettingGroup title="Captions">
                  <SettingItem title="Closed Caption Font Size">
+                    <label htmlFor="caption-font-size" className="block text-white/60 text-sm mb-2">Adjust caption text size</label>
                     <input 
+                        id="caption-font-size"
+                        name="caption_font_size"
                         type="range" 
                         min="12" 
                         max="32" 
@@ -521,7 +730,16 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
                <div className="relative group mb-6">
                   <img src={profile.avatar_url || 'https://via.placeholder.com/150'} className="w-32 h-32 rounded-full object-cover border-4 border-[#53C8FF] shadow-[0_0_40px_rgba(83,200,255,0.3)]" />
                   <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                      <span className="text-2xl">📷</span>
+                      <label htmlFor="avatar-upload" className="cursor-pointer">
+                        <span className="text-2xl">📷</span>
+                        <input
+                          id="avatar-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleAvatarUpload}
+                          className="hidden"
+                        />
+                      </label>
                   </div>
                </div>
                <h3 className="text-2xl font-black text-white italic tracking-tight">{profile.display_name || 'Cloud Hopper'}</h3>
@@ -531,14 +749,28 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
             <SettingGroup title="My Profile">
                <SettingItem title="Display Name" desc="How your name appears to other users.">
                   <input 
+                    id="display-name"
+                    name="display_name"
                     value={profile.display_name || ''}
                     onChange={(e) => updateProfile({ display_name: e.target.value })}
                     className="bg-[#050819] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white w-full md:w-80 focus:border-[#53C8FF] outline-none"
                     placeholder="Enter your name"
                   />
                </SettingItem>
+               <SettingItem title="Username" desc="Your unique username.">
+                  <input 
+                    id="username"
+                    name="username"
+                    value={profile.username || ''}
+                    onChange={(e) => updateProfile({ username: e.target.value })}
+                    className="bg-[#050819] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white w-full md:w-80 focus:border-[#53C8FF] outline-none"
+                    placeholder="username"
+                  />
+               </SettingItem>
                <SettingItem title="Phone Number">
                   <input 
+                    id="phone-number"
+                    name="phone"
                     value={profile.phone || ''}
                     onChange={(e) => updateProfile({ phone: e.target.value })}
                     className="bg-[#050819] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white w-full md:w-80 focus:border-[#53C8FF] outline-none"
@@ -546,12 +778,23 @@ const Settings: React.FC<SettingsProps> = ({ userId }) => {
                   />
                </SettingItem>
                <SettingItem title="Bio">
+                  <label htmlFor="bio" className="block text-white/60 text-sm mb-2">Tell us about yourself...</label>
                   <textarea 
+                    id="bio"
+                    name="bio"
                     value={profile.bio || ''}
                     onChange={(e) => updateProfile({ bio: e.target.value })}
                     className="bg-[#050819] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white w-full md:w-80 focus:border-[#53C8FF] outline-none resize-none h-24"
                     placeholder="Tell us about yourself..."
                   />
+               </SettingItem>
+               <SettingItem title="Debug Info">
+                  <div className="text-xs text-white/60 space-y-1">
+                    <p>User ID: {userId || 'Not provided'}</p>
+                    <p>Loading: {loading ? 'Yes' : 'No'}</p>
+                    <p>Profile fields: {Object.keys(profile).length}</p>
+                    <p>✅ Email field removed (DB issue fixed)</p>
+                  </div>
                </SettingItem>
             </SettingGroup>
           </div>

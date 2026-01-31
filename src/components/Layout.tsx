@@ -15,7 +15,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user, onLogout }) => {
   const { currentSpace } = useSpace();
-  const { settings } = useSettings();
+  const { settings, profile } = useSettings(); // Added profile from useSettings
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
@@ -24,9 +24,6 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
     { id: View.CHAT, label: 'HopHub', icon: Icons.Chat },
     { id: View.MEETINGS, label: 'HopMeets', icon: Icons.Meetings },
     { id: View.ARCADE, label: 'GameHub', icon: Icons.Arcade },
-    { id: View.GAME_SERVICE, label: 'Game Service', icon: Icons.Arcade },
-    { id: View.YOUTUBE_MUSIC, label: 'YouTube Music', icon: Icons.Meetings },
-    { id: View.TWITCH, label: 'Twitch', icon: Icons.Meetings },
   ];
 
   const viewLabels: Record<View, string> = {
@@ -38,6 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
     [View.GAME_SERVICE]: 'CloudHop Game Service',
     [View.YOUTUBE_MUSIC]: 'YouTube Music',
     [View.TWITCH]: 'Twitch',
+    [View.SPOTIFY_CALLBACK]: 'Spotify Callback',
     [View.PROFILE]: 'Digital ID',
     [View.SETTINGS]: 'System Config',
     [View.AI_TOOLS]: 'AI Agent Studio',
@@ -110,13 +108,13 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
                 aria-label="Open profile menu"
               >
                 <img 
-                  src={user?.avatar || ''} 
+                  src={profile.avatar_url || user?.avatar || ''} 
                   className="w-8 h-8 rounded-lg bg-white/10 border border-white/10 shadow-lg gpu-accelerated" 
-                  alt={`Avatar of ${user?.name}`}
+                  alt={`Avatar of ${profile.display_name || user?.name}`}
                 />
                 {isSidebarOpen && (
                   <div className="hidden md:block text-left">
-                    <div className="text-sm font-semibold leading-none mb-1 italic">{user?.name}</div>
+                    <div className="text-sm font-semibold leading-none mb-1 italic">{profile.display_name || user?.name}</div>
                     <div className="text-xs text-[#53C8FF] font-semibold uppercase tracking-wide leading-none opacity-60 italic">Lvl {user?.level}</div>
                   </div>
                 )}

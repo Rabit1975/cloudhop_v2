@@ -2,11 +2,15 @@ import React from 'react';
 import { HopSpace } from '../../hopspaces/utils/types';
 import { useVisibility } from '../../hooks/useVisibility';
 import { SpaceInterior } from '../../hopspaces/spaces/SpaceInterior';
+import YouTubeMusic from '../YouTubeMusic';
+import Twitch from '../Twitch';
 
 type HubTab = 'messages' | 'groups' | 'channels' | 'spaces';
+type SpaceSubTab = 'creative' | 'music' | 'twitch';
 
 interface HubCenterProps {
   activeTab: HubTab;
+  activeSpaceTab?: SpaceSubTab;
   selectedChatId: string | null;
   selectedSpace: HopSpace | null;
   user: any;
@@ -14,6 +18,7 @@ interface HubCenterProps {
 
 export const HubCenter: React.FC<HubCenterProps> = ({
   activeTab,
+  activeSpaceTab = 'creative',
   selectedChatId,
   selectedSpace,
   user
@@ -32,13 +37,41 @@ export const HubCenter: React.FC<HubCenterProps> = ({
       );
     }
 
-    // If in spaces mode and a space is selected, show the space interior
-    if (activeTab === 'spaces' && selectedSpace) {
-      return (
-        <div className="h-full w-full">
-          <SpaceInterior space={selectedSpace} />
-        </div>
-      );
+    // Handle Spaces sub-tabs
+    if (activeTab === 'spaces') {
+      switch (activeSpaceTab) {
+        case 'music':
+          return (
+            <div className="h-full w-full">
+              <YouTubeMusic />
+            </div>
+          );
+        case 'twitch':
+          return (
+            <div className="h-full w-full">
+              <Twitch />
+            </div>
+          );
+        case 'creative':
+        default:
+          // If a space is selected, show the space interior
+          if (selectedSpace) {
+            return (
+              <div className="h-full w-full">
+                <SpaceInterior space={selectedSpace} />
+              </div>
+            );
+          }
+          // Show creative spaces placeholder
+          return (
+            <div className="flex items-center justify-center h-full text-white/40">
+              <div className="text-center">
+                <div className="text-4xl mb-2">🎨</div>
+                <div className="text-sm">Select a creative space to begin</div>
+              </div>
+            </div>
+          );
+      }
     }
 
     // Otherwise show the appropriate chat/workspace content
@@ -88,19 +121,6 @@ export const HubCenter: React.FC<HubCenterProps> = ({
             </div>
           </div>
         );
-
-      case 'spaces':
-        if (!selectedSpace) {
-          return (
-            <div className="flex items-center justify-center h-full text-white/40">
-              <div className="text-center">
-                <div className="text-4xl mb-2">🌌</div>
-                <div className="text-sm">Select a Space to begin creating</div>
-              </div>
-            </div>
-          );
-        }
-        return null; // Handled above
 
       default:
         return (
