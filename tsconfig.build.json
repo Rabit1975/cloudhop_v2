@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noImplicitAny": false
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/ui/**/*",
+    "src/modules/**/*",
+    "src/components/**/*",
+    "src/shell/**/*",
+    "src/service-worker.ts",
+    "src/main.tsx",
+    "**/*.test.*",
+    "**/*.spec.*"
+  ]
+}
