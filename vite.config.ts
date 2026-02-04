@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       // Only expose VITE_ prefixed env vars for security
-      'process.env': Object.keys(env)
+      'import.meta.env': Object.keys(env)
         .filter(key => key.startsWith('VITE_'))
         .reduce((acc, key) => {
           acc[key] = env[key];
