@@ -310,14 +310,3 @@ export class SpectrumStateManager {
 }
 
 export const spectrumStateManager = new SpectrumStateManager();
-      listener(this.getState())
-    })
-  }
-
-  reset(): void {
-    this.state = { ...defaultSpectrumState }
-    this.notifyListeners()
-  }
-}
-
-export const spectrumStateManager = new SpectrumStateManager()
