@@ -20,7 +20,13 @@ export default defineConfig(({ mode }) => {
       }
     },
     define: {
-      'process.env': env
+      // Only expose VITE_ prefixed env vars for security
+      'process.env': Object.keys(env)
+        .filter(key => key.startsWith('VITE_'))
+        .reduce((acc, key) => {
+          acc[key] = env[key];
+          return acc;
+        }, {} as Record<string, string>)
     },
     server: {
       port: 5173,
