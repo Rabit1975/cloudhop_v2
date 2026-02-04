@@ -7,7 +7,7 @@
     "start": "concurrently \"npm run dev\" \"npm run electron:start\"",
     "dev": "vite --host 127.0.0.1",
     "dev:watch": "vite --host 127.0.0.1 --watch",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "electron:build": "tsc -p tsconfig.electron.json",
     "electron:start": "npm run electron:build && electron .",
     "type-check": "tsc --noEmit",
