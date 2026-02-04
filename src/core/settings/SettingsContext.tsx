@@ -106,15 +106,21 @@ export const SettingsProvider: React.FC<{ children: ReactNode; userId?: string }
         return;
     }
 
+    let isMounted = true;
     const fetchSettings = async () => {
+      console.log('Fetching settings for userId:', userId);
       const { data, error } = await supabase
         .from('users')
         .select('settings, display_name, avatar_url, bio, phone, username')
         .eq('id', userId)
         .single();
       
-      if (data) {
-        if (data.settings) setSettings(data.settings);
+      if (data && isMounted) {
+        console.log('Fetched user data:', data);
+        if (data.settings) {
+          console.log('Settings loaded:', data.settings);
+          setSettings(data.settings);
+        }
         setProfile({
           display_name: data.display_name,
           avatar_url: data.avatar_url,
@@ -122,8 +128,17 @@ export const SettingsProvider: React.FC<{ children: ReactNode; userId?: string }
           phone: data.phone,
           username: data.username
         });
+        console.log('Profile loaded:', {
+          display_name: data.display_name,
+          avatar_url: data.avatar_url,
+          bio: data.bio,
+          phone: data.phone,
+          username: data.username
+        });
       }
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     };
 
     void fetchSettings();
@@ -140,6 +155,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode; userId?: string }
           filter: `id=eq.${userId}`
         },
         (payload) => {
+          if (!isMounted) return;
           const newUser = payload.new as any;
           if (newUser.settings) setSettings(newUser.settings);
           setProfile(prev => ({
@@ -155,6 +171,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode; userId?: string }
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
     };
   }, [userId]);

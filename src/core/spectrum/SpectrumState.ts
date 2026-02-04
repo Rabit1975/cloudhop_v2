@@ -127,16 +127,11 @@ export class SpectrumStateManager {
     return { 
       ...this.state,
       // Legacy properties for component compatibility
-      bass: this.state.bands.bass,
-      mid: this.state.bands.mid,
-      high: this.state.bands.high,
+      bass: this.state.audio.bands.bass,
+      mid: this.state.audio.bands.mid,
+      high: this.state.audio.bands.high,
     };
-// SpectrumState - Centralized state management for the Spectrum visualization
-
-export interface SpectrumState {
-  // Audio features
-  bass: number
-  mid: number
+  }
   high: number
   energy: number
   bpm: number
@@ -308,9 +303,9 @@ export class SpectrumStateManager {
   }
 
   reset(): void {
-    this.state = createInitialSpectrumState();
-    this.startTime = Date.now();
-    this.notifyListeners();
+    this.state = createInitialSpectrumState()
+    this.state.timestamp = Date.now()
+    this.notifyListeners()
   }
 }
 

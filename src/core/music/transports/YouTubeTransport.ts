@@ -1,4 +1,6 @@
 import { MusicTransport } from './MusicTransport'
+import { YouTubeOAuthService } from '../YouTubeOAuthService'
+import { YOUTUBE_CONFIG } from '../youtubeConfig'
 
 declare global {
   interface Window {
@@ -12,9 +14,15 @@ export class YouTubeTransport implements MusicTransport {
   private elementId: string
   private apiReadyTimeout = 10000 // 10 seconds
   private videoId: string | null = null
+  private oauthService: YouTubeOAuthService | null = null
 
   constructor(elementId = 'youtube-player') {
     this.elementId = elementId
+    
+    // Initialize OAuth service if credentials are available
+    if (YOUTUBE_CONFIG.apiKey && YOUTUBE_CONFIG.clientId) {
+      this.oauthService = new YouTubeOAuthService(YOUTUBE_CONFIG.apiKey, YOUTUBE_CONFIG.clientId)
+    }
   }
 
   private async ensureYouTubeAPI(): Promise<void> {

@@ -105,8 +105,7 @@ export const SpectrumRuntime: React.FC<SpectrumRuntimeProps> = ({
       nebulaIntensity: fusedMood.emotionalState.arousal,
       orbitSpeed: fusedMood.emotionalState.arousal * 2,
       glyphResonance: leonardoResonance,
-      particleCount: Math.floor(1000 + (audioFeatures?.energy ?? fusedMood.emotionalState.arousal) * 1000)
-      particleCount: Math.floor(1000 + fusedMood.emotionalState.energy * 1000)
+      particleCount: Math.floor(1000 + fusedMood.emotionalState.arousal * 1000),
     })
   }, [
     audioFeatures,

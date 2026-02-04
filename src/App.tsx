@@ -1,6 +1,6 @@
 import React from 'react'
-import { Router } from './kernel/routing/Router'
-import { ErrorBoundary } from './kernel/errors/ErrorBoundary'
+import { RouterNew as Router } from './kernel/routing/RouterNew'
+import ErrorBoundary from './kernel/errors/ErrorBoundary'
 
 export default function App() {
   return (

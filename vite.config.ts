@@ -13,12 +13,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-        '@kernel': path.resolve(__dirname, './src/kernel'),
+        '@ui': path.resolve(__dirname, './src/ui'),
         '@core': path.resolve(__dirname, './src/core'),
         '@modules': path.resolve(__dirname, './src/modules'),
-        '@ui': path.resolve(__dirname, './src/ui'),
-        '@lib': path.resolve(__dirname, './src/lib'),
-        '@types': path.resolve(__dirname, './src/types')
+        '@kernel': path.resolve(__dirname, './src/kernel')
       }
     },
     define: {

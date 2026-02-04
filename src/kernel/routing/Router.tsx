@@ -3,11 +3,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AppLayout } from '@ui/layout/AppLayout'
 
 // Modules
-import HopHubModule from '@modules/hophub/HopHubModule'
-import SpacesModule from '@modules/spaces/SpacesModule'
-import ProfileModule from '@modules/profile/ProfileModule'
-import SettingsModule from '@modules/settings/SettingsModule'
-import AIToolsModule from '@modules/ai-tools/AIToolsModule'
+import HopHubModule from '../../modules/hophub/HopHubModule'
+import SpacesModule from '../../modules/spaces/SpacesModule'
+import ProfileModule from '../../modules/profile/ProfileModule'
+import SettingsModule from '../../modules/settings/SettingsModule'
+import AIToolsModule from '../../modules/ai-tools/AIToolsModule'
 
 export function Router() {
   return (

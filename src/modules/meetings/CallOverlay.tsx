@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Icons } from '../constants';
+import { Icons } from '../../lib/constants';
 import CallStatusBanner from './CallStatusBanner'; // Import the new banner component
 
 interface CallOverlayProps {

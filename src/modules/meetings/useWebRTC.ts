@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useSignaling } from '@core/signaling/useSignaling'
+import { useSignaling } from '../../core/signaling/useSignaling'
 
 export function useWebRTC(roomId: string) {
   const [isConnected, setIsConnected] = useState(false)
