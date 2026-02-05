@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\cloudhop_v2",
+    "\\cloudhop_v2\\docs",
+    "\\cloudhop_v2\\src",
+    "\\cloudhop_v2\\src\\components",
+    "\\cloudhop_v2\\src\\components\\music"
+  ],
+  "SelectedNode": "\\cloudhop_v2\\src\\components\\music\\DJQueuePanel.tsx",
+  "PreviewInSolutionExplorer": false
+}

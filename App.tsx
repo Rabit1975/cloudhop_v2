@@ -1,0 +1,208 @@
+// CloudHop 2.0 - Main Entry
+import React, { useState, useEffect } from 'react';
+import { View, User } from './src/types';
+import LandingPage from './src/components/LandingPage';
+import Dashboard from './src/components/Dashboard'; // Full dashboard with integrations
+import { HopHub } from './src/components/HopHub/HopHub'; // New unified HopHub
+import Meetings from './src/components/Meetings';
+import Spaces from './src/components/Spaces';
+import GameHub from './src/components/GameHub';
+import GameService from './src/components/GameService'; // New Game Service section
+import CloudHopMusicPlayer from './src/components/CloudHopMusicPlayer'; // Beautiful custom music player
+import Twitch from './src/components/Twitch'; // New Twitch section
+import Profile from './src/components/Profile';
+import Settings from './src/components/Settings';
+import AITools from './src/components/AITools';
+import ErrorBoundary from './src/components/ErrorBoundary';
+
+import Layout from './src/components/Layout';
+import Auth from './src/components/Auth';
+import { supabase } from './src/lib/supabaseClient';
+import { Session } from '@supabase/supabase-js';
+import { useUrlRouting } from './src/hooks/useUrlRouting';
+import { useParticleTrails } from './src/hooks/useParticleTrails';
+
+import { SpaceProvider } from './src/contexts/SpaceContext';
+import { SettingsProvider } from './src/contexts/SettingsContext';
+
+const App: React.FC = () => {
+  const { currentView, navigate } = useUrlRouting();
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  
+  // Activate ambient particle trails
+  useParticleTrails();
+
+  const registerServiceWorker = async (userId: string) => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('Service Worker registered with scope:', registration.scope);
+
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY 
+          });
+
+          // Save subscription to Supabase
+          const { error } = await supabase.from('push_subscriptions').upsert({
+            user_id: userId,
+            endpoint: subscription.endpoint,
+            p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh') as ArrayBuffer) as any)),
+            auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth') as ArrayBuffer) as any))
+          }, { onConflict: 'endpoint' });
+
+          if (error) console.error('Error saving push subscription:', error);
+        }
+      } catch (error) {
+        console.error('Service Worker registration failed:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+          // If already logged in, go to dashboard
+          if (currentView === View.SPECTRUM || currentView === View.AUTH) {
+            navigate(View.DASHBOARD);
+          }
+          // Fetch user profile from public.users to populate local user state if needed
+          // For now, we rely on components fetching their own data, but we can set a basic user object
+          setUser({
+              id: session.user.id,
+              name: session.user.email?.split('@')[0] || 'Rabbit',
+              avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.id}`,
+              level: 1,
+              xp: 0
+          });
+          // registerServiceWorker(session.user.id); // Temporarily disabled to prevent console spam
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+          setUser({
+              id: session.user.id,
+              name: session.user.email?.split('@')[0] || 'Rabbit',
+              avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.id}`,
+              level: 1,
+              xp: 0
+          });
+          // Only navigate to dashboard if currently on landing/auth pages
+          if (currentView === View.SPECTRUM || currentView === View.AUTH) {
+            navigate(View.DASHBOARD);
+          }
+          // registerServiceWorker(session.user.id); // Temporarily disabled to prevent console spam
+      } else {
+          setUser(null);
+          // Only navigate to spectrum if not already there AND not trying to access auth
+          if (currentView !== View.SPECTRUM && currentView !== View.AUTH) {
+            navigate(View.SPECTRUM);
+          }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, currentView]);
+
+  /* 
+  // Moved to Settings page to avoid "[Violation] Only request notification permission in response to a user gesture."
+  const registerServiceWorker = async (userId: string) => {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('Service Worker registered with scope:', registration.scope);
+
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY 
+          });
+
+          // Save subscription to Supabase
+          const { error } = await supabase.from('push_subscriptions').upsert({
+            user_id: userId,
+            endpoint: subscription.endpoint,
+            p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh') as ArrayBuffer) as any)),
+            auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth') as ArrayBuffer) as any))
+          }, { onConflict: 'endpoint' });
+
+          if (error) console.error('Error saving push subscription:', error);
+        }
+      } catch (error) {
+        console.error('Service Worker registration failed:', error);
+      }
+    }
+  };
+  */
+
+  const handleStart = () => {
+    if (session) {
+        navigate(View.DASHBOARD);
+    } else {
+        // If no session, show Auth component directly
+        navigate(View.AUTH);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate(View.SPECTRUM);
+  };
+
+  const content = (() => {
+    switch (currentView) {
+      case View.DASHBOARD: return <Dashboard onNavigate={navigate} />;
+      case View.CHAT: return <HopHub user={user} onNavigate={navigate} />; // Use new HopHub
+      case View.MEETINGS: return <Meetings user={user} onNavigate={navigate} />;
+      case View.MUSIC: return <CloudHopMusicPlayer />; // Beautiful custom CloudHop music player
+      case View.ARCADE: return <GameHub />;
+      case View.GAME_SERVICE: return <GameService />; // New Game Service section
+      case View.TWITCH: return <Twitch />; // New Twitch section
+      case View.PROFILE: return <Profile user={user} />;
+      case View.SETTINGS: return <Settings userId={session?.user.id} />;
+      case View.AUTH: return <Auth onAuthSuccess={() => { navigate(View.DASHBOARD); }} />; // Render Auth component
+      default: return <Dashboard onNavigate={navigate} />;
+    }
+  })();
+
+  if (!session && currentView !== View.SPECTRUM && currentView !== View.AUTH) {
+      // If no session and not on landing or auth page, redirect to auth
+      return <Auth onAuthSuccess={() => { navigate(View.DASHBOARD); }} />;
+  }
+
+  if (currentView === View.SPECTRUM) {
+    return <LandingPage onStart={handleStart} />;
+  }
+
+  if (currentView === View.AUTH) {
+    return <Auth onAuthSuccess={() => { navigate(View.DASHBOARD); }} />;
+  }
+
+  return (
+    <ErrorBoundary>
+      <SettingsProvider userId={session?.user.id}>
+        <SpaceProvider>
+          <Layout 
+            currentView={currentView} 
+            onNavigate={navigate}
+            user={user}
+            onLogout={handleLogout}
+          >
+            {content}
+          </Layout>
+        </SpaceProvider>
+      </SettingsProvider>
+    </ErrorBoundary>
+  );
+};
+
+export default App;
