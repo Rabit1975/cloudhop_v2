@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { SecurityValidator } from '../core/security/validation';
 
 const RealYouTubeMusic: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [currentVideo, setCurrentVideo] = useState<any>(null);
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState<string>(process.env.YOUTUBE_API_KEY || '');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Simple YouTube Data API v3 search
   const searchYouTube = async () => {
