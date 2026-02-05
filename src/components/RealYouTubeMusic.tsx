@@ -52,7 +52,7 @@ const RealYouTubeMusic: React.FC = () => {
           type="password"
           value={apiKey}
           onChange={e => setApiKey(e.target.value)}
-          placeholder="AIzaSy..."
+          placeholder="YOUR_API_KEY..."
           className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-red-500 focus:bg-white/15"
         />
       </div>
