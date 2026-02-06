@@ -1,16 +1,16 @@
 {
   "short_name": "CloudHop",
-  "name": "CloudHop OS 2.0",
+  "name": "CloudHop_v2",
   "icons": [
     {
-      "src": "logo192.png",
+      "src": "Glowlogo.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "358x326"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "455x400"
     }
   ],
   "start_url": ".",

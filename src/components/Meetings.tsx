@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
 import { CloudHopLogo } from '../constants';
 import { User, View } from '../types';
 import Settings from './Settings';
@@ -27,10 +26,9 @@ function createBlob(data: Float32Array): Blob {
   for (let i = 0; i < l; i++) {
     int16[i] = data[i] * 32768;
   }
-  return {
-    data: encode(new Uint8Array(int16.buffer)),
-    mimeType: 'audio/pcm;rate=16000',
-  };
+  return new Blob([new Uint8Array(int16.buffer)], {
+    type: 'audio/pcm;rate=16000',
+  });
 }
 
 type MeetingStep = 'input' | 'prejoin' | 'active';
@@ -104,7 +102,7 @@ const Meetings: React.FC<MeetingsProps> = ({ user: propUser }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const sessionRef = useRef<unknown>(null);
+  const sessionRef = useRef<any>(null);
   const meetingContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize Media for Pre-join
@@ -209,58 +207,18 @@ const Meetings: React.FC<MeetingsProps> = ({ user: propUser }) => {
 
   const initLive = async (stream: MediaStream) => {
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
-        alert('No VITE_GEMINI_API_KEY found in environment');
-        return;
-      }
-      const ai = new GoogleGenAI({ apiKey });
+      // Rabbit AI integration will go here
+      console.log('Rabbit AI integration ready for:', stream);
+      // For now, just set up basic audio context
       const inputAudioContext = new (
         window.AudioContext || (window as unknown as any).webkitAudioContext
       )({ sampleRate: 16000 });
       audioContextRef.current = inputAudioContext;
 
-      const sessionPromise = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-09-2025',
-        callbacks: {
-          onopen: () => {
-            const source = inputAudioContext.createMediaStreamSource(stream);
-            const scriptProcessor = inputAudioContext.createScriptProcessor(4096, 1, 1);
-            scriptProcessor.onaudioprocess = audioProcessingEvent => {
-              if (isMuted) return;
-              const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
-              const pcmBlob = createBlob(inputData);
-              sessionPromise.then(session => {
-                session.sendRealtimeInput({ media: pcmBlob });
-              });
-            };
-            source.connect(scriptProcessor);
-            scriptProcessor.connect(inputAudioContext.destination);
-          },
-          onmessage: async (msg: LiveServerMessage) => {
-            if (msg.serverContent?.inputTranscription) {
-              setLiveTranscript(prev => [
-                ...prev.slice(-4),
-                msg.serverContent!.inputTranscription!.text,
-              ]);
-            }
-          },
-          onerror: (e: ErrorEvent) => {
-            console.error('Live Error', e);
-          },
-          onclose: () => console.log('Live Closed'),
-        },
-        config: {
-          responseModalities: [Modality.AUDIO],
-          inputAudioTranscription: {},
-          systemInstruction:
-            'You are a helpful assistant listening to a meeting. Transcribe accurately.',
-        },
-      });
-
-      sessionRef.current = await sessionPromise;
+      // TODO: Add Rabbit AI transcription when API is ready
+      console.log('Rabbit AI transcription will be available when API is configured');
     } catch (e) {
-      console.error('Failed to connect to AI:', e);
+      console.error('Failed to initialize audio:', e);
     }
   };
 

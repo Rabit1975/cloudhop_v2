@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View } from './types';
 import LayoutEnhanced from './components/Layout-enhanced';
+import HopHubWrapper from './components/HopHub-layout';
 import DashboardContent from './components/Dashboard-content';
 import HopHubContent from './components/HopHub-content';
 import SettingsContent from './components/Settings-content';
@@ -11,6 +12,7 @@ import AuthEnhanced from './components/Auth-enhanced';
 import LandingPageSimple from './components/LandingPage-simple';
 import { HopHubSimple } from './components/HopHub-simple';
 import HopHubModule from './modules/hophub/HopHubModule';
+import Meetings from './components/Meetings';
 
 // Mock Supabase for now - we'll add real auth later
 const mockSupabase = {
@@ -85,14 +87,20 @@ function App() {
       case View.DASHBOARD:
         return <DashboardContent onNavigate={navigate} />;
       case View.CHAT:
-        return <HopHubContent />;
-      case View.MEETINGS:
         return (
-          <div style={{ padding: '20px', color: 'white' }}>
-            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>HopMeetings</h1>
-            <p>Video meetings and conference rooms are coming soon!</p>
-          </div>
+          <HopHubWrapper
+            currentView={currentView}
+            onNavigate={navigate}
+            onLogout={() => {
+              setUser(null);
+              navigate(View.DASHBOARD);
+            }}
+          >
+            <HopHubContent />
+          </HopHubWrapper>
         );
+      case View.MEETINGS:
+        return <Meetings user={user} onNavigate={navigate} />;
       case View.SETTINGS:
         return <SettingsContent />;
       case View.ARCADE:
@@ -113,14 +121,18 @@ function App() {
     }
   })();
 
-  // Show Layout only for authenticated views
+  // Show Layout only for authenticated views (except CHAT which uses HopHubWrapper)
+  if (currentView === View.CHAT) {
+    return (
+      <HopHubWrapper currentView={currentView} onNavigate={navigate} onLogout={handleLogout}>
+        <HopHubContent />
+      </HopHubWrapper>
+    );
+  }
+
+  // Show LayoutEnhanced for other views
   return (
-    <LayoutEnhanced
-      currentView={currentView}
-      onNavigate={navigate}
-      user={user}
-      onLogout={handleLogout}
-    >
+    <LayoutEnhanced currentView={currentView} onNavigate={navigate} onLogout={handleLogout}>
       {content}
     </LayoutEnhanced>
   );
