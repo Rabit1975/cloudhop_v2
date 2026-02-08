@@ -1,5 +1,5 @@
 import React, { ReactNode, createContext, useContext } from 'react'
-import { supabase } from '@core/supabase/client'
+import { supabase } from '../../lib/supabaseClient'
 
 interface RealtimeContextType {
   supabase: typeof supabase

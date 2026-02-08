@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '../../core/supabase/client'
+import { supabase } from '../../lib/supabaseClient'
 
 export interface Group {
   id: string
