@@ -36,8 +36,8 @@ export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
   onCreateChannel,
   onCreateSpace,
 }) => {
-  const { ref: leftPanelRef, visible: leftPanelVisible } = useVisibility('HubLeftPanel');
-
+  // const { ref: leftPanelRef, visible: leftPanelVisible } = useVisibility('HubLeftPanel');
+  const leftPanelVisible = true;
 
   const renderContent = () => {
     if (!leftPanelVisible) {
@@ -184,7 +184,7 @@ export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
   };
 
   return (
-    <div ref={leftPanelRef} className="w-80 bg-black/40 backdrop-blur-md border-r border-white/10 flex flex-col">
+    <div className="w-80 bg-black/40 backdrop-blur-md border-r border-white/10 flex flex-col h-full">
       {renderContent()}
     </div>
   );

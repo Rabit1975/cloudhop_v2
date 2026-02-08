@@ -11,16 +11,18 @@ import { CreateChannelModal } from './CreateChannelModal';
 import { CreateSpaceModal } from './CreateSpaceModal';
 import GalaxyBackground from '../../hopspaces/components/GalaxyBackground';
 import { useHubData } from './useHubData';
+import { View } from '../../types';
 
 interface HopHubProps {
   user: any;
-  onNavigate: (view: any) => void;
+  onNavigate: (view: View) => void;
+  onLogout?: () => void;
 }
 
 type HubTab = 'hopspaces' | 'music' | 'gamehub';
 type SpaceSubTab = 'groups' | 'channels';
 
-export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
+export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) => {
   const { groups, channels, createGroup, createChannel } = useHubData();
   const [activeTab, setActiveTab] = useState<HubTab>('hopspaces');
   const [activeSpaceTab, setActiveSpaceTab] = useState<SpaceSubTab>('groups');
@@ -31,9 +33,11 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [showCreateSpaceModal, setShowCreateSpaceModal] = useState(false);
+  
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   // Use visibility manager for performance
-  const { ref: hubRef, visible: hubVisible } = useVisibility('HopHub');
+  // const { ref: hubRef, visible: hubVisible } = useVisibility('HopHub');
 
   // Mock spaces data - this will come from your spaces service
   const mockSpaces: HopSpace[] = [
@@ -167,7 +171,7 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
 
   return (
     <GalaxyBackground mood={selectedSpace?.mood || 'calm'}>
-      <div ref={hubRef} className="h-full w-full flex flex-col bg-transparent">
+      <div className="h-full w-full flex flex-col bg-transparent relative z-50">
         {/* HopHub Header */}
         <div className="h-14 bg-black/20 backdrop-blur-sm border-b border-white/10 flex items-center px-4 gap-4">
           <div className="flex items-center gap-3">
@@ -213,6 +217,7 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
           {/* User Menu */}
           <div className="relative">
             <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="
               p-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30
               rounded-lg text-white/80 hover:text-white text-sm
@@ -228,6 +233,69 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
               <span className="hidden sm:inline text-sm">{user?.name || 'User'}</span>
               <span className="text-white/40">▼</span>
             </button>
+
+            {/* Dropdown Menu */}
+            {isUserMenuOpen && (
+              <div className="absolute right-0 top-full mt-2 w-48 bg-black/90 border border-white/20 rounded-lg shadow-xl overflow-hidden z-[100] backdrop-blur-xl">
+                <div className="p-2 border-b border-white/10">
+                  <p className="text-xs text-white/50 px-2 py-1">Signed in as</p>
+                  <p className="text-sm text-white font-medium px-2 truncate">{user?.name || 'User'}</p>
+                </div>
+                <div className="p-1">
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      onNavigate(View.PROFILE);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                  >
+                    👤 Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      onNavigate(View.SETTINGS);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                  >
+                    ⚙️ Settings
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      onNavigate(View.MEETINGS);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                  >
+                    📹 Meetings
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      onNavigate(View.TWITCH);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                  >
+                    🟣 Twitch
+                  </button>
+                </div>
+                <div className="p-1 border-t border-white/10">
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      if (onLogout) {
+                        onLogout();
+                      } else {
+                        onNavigate(View.SPECTRUM);
+                      }
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-white/10 rounded-md transition-colors"
+                  >
+                    🚪 Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

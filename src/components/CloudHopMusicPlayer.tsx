@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Icons } from '../constants';
-import { ytmusicService } from '../services/ytmusicService';
-import { YouTubeMusicAuth } from './YouTubeMusicAuth';
+import { youtubeApi } from '../services/youtubeApi';
 
 // Missing icon components
 const Minimize2 = (props: any) => (
@@ -46,7 +45,7 @@ interface Playlist {
   tracks: Track[];
 }
 
-const CloudHopMusicPlayer: React.FC = () => {
+export const CloudHopMusicPlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -240,21 +239,25 @@ const CloudHopMusicPlayer: React.FC = () => {
 
   // Search YouTube Music
   const searchYouTubeMusic = async (query: string) => {
-    console.log('🔍 Searching for:', query);
+    if (!query.trim()) return;
+
     setIsLoading(true);
+    console.log('🔍 Searching YouTube API for:', query);
+    
     try {
-      const results = await ytmusicService.search(query, ytCookie || undefined);
-      console.log('🎵 Search results:', results);
-      // Convert service response to our Track format
-      const tracks: Track[] = results.map((result, index) => ({
-        id: `search-${index}`,
-        title: result.title,
-        artist: result.artist,
-        album: result.album,
-        duration: result.duration,
-        videoId: result.videoId,
-        thumbnail: result.thumbnail,
+      // Use the official YouTube Data API v3
+      const results = await youtubeApi.searchVideos(query);
+      
+      const tracks: Track[] = results.map((item: any) => ({
+        id: item.id.videoId,
+        title: item.snippet.title,
+        artist: item.snippet.channelTitle,
+        album: 'YouTube Video',
+        duration: 'Live', // API search doesn't return duration, requires 2nd call. For now, placeholder.
+        videoId: item.id.videoId,
+        thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url,
       }));
+
       setSearchResults(tracks);
       console.log('✅ Set search results:', tracks.length, 'tracks');
     } catch (error) {
@@ -569,15 +572,14 @@ const CloudHopMusicPlayer: React.FC = () => {
           </div>
         )}
 
-        {/* Authentication Tab */}
+        {/* Authentication Tab - Removed as we are using Public API Key for now */}
+        {/* 
         {activeTab === 'auth' && (
           <div className="p-4">
-            <YouTubeMusicAuth
-              onAuthenticated={handleAuthenticated}
-              isAuthenticated={isAuthenticated}
-            />
+             <div className="text-white text-center">Authentication is handled via API Key</div>
           </div>
-        )}
+        )} 
+        */}
 
         {/* Playlists Tab */}
         {activeTab === 'playlists' && (
@@ -609,5 +611,3 @@ const CloudHopMusicPlayer: React.FC = () => {
     </div>
   );
 };
-
-export default CloudHopMusicPlayer;

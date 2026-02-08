@@ -125,7 +125,7 @@ const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ mood, className = '
       />
 
       {/* Content Layer */}
-      <div className="relative z-10 w-full h-full">{children}</div>
+      <div className="relative z-50 w-full h-full pointer-events-auto">{children}</div>
     </div>
   );
 };

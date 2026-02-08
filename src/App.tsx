@@ -111,7 +111,7 @@ function App() {
 
   // Show HopHub as full screen for DASHBOARD and CHAT (The OS Interface)
   if (currentView === View.DASHBOARD || currentView === View.CHAT) {
-    return <HopHub user={user} onNavigate={navigate} />;
+    return <HopHub user={user} onNavigate={navigate} onLogout={handleLogout} />;
   }
 
   // Show LayoutEnhanced for other views

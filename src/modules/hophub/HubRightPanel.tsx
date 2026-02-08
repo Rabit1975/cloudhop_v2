@@ -28,7 +28,7 @@ export const HubRightPanel: React.FC<HubRightPanelProps> = ({
   if (!selectedSpace && !selectedChat) return null;
 
   return (
-    <div className="w-72 bg-black/40 backdrop-blur-md border-l border-white/10 flex flex-col">
+    <div className="w-72 bg-black/40 backdrop-blur-md border-l border-white/10 flex flex-col h-full">
       {selectedChat ? (
         <>
           <div className="p-4 border-b border-white/10">
