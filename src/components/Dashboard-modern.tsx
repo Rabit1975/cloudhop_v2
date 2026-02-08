@@ -445,8 +445,11 @@ const DashboardModern: React.FC<DashboardProps> = ({ onNavigate }) => {
       <div
         style={{
           display: 'grid',
-
-{isChannelsExpanded && (
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '20px',
+        }}
+      >
+        {isChannelsExpanded && (
 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 {channels.map((channel, index) => (
 <div
