@@ -322,7 +322,7 @@ const CloudHopMusicPlayer: React.FC = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col bg-gradient-to-br from-[#0E1430] to-[#1a1f3a]">
+    <div className="h-full w-full flex flex-col bg-transparent">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         <div className="flex items-center gap-3">

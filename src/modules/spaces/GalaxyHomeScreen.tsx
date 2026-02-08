@@ -36,8 +36,8 @@ const GalaxyHomeScreen: React.FC<GalaxyHomeScreenProps> = ({
                     drag
                     dragConstraints={containerRef}
                 >
-                    {/* Orbit Lines (SVG) */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
+                    {/* Orbit Lines (SVG) - Removed for simpler look */}
+                    {/* <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
                         {spaces.map((s, i) => (
                             i > 0 && (
                                 <line 
@@ -49,7 +49,7 @@ const GalaxyHomeScreen: React.FC<GalaxyHomeScreenProps> = ({
                                 />
                             )
                         ))}
-                    </svg>
+                    </svg> */}
 
                     {/* Planets */}
                     {spaces.map((space) => (

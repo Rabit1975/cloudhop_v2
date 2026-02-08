@@ -17,13 +17,13 @@ import GameSearch from './games/GameSearch';
 import GameDetailsModal from './games/GameDetailsModal';
 
 const GameService: React.FC = () => {
-  const fadeRef = useScrollFadeIn();
-  useNebulaDrift();
-  useNebulaColorShift('.game-service-section');
-  useNebulaPulse();
-  const { setEmotionalState } = useNebulaMorphing('.game-service-section');
-  const { svgRef, setSeason, addNode, addEdge } =
-    useConstellationEvolution('.game-service-section');
+  // Living environment effects disabled for performance
+  // const fadeRef = useScrollFadeIn();
+  // useNebulaDrift();
+  // useNebulaColorShift('.game-service-section');
+  // useNebulaPulse();
+  // const { setEmotionalState } = useNebulaMorphing('.game-service-section');
+  // const { svgRef, setSeason, addNode, addEdge } = useConstellationEvolution('.game-service-section');
   const { state: galaxyState, setMood } = useGalaxy();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -45,13 +45,14 @@ const GameService: React.FC = () => {
   } = useGameService();
 
   // Initialize ambient adaptive soundscape for the game service section
-  useAdaptiveSoundscape({ tags: ['game'] }, galaxyState.mood, filteredGames.length);
+  // useAdaptiveSoundscape({ tags: ['game'] }, galaxyState.mood, filteredGames.length);
 
   // Initialize emotional weather for the game service section
-  useEmotionalWeather({ tags: ['game'] }, galaxyState.mood, filteredGames.length);
+  // useEmotionalWeather({ tags: ['game'] }, galaxyState.mood, filteredGames.length);
 
-  // Demo: Cycle through emotional states every 8 seconds
+  // Demo: Cycle through emotional states every 8 seconds - DISABLED
   React.useEffect(() => {
+    /*
     const emotions = ['bloom', 'drift', 'surge', 'storm', 'frost'] as const;
     let index = 0;
 
@@ -64,7 +65,8 @@ const GameService: React.FC = () => {
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [setEmotionalState, setSeason, setMood]);
+    */
+  }, []);
 
   // Initialize constellation with some nodes
   React.useEffect(() => {

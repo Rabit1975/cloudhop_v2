@@ -89,6 +89,8 @@ export function useConstellationLinking(
 
     // Start animation
     const animate = () => {
+      // Animation disabled for performance
+      /*
       timeRef.current += 0.002;
 
       const driftedNodes = constellationNodes.map((node, i) => {
@@ -110,9 +112,10 @@ export function useConstellationLinking(
       drawCenterStar(ctx, center, color);
 
       animationRef.current = requestAnimationFrame(animate);
+      */
     };
 
-    animate();
+    // animate();
 
     return () => {
       if (animationRef.current) {

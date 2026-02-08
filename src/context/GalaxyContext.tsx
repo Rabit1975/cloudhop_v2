@@ -18,19 +18,8 @@ export function GalaxyProvider({ children }: { children: React.ReactNode }) {
   const { nebulaBloom } = useStrikeForce();
 
   useEffect(() => {
-    let frame: number;
-
-    const loop = () => {
-      setState(prev => {
-        const nebula = stepNebula(prev.nebula, prev.mood);
-        const constellation = stepConstellation(prev.constellation, prev.mood);
-        return { ...prev, nebula, constellation };
-      });
-      frame = requestAnimationFrame(loop);
-    };
-
-    frame = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(frame);
+    // Animation loop removed to improve performance. 
+    // Visuals are now handled by local Canvas components (e.g., GalaxyBackground).
   }, []);
 
   const setMood = (mood: GalaxyState['mood']) => setState(prev => ({ ...prev, mood }));

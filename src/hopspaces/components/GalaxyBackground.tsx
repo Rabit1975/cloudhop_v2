@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { HopSpaceMood } from '../../utils/types';
 
@@ -18,6 +18,68 @@ const moodGradients: Record<HopSpaceMood, string[]> = {
 
 const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ mood, className = '', children }) => {
   const colors = moodGradients[mood] || moodGradients['calm'];
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    const stars: { x: number; y: number; size: number; opacity: number; speed: number }[] = [];
+    const numStars = 200;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      // Re-init stars on resize to ensure full coverage
+      stars.length = 0;
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2 + 0.5,
+          opacity: Math.random(),
+          speed: (Math.random() - 0.5) * 0.02, // Twinkle speed
+        });
+      }
+    };
+    
+    window.addEventListener('resize', resize);
+    resize();
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      stars.forEach(star => {
+        // Twinkle effect
+        star.opacity += star.speed;
+        if (star.opacity > 1) {
+          star.opacity = 1;
+          star.speed = -Math.abs(star.speed);
+        } else if (star.opacity < 0.2) {
+          star.opacity = 0.2;
+          star.speed = Math.abs(star.speed);
+        }
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   return (
     <div className={`relative w-full h-full overflow-hidden bg-[#050819] ${className}`}>
@@ -29,6 +91,9 @@ const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ mood, className = '
         }}
         transition={{ duration: 2, ease: 'easeInOut' }}
       />
+
+      {/* Star Layer */}
+      <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-80" />
 
       {/* Nebula Fog Layer 1 */}
       <motion.div
@@ -59,46 +124,10 @@ const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ mood, className = '
         transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Stars */}
-      <div className="absolute inset-0 z-0 opacity-50">
-        <div className="stars-small"></div>
-        <div className="stars-medium"></div>
-      </div>
-
       {/* Content Layer */}
       <div className="relative z-10 w-full h-full">{children}</div>
-
-      {/* CSS for simple stars */}
-      <style>{`
-                .stars-small {
-                    width: 1px;
-                    height: 1px;
-                    background: transparent;
-                    box-shadow: ${generateStars(100)};
-                    animation: animStar 50s linear infinite;
-                }
-                .stars-medium {
-                    width: 2px;
-                    height: 2px;
-                    background: transparent;
-                    box-shadow: ${generateStars(50)};
-                    animation: animStar 100s linear infinite;
-                }
-                @keyframes animStar {
-                    from { transform: translateY(0px); }
-                    to { transform: translateY(-2000px); }
-                }
-            `}</style>
     </div>
   );
 };
-
-function generateStars(n: number) {
-  let value = `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF`;
-  for (let i = 2; i <= n; i++) {
-    value += `, ${Math.random() * 2000}px ${Math.random() * 2000}px #FFF`;
-  }
-  return value;
-}
 
 export default GalaxyBackground;

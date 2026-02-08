@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Icons } from '../constants';
+import { Icons } from '../../lib/constants';
 import RabbitSettings from './RabbitSettings';
 import CallOverlay from './CallOverlay';
 import Modal from '../../components/Modal';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View } from './types';
 import LayoutEnhanced from './components/Layout-enhanced';
-import { HopHub } from './components/HopHub/HopHub';
+import { HopHub } from './modules/hophub/HopHub';
 import DashboardContent from './components/Dashboard-content';
 import SettingsContent from './components/Settings-content';
 import MusicContent from './components/Music-content';

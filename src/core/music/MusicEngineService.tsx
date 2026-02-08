@@ -82,7 +82,7 @@ export const MusicEngineProvider: React.FC<MusicEngineProviderProps> = ({ childr
           dominance: Math.random() * 0.3 + 0.5
         }
       }))
-    }, 100)
+    }, 1000) // Changed from 100ms to 1000ms for performance
 
     return () => clearInterval(interval)
   }, [state.isPlaying])

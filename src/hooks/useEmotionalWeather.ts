@@ -100,6 +100,8 @@ function animateWeather(
   let animationId: number;
 
   function frame() {
+    // Animation disabled for performance
+    /*
     t += 0.002;
 
     // Create organic filter modulation
@@ -114,9 +116,10 @@ function animateWeather(
     filter.frequency.value = baseFreq + lfo1 + lfo2 + lfo3;
 
     animationId = requestAnimationFrame(frame);
+    */
   }
 
-  frame();
+  // frame();
 
   return () => {
     if (animationId) {
