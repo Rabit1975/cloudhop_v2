@@ -507,8 +507,6 @@ fontWeight: 'bold'
 </div>
 )}
 
-</div>
-
         <div
           style={{
             background: 'rgba(0, 0, 0, 0.4)',

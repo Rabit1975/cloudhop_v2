@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Icons } from '../constants';
 import RabbitSettings from './RabbitSettings';
 import CallOverlay from './CallOverlay';
-import Modal from './Modal';
-import { useWebRTC } from '../hooks/useWebRTC';
-import { supabase } from '../lib/supabaseClient';
-import { CallHistory, Message, ReactionSummary, Chat } from '../types';
+import Modal from '../../components/Modal';
+import { useWebRTC } from '../../hooks/useWebRTC';
+import { supabase } from '../../lib/supabaseClient';
+import { CallHistory, Message, ReactionSummary, Chat } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { rabbitAIService } from '../../services/RabbitAIService';
 
@@ -57,7 +57,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onTyping, placehol
     );
 };
 
-import { ChatSidebarItem } from './hub/ChatSidebarItem';
+import { ChatSidebarItem } from './ChatSidebarItem';
 
 const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
 
@@ -97,12 +97,12 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
     isCameraOn
   } = useWebRTC(userId);
 
-  const [chats, setChats] = useState<unknown[]>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
-  const typingTimeoutRef = useRef<unknown>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const chatChannelRef = useRef<any>(null);
 
   const [userProfile, setUserProfile] = useState<any>(null);

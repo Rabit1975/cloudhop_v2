@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { ChatOptionsMenu } from './ChatOptionsMenu';
 import { EditChatModal } from './EditChatModal';
 import { EditChannelModal } from './EditChannelModal';
-import { DeleteConfirmModal } from '../shared/DeleteConfirmModal';
+import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { useChatActions } from '../../hooks/useChatActions';
+import { Chat } from '../../types';
 
 interface ChatSidebarItemProps {
-    chat: unknown;
+    chat: Chat;
     isActive: boolean;
     userId: string;
     onSelect: () => void;
