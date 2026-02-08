@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenAI } from '@google/genai';
 import { Icons } from '../constants';
 import RabbitSettings from './RabbitSettings';
 import CallOverlay from './CallOverlay';
@@ -8,6 +7,7 @@ import { useWebRTC } from '../hooks/useWebRTC';
 import { supabase } from '../lib/supabaseClient';
 import { CallHistory, Message, ReactionSummary, Chat } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { rabbitAIService } from '../../services/RabbitAIService';
 
 interface ChatProps {
     userId?: string;
@@ -540,17 +540,12 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
     if (!selectedChatId) return;
     setAiIsTyping(true);
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) throw new Error("API Key missing");
-      const ai = new GoogleGenAI({ apiKey });
-      
       const history = messages.map(m => `${m.sender_id === userId ? 'Me' : m.users?.username}: ${m.content}`).join('\n') || "No messages yet.";
       
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash-exp',
-        contents: `Summarize this conversation into a few concise bullet points:\n\n${history}`,
-      });
-      setAiSummary(response.text || "No summary available.");
+      const prompt = `Summarize this conversation into a few concise bullet points:\n\n${history}`;
+      const response = await rabbitAIService.generateText(prompt);
+      
+      setAiSummary(response || "No summary available.");
     } catch (err) { console.error(err); }
     finally { setAiIsTyping(false); }
   };

@@ -1,4 +1,4 @@
-/* CloudHop OS Global Styles */
+/* CloudHop  Global Styles */
 
 * {
   margin: 0;
@@ -15,6 +15,11 @@ body {
   overflow: hidden;
   background-color: #050819;
   color: white;
+}
+
+#root {
+  height: 100vh;
+  width: 100%;
 }
 
 code {

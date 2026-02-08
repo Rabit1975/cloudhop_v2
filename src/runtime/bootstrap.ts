@@ -1,4 +1,4 @@
-// Bootstrap runtime for CloudHop OS
+// Bootstrap runtime for CloudHop
 // Initializes core services and prepares the application environment
 
 import { electronGfnClient } from './ElectronGfnClient'

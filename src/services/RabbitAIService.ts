@@ -1,8 +1,7 @@
-// Rabbit AI + Puter.js Combined Service
-// Uses Rabbit AI for advanced features, Puter.js for basic AI operations
+// Rabbit AI Service
+// Uses Rabbit AI for advanced features
 
 import { RabbitAIClient } from '../core/ai/AIClient';
-import { puterService } from './puter';
 import { tools } from '../core/ai/tools';
 
 export interface RabbitAIOptions {
@@ -15,54 +14,50 @@ export interface RabbitAIOptions {
 
 export class RabbitAIService {
   private rabbitClient: RabbitAIClient;
-  private isRabbitAvailable: boolean = false;
 
   constructor() {
     this.rabbitClient = new RabbitAIClient();
-    // Don't check Rabbit AI availability due to CSP - assume it's not available
-    this.isRabbitAvailable = false;
   }
 
   /**
-   * Generate text using Rabbit AI or Puter.js as fallback
+   * Generate text using Rabbit AI
    */
   async generateText(prompt: string, options: RabbitAIOptions = {}): Promise<string> {
-    const { useTools = false, ...puterOptions } = options;
-
-    // Skip Rabbit AI due to CSP issues, use Puter.js directly
     try {
-      return await puterService.generateText(prompt, puterOptions);
+      const messages = [{ role: 'user', content: prompt }];
+      return await this.rabbitClient.chat(messages);
     } catch (error) {
-      console.error('Both AI services failed:', error);
+      console.error('Rabbit AI request failed:', error);
       throw new Error('AI services unavailable');
     }
   }
 
   /**
-   * Generate images using Puter.js
+   * Generate images (Placeholder as Rabbit AI image gen might differ)
    */
-  async generateImage(prompt: string, options: any = {}): Promise<HTMLImageElement> {
-    // Use Puter.js for image generation
-    return await puterService.generateImage(prompt, options);
+  async generateImage(prompt: string, options: any = {}): Promise<HTMLImageElement | null> {
+      console.warn("Image generation not yet implemented in Rabbit AI Service");
+      return null;
   }
 
   /**
-   * Stream text using Puter.js
+   * Stream text using Rabbit AI
    */
   async streamText(
     prompt: string,
     onChunk: (chunk: string) => void,
     options: RabbitAIOptions = {}
-  ): Promise<string> {
-    // Use Puter.js streaming
-    return await puterService.streamText(prompt, options, onChunk);
+  ): Promise<void> {
+     const messages = [{ role: 'user', content: prompt }];
+     return await this.rabbitClient.stream(messages, onChunk);
   }
 
   /**
-   * Execute Rabbit AI tools (disabled due to CSP)
+   * Execute Rabbit AI tools
    */
   async executeTool(toolName: string, ...args: any[]): Promise<any> {
-    throw new Error('Rabbit AI tools not available due to Content Security Policy');
+    // Implement tool execution logic if needed, or pass to client
+    throw new Error('Tool execution not fully implemented');
   }
 
   /**
@@ -75,10 +70,10 @@ export class RabbitAIService {
     tools: string[];
   } {
     return {
-      rabbitAI: false, // Disabled due to CSP
-      puter: true, // Puter.js is available
-      models: puterService.getAvailableModels(),
-      tools: [], // Rabbit AI tools disabled
+      rabbitAI: true,
+      puter: false,
+      models: ['rabbit-v1'],
+      tools: tools.map(t => t.name),
     };
   }
 
@@ -86,26 +81,18 @@ export class RabbitAIService {
    * Context-aware AI response based on current view
    */
   async getContextualResponse(view: string, action: string): Promise<string> {
-    const contextPrompt = `You are Rabbit AI in CloudHop OS. Current view: ${view}. User wants to: ${action}. Provide a helpful, concise response.`;
-
-    return await this.generateText(contextPrompt, {
-      model: 'gpt-5-nano',
-      temperature: 0.7,
-      max_tokens: 1000,
-    });
+    const contextPrompt = `You are Rabbit AI in CloudHop. Current view: ${view}. User wants to: ${action}. Provide a helpful, concise response.`;
+    return await this.generateText(contextPrompt);
   }
 
   /**
-   * Generate playlist with Puter.js
+   * Generate playlist
    */
   async generatePlaylist(mood: string, activity: string): Promise<string[]> {
     const prompt = `Generate a 5-song playlist for ${activity} with ${mood} mood. Return as numbered list only.`;
 
     try {
-      const response = await this.generateText(prompt, {
-        model: 'gpt-5-nano',
-        temperature: 0.8,
-      });
+      const response = await this.generateText(prompt);
 
       // Parse response into playlist
       return response
@@ -127,11 +114,11 @@ export class RabbitAIService {
   }
 
   /**
-   * Transcribe audio using fallback
+   * Transcribe audio
    */
   async transcribeAudio(audioBlob: Blob): Promise<string> {
-    // Fallback transcription since Rabbit AI is not available
-    return 'Audio transcription would be processed here. In production, this would use the available AI service.';
+     // TODO: Implement actual transcription endpoint call
+    return 'Audio transcription would be processed here.';
   }
 
   /**
@@ -139,8 +126,8 @@ export class RabbitAIService {
    */
   isServiceAvailable(): { rabbit: boolean; puter: boolean } {
     return {
-      rabbit: false, // Disabled due to CSP
-      puter: puterService.isAvailable(),
+      rabbit: true,
+      puter: false,
     };
   }
 

@@ -1,4 +1,4 @@
-// Design tokens for the CloudHop OS theme
+// Design tokens for the CloudHop theme
 export const tokens = {
   colors: {
     primary: '#667eea',

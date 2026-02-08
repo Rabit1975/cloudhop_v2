@@ -1,7 +1,7 @@
 {
-  "name": "cloudhop-os-v2",
+  "name": "cloudhop",
   "version": "2.0.0",
-  "description": "CloudHop 2.0 - A modular operating system for next-generation communication",
+  "description": "CloudHop - A modular operating system for next-generation communication",
   "main": "dist-electron/main.js",
   "type": "module",
   "scripts": {

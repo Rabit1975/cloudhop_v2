@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
 import { CloudHopLogo } from '../constants';
 import { User, View } from '../types';
 import Settings from './Settings';
@@ -11,27 +10,6 @@ import { useMeetingRoom, MeetingParticipant } from '../hooks/useMeetingRoom';
 const MOCK_PARTICIPANTS: MeetingParticipant[] = []; 
 
 // --- Helper Functions ---
-
-function encode(bytes: Uint8Array) {
-  let binary = '';
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-
-function createBlob(data: Float32Array): Blob {
-  const l = data.length;
-  const int16 = new Int16Array(l);
-  for (let i = 0; i < l; i++) {
-    int16[i] = data[i] * 32768;
-  }
-  return {
-    data: encode(new Uint8Array(int16.buffer)),
-    mimeType: 'audio/pcm;rate=16000',
-  };
-}
 
 type MeetingStep = 'input' | 'prejoin' | 'active';
 type ViewMode = 'grid' | 'speaker';
@@ -201,52 +179,8 @@ const Meetings: React.FC<MeetingsProps> = ({ user: propUser }) => {
   };
 
   const initLive = async (stream: MediaStream) => {
-    try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
-        alert("No VITE_GEMINI_API_KEY found in environment");
-        return;
-      }
-      const ai = new GoogleGenAI({ apiKey });
-      const inputAudioContext = new (window.AudioContext || (window as unknown as any).webkitAudioContext)({ sampleRate: 16000 });
-      audioContextRef.current = inputAudioContext;
-
-      const sessionPromise = ai.live.connect({
-        model: 'gemini-2.5-flash-native-audio-preview-09-2025',
-        callbacks: {
-          onopen: () => {
-            const source = inputAudioContext.createMediaStreamSource(stream);
-            const scriptProcessor = inputAudioContext.createScriptProcessor(4096, 1, 1);
-            scriptProcessor.onaudioprocess = (audioProcessingEvent) => {
-              if (isMuted) return;
-              const inputData = audioProcessingEvent.inputBuffer.getChannelData(0);
-              const pcmBlob = createBlob(inputData);
-              sessionPromise.then((session) => {
-                session.sendRealtimeInput({ media: pcmBlob });
-              });
-            };
-            source.connect(scriptProcessor);
-            scriptProcessor.connect(inputAudioContext.destination);
-          },
-          onmessage: async (msg: LiveServerMessage) => {
-            if (msg.serverContent?.inputTranscription) {
-              setLiveTranscript(prev => [...prev.slice(-4), msg.serverContent!.inputTranscription!.text]);
-            }
-          },
-          onerror: (e: ErrorEvent) => { console.error('Live Error', e); },
-          onclose: () => console.log('Live Closed'),
-        },
-        config: { 
-          responseModalities: [Modality.AUDIO], 
-          inputAudioTranscription: {},
-          systemInstruction: "You are a helpful assistant listening to a meeting. Transcribe accurately."
-        }
-      });
-
-      sessionRef.current = await sessionPromise;
-    } catch (e) {
-      console.error("Failed to connect to AI:", e);
-    }
+    console.log("RabbitAI Live Audio integration pending.");
+    setLiveTranscript(["Live transcription unavailable without Gemini module."]);
   };
 
   const endMeeting = () => {

@@ -84,129 +84,67 @@ export const FluidArtSpace = ({ space }: { space: HopSpace }) => {
       {/* Main Content Area */}
       <div className="flex-1 p-6 overflow-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-          {/* Canvas Area */}
-          <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-lg p-4">
+          {/* Canvas Area - Takes up 2 columns */}
+          <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-lg p-4 flex flex-col">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white font-medium">Canvas</h3>
-              <button
-                onClick={clearCanvas}
-                className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded text-sm transition-colors"
-              >
-                Clear Canvas
-              </button>
-            </div>
-            <div
-              className="relative bg-gray-900 rounded-lg overflow-hidden"
-              style={{ height: '400px' }}
-            >
-              <canvas
-                ref={canvasRef}
-                className="w-full h-full cursor-crosshair"
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-              />
-            </div>
-
-            {/* YouTube Video for Acrylic Pouring Techniques */}
-            <div className="mt-4">
-              <h4 className="text-white font-medium mb-2">Learn: Acrylic Pouring Techniques</h4>
-              <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                <iframe
-                  src="https://www.youtube.com/embed/9eEZmcjY1Uo"
-                  className="w-full h-full"
-                  title="Acrylic Pouring Techniques Tutorial"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+              <h3 className="text-white font-medium">Digital Canvas</h3>
+              <div className="flex gap-2">
+                <input 
+                    type="color" 
+                    value={currentColor}
+                    onChange={(e) => setCurrentColor(e.target.value)}
+                    className="h-8 w-8 rounded cursor-pointer bg-transparent border-none"
+                    title="Change Color"
                 />
+                <input
+                    type="range"
+                    min="1"
+                    max="20"
+                    value={brushSize}
+                    onChange={(e) => setBrushSize(parseInt(e.target.value))}
+                    className="w-24 accent-pink-500"
+                    title="Brush Size"
+                />
+                <button
+                    onClick={clearCanvas}
+                    className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded text-sm transition-colors"
+                >
+                    Clear
+                </button>
               </div>
+            </div>
+            <div className="relative flex-1 bg-[#1a1a2e] rounded-lg overflow-hidden border border-white/5 cursor-crosshair">
+                <canvas
+                    ref={canvasRef}
+                    onMouseDown={startDrawing}
+                    onMouseMove={draw}
+                    onMouseUp={stopDrawing}
+                    onMouseLeave={stopDrawing}
+                    className="absolute inset-0 w-full h-full"
+                />
             </div>
           </div>
 
-          {/* Tools Panel */}
-          <div className="space-y-4">
-            {/* Brush Selection */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-              <h3 className="text-white font-medium mb-4">Brushes</h3>
-              <div className="grid grid-cols-3 gap-2">
-                {['🖌️', '🖍️', '✏️', '🎨', '💧', '✨'].map((brush, index) => (
-                  <button
-                    key={index}
-                    className="aspect-square bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg flex items-center justify-center text-xl transition-colors"
-                  >
-                    {brush}
-                  </button>
-                ))}
-              </div>
+          {/* Tutorial Area - Takes up 1 column */}
+          <div className="bg-white/5 border border-white/10 rounded-lg p-4 flex flex-col">
+            <div className="mb-4">
+                <h3 className="text-white font-medium mb-1">Techniques</h3>
+                <p className="text-white/40 text-xs">Learn acrylic pouring while you create</p>
             </div>
-
-            {/* Brush Size */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-              <h3 className="text-white font-medium mb-4">Brush Size: {brushSize}px</h3>
-              <input
-                type="range"
-                min="1"
-                max="50"
-                value={brushSize}
-                onChange={e => setBrushSize(parseInt(e.target.value))}
-                className="w-full"
-              />
+            <div className="flex-1 bg-black rounded-lg overflow-hidden relative">
+                <iframe 
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed?listType=search&list=acrylic+pour+painting+techniques" 
+                    title="Acrylic Pouring Techniques"
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                ></iframe>
             </div>
-
-            {/* Color Palette */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-              <h3 className="text-white font-medium mb-4">Colors</h3>
-              <div className="grid grid-cols-6 gap-2">
-                {[
-                  '#FF6B6B',
-                  '#4ECDC4',
-                  '#45B7D1',
-                  '#FFA07A',
-                  '#98D8C8',
-                  '#F7DC6F',
-                  '#BB8FCE',
-                  '#85C1E2',
-                  '#F8B739',
-                  '#52C234',
-                  '#E74C3C',
-                  '#95A5A6',
-                  '#000000',
-                  '#FFFFFF',
-                  '#FF69B4',
-                  '#00CED1',
-                  '#FFD700',
-                  '#FF4500',
-                ].map(color => (
-                  <button
-                    key={color}
-                    onClick={() => setCurrentColor(color)}
-                    className={`aspect-square rounded-lg border-2 transition-all hover:scale-110 ${
-                      currentColor === color ? 'border-white' : 'border-white/30'
-                    }`}
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Layers */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-              <h3 className="text-white font-medium mb-4">Layers</h3>
-              <div className="space-y-2">
-                {['Layer 3', 'Layer 2', 'Layer 1'].map((layer, index) => (
-                  <div
-                    key={index}
-                    className="bg-white/10 rounded p-2 flex items-center justify-between"
-                  >
-                    <span className="text-white/80 text-sm">{layer}</span>
-                    <div className="flex gap-1">
-                      <button className="text-white/60 hover:text-white text-xs">👁️</button>
-                      <button className="text-white/60 hover:text-white text-xs">🔒</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+             <div className="mt-4 p-3 bg-white/5 rounded text-xs text-white/60">
+                <p><strong>Tip:</strong> Try mixing colors on the canvas to simulate fluid dynamics!</p>
             </div>
           </div>
         </div>

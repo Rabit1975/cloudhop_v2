@@ -13,7 +13,7 @@ const YourYouTubeMusic: React.FC = () => {
     setIsLoading(true);
     try {
       const baseUrl =
-        process.env.NODE_ENV === 'production' ? 'https://cloudhop-v2.vercel.app/api' : '/api';
+        import.meta.env.MODE === 'production' ? 'https://cloudhop-v2.vercel.app/api' : '/api';
 
       const response = await fetch(
         `${baseUrl}/ytmusic/real-search?query=${encodeURIComponent(searchQuery)}`

@@ -1,7 +1,7 @@
 import { rabbitAI } from './AIClient'
 
 // rabbit.ai tool definitions - the hands
-// Defines what rabbit.ai can do in CloudHop OS
+// Defines what rabbit.ai can do in CloudHop
 
 export interface Tool {
   name: string

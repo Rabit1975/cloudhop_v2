@@ -31,7 +31,7 @@ export function Sidebar() {
           textAlign: 'center',
         }}
       >
-        CloudHop OS
+        CloudHop
       </div>
       {navItems.map(item => (
         <a

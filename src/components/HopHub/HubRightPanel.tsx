@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { HopSpace } from '../../hopspaces/utils/types';
 import { useVisibility } from '../../hooks/useVisibility';
+import { rabbitAIService } from '../../services/RabbitAIService';
+import { Icons } from '../../constants';
 
-type HubTab = 'hopspaces' | 'music' | 'gamehub';
+type HubTab = 'chat' | 'spaces' | 'music' | 'gamehub';
 
 interface HubRightPanelProps {
   activeTab: HubTab;
   selectedChatId: string | null;
   selectedSpace: HopSpace | null;
   user: any;
+}
+
+interface AIMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
 }
 
 export const HubRightPanel: React.FC<HubRightPanelProps> = ({
@@ -18,214 +27,166 @@ export const HubRightPanel: React.FC<HubRightPanelProps> = ({
   user,
 }) => {
   const { ref: rightPanelRef, visible: rightPanelVisible } = useVisibility('HubRightPanel');
+  const [messages, setMessages] = useState<AIMessage[]>([
+    {
+      id: 'welcome',
+      role: 'assistant',
+      content: "Hello! I'm Rabbit, your AI companion. How can I help you today?",
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    },
+  ]);
+  const [input, setInput] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const renderContent = () => {
-    if (!rightPanelVisible) {
-      return (
-        <div className="flex items-center justify-center h-full text-white/40">
-          <div className="text-center">
-            <div className="text-2xl mb-2">🌙</div>
-            <div className="text-sm">Panel paused</div>
-          </div>
-        </div>
-      );
-    }
-
-    // If in hopspaces mode and a space is selected, show space context
-    if (activeTab === 'hopspaces' && selectedSpace) {
-      return (
-        <div className="p-4 space-y-4">
-          {/* Space Info */}
-          <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-            <h3 className="text-white font-medium mb-3">Space Info</h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">
-                  {selectedSpace.type === 'music' && '🎵'}
-                  {selectedSpace.type === 'fluid_art' && '🎨'}
-                  {selectedSpace.type === 'ideas' && '💡'}
-                  {selectedSpace.type === 'world' && '🌍'}
-                  {selectedSpace.type === 'anima' && '🦋'}
-                </div>
-                <div>
-                  <div className="text-white font-medium">{selectedSpace.name}</div>
-                  <div className="text-white/60 text-xs capitalize">
-                    {selectedSpace.type.replace('_', ' ')}
-                  </div>
-                </div>
-              </div>
-              {selectedSpace.description && (
-                <p className="text-white/80 text-sm">{selectedSpace.description}</p>
-              )}
-              {selectedSpace.mood && (
-                <div className="flex items-center gap-2">
-                  <span className="text-white/60 text-xs">Mood:</span>
-                  <span className="px-2 py-1 bg-white/10 rounded text-white/80 text-xs">
-                    {selectedSpace.mood}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Members */}
-          <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-            <h3 className="text-white font-medium mb-3">Members</h3>
-            <div className="space-y-2">
-              {[
-                { id: '1', name: 'You', avatar: '👤', isOnline: true, isOwner: true },
-                { id: '2', name: 'Alice', avatar: '🎨', isOnline: true, isOwner: false },
-                { id: '3', name: 'Bob', avatar: '🎵', isOnline: false, isOwner: false },
-              ].map(member => (
-                <div key={member.id} className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
-                  <div className="relative">
-                    <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs">
-                      {member.avatar}
-                    </div>
-                    {member.isOnline && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full border border-[#0a0d1f]"></div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-white text-sm">
-                      {member.name}
-                      {member.isOwner && <span className="ml-1 text-xs text-yellow-400">👑</span>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Tools */}
-          <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-            <h3 className="text-white font-medium mb-3">Tools</h3>
-            <div className="grid grid-cols-3 gap-2">
-              {selectedSpace.type === 'music' &&
-                [
-                  { icon: '🎹', name: 'Piano' },
-                  { icon: '🎸', name: 'Guitar' },
-                  { icon: '🥁', name: 'Drums' },
-                  { icon: '🎚️', name: 'Mixer' },
-                  { icon: '🎼', name: 'Sheet' },
-                  { icon: '💾', name: 'Export' },
-                ].map(tool => (
-                  <button
-                    key={tool.name}
-                    className="aspect-square bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg flex items-center justify-center text-sm transition-colors"
-                    title={tool.name}
-                  >
-                    {tool.icon}
-                  </button>
-                ))}
-
-              {selectedSpace.type === 'fluid_art' &&
-                [
-                  { icon: '🖌️', name: 'Brush' },
-                  { icon: '🎨', name: 'Colors' },
-                  { icon: '📚', name: 'Layers' },
-                  { icon: '✨', name: 'Effects' },
-                  { icon: '🔄', name: 'Transform' },
-                  { icon: '💾', name: 'Save' },
-                ].map(tool => (
-                  <button
-                    key={tool.name}
-                    className="aspect-square bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg flex items-center justify-center text-sm transition-colors"
-                    title={tool.name}
-                  >
-                    {tool.icon}
-                  </button>
-                ))}
-            </div>
-          </div>
-
-          {/* AI Guide */}
-          <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-            <h3 className="text-white font-medium mb-3 flex items-center gap-2">
-              <span>🎭</span>
-              Leonardo AI
-            </h3>
-            <div className="space-y-3">
-              <div className="text-white/80 text-xs">
-                {selectedSpace.type === 'music' &&
-                  "I'm your AI music composer. I can help you create melodies, harmonies, and rhythms."}
-                {selectedSpace.type === 'fluid_art' &&
-                  "I'm your AI art assistant. I can suggest color palettes, brush techniques, and creative ideas."}
-                {selectedSpace.type === 'ideas' &&
-                  "I'm your AI brainstorming partner. I can help organize thoughts and generate new concepts."}
-                {selectedSpace.type === 'world' &&
-                  "I'm your AI world builder. I can help design environments, scenes, and 3D spaces."}
-                {selectedSpace.type === 'anima' &&
-                  "I'm your AI spiritual guide. I can help with symbolic interpretations and ritual design."}
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Ask Leonardo anything..."
-                  className="flex-1 p-2 bg-white/10 border border-white/20 rounded text-white placeholder-white/40 text-xs"
-                />
-                <button className="px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white text-xs transition-colors">
-                  Send
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Handle Music tab
-    if (activeTab === 'music') {
-      return (
-        <div className="flex items-center justify-center h-full text-white/40">
-          <div className="text-center">
-            <div className="text-4xl mb-2">🎵</div>
-            <div className="text-sm">Music player loaded</div>
-          </div>
-        </div>
-      );
-    }
-
-    // Handle GameHub tab
-    if (activeTab === 'gamehub') {
-      return (
-        <div className="flex items-center justify-center h-full text-white/40">
-          <div className="text-center">
-            <div className="text-4xl mb-2">🎮</div>
-            <div className="text-sm">GameHub loaded</div>
-          </div>
-        </div>
-      );
-    }
-
-    // Otherwise show chat/group/channel context
-    if (selectedChatId) {
-      return (
-        <div className="p-4 space-y-4">
-          <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-            <h3 className="text-white font-medium mb-3">Chat Info</h3>
-            <div className="space-y-2">
-              <div className="text-white/80 text-sm">Chat details and members will appear here</div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Default fallback
-    return (
-      <div className="flex items-center justify-center h-full text-white/40">
-        <div className="text-center">
-          <div className="text-4xl mb-2">ℹ️</div>
-          <div className="text-sm">Select something to see details</div>
-        </div>
-      </div>
-    );
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isThinking]);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+
+    const userMsg: AIMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: input,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+    setInput('');
+    setIsThinking(true);
+
+    try {
+      // Contextual prompt based on active tab
+      let context = `Current view: ${activeTab}. `;
+      if (activeTab === 'chat' && selectedChatId) context += `Chat ID: ${selectedChatId}. `;
+      if (activeTab === 'spaces' && selectedSpace) context += `Space: ${selectedSpace.name}. `;
+      
+      const responseText = await rabbitAIService.generateText(`${context} User asks: ${userMsg.content}`);
+      
+      const aiMsg: AIMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: responseText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages(prev => [...prev, aiMsg]);
+    } catch (error) {
+      const errorMsg: AIMessage = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: "I'm having trouble connecting to my brain. Please try again.",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsThinking(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  if (!rightPanelVisible) {
+    return null;
+  }
+
   return (
-    <div ref={rightPanelRef} className="w-80 bg-[#0a0d1f] border-l border-white/10 flex flex-col">
-      {renderContent()}
+    <div ref={rightPanelRef} className="h-full bg-[#050819]/60 backdrop-blur-md border-l border-white/5 flex flex-col w-80 shadow-2xl relative z-20">
+      {/* Header */}
+      <div className="h-16 flex items-center px-6 border-b border-white/5 bg-[#0E1430]/40 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/20 animate-pulse-slow">
+            🐰
+          </div>
+          <div>
+            <h3 className="text-white font-bold italic tracking-wider">Rabbit AI</h3>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              <span className="text-white/40 text-[10px] font-mono uppercase">Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-transparent">
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+          >
+            <div className={`
+              w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 border border-white/5
+              ${msg.role === 'assistant' ? 'bg-[#1E3A5F]/40 text-orange-400' : 'bg-white/10 text-white'}
+            `}>
+              {msg.role === 'assistant' ? '🐰' : '👤'}
+            </div>
+            <div className={`space-y-1 max-w-[80%] ${msg.role === 'user' ? 'items-end flex flex-col' : ''}`}>
+              <div
+                className={`
+                  p-3 rounded-2xl text-xs leading-relaxed border shadow-lg backdrop-blur-sm
+                  ${
+                    msg.role === 'user'
+                      ? 'bg-[#53C8FF]/20 text-white border-[#53C8FF]/30 rounded-tr-none'
+                      : 'bg-[#0E1430]/80 text-white/80 border-white/10 rounded-tl-none'
+                  }
+                `}
+              >
+                {msg.content}
+              </div>
+              <span className="text-[10px] text-white/20 px-1">{msg.timestamp}</span>
+            </div>
+          </div>
+        ))}
+        {isThinking && (
+          <div className="flex gap-3">
+            <div className="w-8 h-8 rounded-lg bg-[#1E3A5F]/40 flex items-center justify-center text-sm shrink-0 border border-white/5">
+              🐰
+            </div>
+            <div className="bg-[#0E1430]/80 border border-white/10 rounded-2xl rounded-tl-none p-3 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+              <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+              <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="p-4 bg-[#0E1430]/60 border-t border-white/5 backdrop-blur-md">
+        <div className="relative">
+            <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask Rabbit..."
+            rows={1}
+            className="w-full bg-[#080C22]/60 border border-[#1E3A5F] rounded-xl pl-4 pr-10 py-3 text-xs text-white placeholder-white/30 focus:border-[#53C8FF]/50 focus:ring-0 resize-none custom-scrollbar shadow-inner"
+            style={{ minHeight: '42px', maxHeight: '100px' }}
+            />
+            <button
+            onClick={handleSend}
+            disabled={!input.trim() || isThinking}
+            className="absolute right-2 bottom-2 p-1.5 bg-[#53C8FF] text-[#050819] rounded-lg hover:bg-[#40b8ee] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+            <Icons.Send className="w-3 h-3" />
+            </button>
+        </div>
+        <div className="mt-2 flex justify-center gap-2">
+            <span className="text-[9px] text-white/20 uppercase tracking-widest">Powered by Rabbit AI</span>
+        </div>
+      </div>
     </div>
   );
 };

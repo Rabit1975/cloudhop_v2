@@ -32,7 +32,7 @@ export function Router() {
               textAlign: 'center',
             }}
           >
-            CloudHop OS
+            CloudHop
           </div>
           <div>Chat</div>
           <div>Meetings</div>
@@ -55,7 +55,7 @@ export function Router() {
               path="/"
               element={
                 <div>
-                  <h1>CloudHop v2</h1>
+                  <h1>CloudHop</h1>
                   <p>Welcome to CloudHop!</p>
                 </div>
               }

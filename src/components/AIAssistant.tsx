@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { View } from '../types';
-import { createOpenAI } from '@ai-sdk/openai';
-import { generateText } from 'ai';
+import { rabbitAIService } from '../services/RabbitAIService';
 import { Icons } from '../constants';
 
 interface AIAssistantProps {
@@ -88,55 +87,15 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
     setResponse(null);
 
     try {
-      const apiKey = import.meta.env.VITE_AI_GATEWAY_API_KEY;
-      if (!apiKey) {
-        setResponse('Error: API Key not found. Please check your .env file.');
-        setIsThinking(false);
-        return;
-      }
-
-      // Configure Vercel AI Gateway
-      const openai = createOpenAI({
-        baseURL: 'https://gateway.ai.vercel.dev/openai/v1',
-        apiKey: apiKey,
-      });
-
-      // Use Novita via Gateway
-      const model = openai('novita/kat-coder');
-
-      // Construct a context-aware system prompt
-      const systemContext = `You are CloudHop AI, an intelligent assistant embedded in a collaboration platform.
-      Current Context: User is in the "${currentView}" view.
-      
-      View Descriptions:
-      - DASHBOARD: Personal overview, schedule, XP.
-      - MEETINGS: Video conferencing, transcription, action items.
-      - WORLD (HopHub): Community channels, announcements, moderation.
-      - CHAT (RabbitChat): Direct messages, team chat.
-      - ARCADE (GameHub): Gaming, matchmaking.
-      
-      Your goal is to be helpful, concise, and professional. Use markdown for formatting.`;
-
-      const result = await generateText({
-        model,
-        messages: [
-          { role: 'system', content: systemContext },
-          { role: 'user', content: prompt },
-        ],
-      });
-
-      setResponse(result.text);
+      const result = await rabbitAIService.getContextualResponse(currentView, prompt);
+      setResponse(result);
     } catch (error) {
       console.error('AI Error:', error);
-      setResponse(
-        "I'm having trouble connecting to the neural core. Please ensure your API key is correct."
-      );
+      setResponse('I apologize, but I encountered an error while processing your request. Please check if RabbitAI service is available.');
     } finally {
       setIsThinking(false);
     }
   };
-
-  /* Removed generateMockResponse */
 
   return (
     <>
@@ -166,7 +125,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
               </div>
               <div>
                 <h3 className="text-sm font-black uppercase italic tracking-widest text-white">
-                  Hop AI
+                  Rabbit AI
                 </h3>
                 <div className="text-[10px] text-[#53C8FF] font-bold uppercase tracking-wider opacity-80">
                   {currentView === View.MEETINGS
@@ -195,7 +154,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
                   {getContextActions().map((action, i) => (
                     <button
                       key={i}
-                      onClick={() => handleAction(action.label)}
+                      onClick={() => handleAction(action.prompt)}
                       className="text-left px-4 py-3 bg-white/5 hover:bg-[#53C8FF]/10 border border-white/5 hover:border-[#53C8FF]/30 rounded-xl transition-all group"
                     >
                       <div className="text-[10px] font-black uppercase tracking-widest text-white group-hover:text-[#53C8FF] mb-1">

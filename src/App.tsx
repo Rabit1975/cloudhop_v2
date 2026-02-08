@@ -1,37 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { View } from './types';
-import Layout from './components/Layout';
-import Dashboard from './components/Dashboard';
+import LayoutEnhanced from './components/Layout-enhanced';
 import { HopHub } from './components/HopHub/HopHub';
+import DashboardContent from './components/Dashboard-content';
+import SettingsContent from './components/Settings-content';
+import MusicContent from './components/Music-content';
+import TwitchContent from './components/Twitch-content';
+import GameHubContent from './components/GameHub-content';
+import AuthEnhanced from './components/Auth-enhanced';
+import LandingPageSimple from './components/LandingPage-simple';
 import Meetings from './components/Meetings';
-import GameHub from './components/GameHub';
-import CloudHopMusicPlayer from './components/CloudHopMusicPlayer';
-import GameService from './components/GameService';
-import Twitch from './components/Twitch';
-import Profile from './components/Profile';
-import Settings from './components/Settings';
-import Auth from './components/Auth';
-import LandingPage from './components/LandingPage';
-import { createClient } from '@supabase/supabase-js';
-import { Database } from './core/supabase/types';
 
-// Initialize Supabase
-const supabase = createClient<Database>(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_ANON_KEY!
-);
+// Mock Supabase for now - we'll add real auth later
+const mockSupabase = {
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null } }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+  },
+};
 
 function App() {
-  const [currentView, setCurrentView] = useState<View>(View.SPECTRUM);
+  const [currentView, setCurrentView] = useState<View>(View.DASHBOARD);
+  const [session] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
-  const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
+    mockSupabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
+        setCurrentView(View.DASHBOARD);
+      } else {
+        // Always set to DASHBOARD for non-authenticated users too
         setCurrentView(View.DASHBOARD);
       }
     });
@@ -39,9 +39,11 @@ function App() {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    } = mockSupabase.auth.onAuthStateChange((_event: any, session: any) => {
+      if (session?.user) {
+        setUser(session.user);
+        setCurrentView(View.DASHBOARD);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -52,7 +54,6 @@ function App() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
     setUser(null);
     setSession(null);
     setCurrentView(View.SPECTRUM);
@@ -62,67 +63,62 @@ function App() {
     navigate(View.AUTH);
   };
 
+  // Show LandingPage as full screen without Layout
+  if (currentView === View.SPECTRUM) {
+    return <LandingPageSimple onStart={handleStart} />;
+  }
+
+  // Show Auth as full screen without Layout
+  if (currentView === View.AUTH) {
+    return (
+      <AuthEnhanced
+        onAuthSuccess={() => {
+          navigate(View.DASHBOARD);
+        }}
+      />
+    );
+  }
+
   const content = (() => {
     switch (currentView) {
       case View.DASHBOARD:
-        return <Dashboard onNavigate={navigate} />;
+        // Dashboard is now HopHub, handled below
+        return null;
       case View.CHAT:
-        return <HopHub user={user} onNavigate={navigate} />;
+        // Chat is now HopHub, handled below
+        return null;
       case View.MEETINGS:
         return <Meetings user={user} onNavigate={navigate} />;
-      case View.MUSIC:
-        return <CloudHopMusicPlayer />;
-      case View.ARCADE:
-        return <GameHub />;
-      case View.GAME_SERVICE:
-        return <GameService />;
-      case View.TWITCH:
-        return <Twitch />;
-      case View.PROFILE:
-        return <Profile user={user} />;
       case View.SETTINGS:
-        return <Settings userId={session?.user.id} />;
-      case View.AUTH:
+        return <SettingsContent />;
+      case View.ARCADE:
+        return <GameHubContent />;
+      case View.MUSIC:
+        return <MusicContent />;
+      case View.TWITCH:
+        return <TwitchContent />;
+      case View.PROFILE:
         return (
-          <Auth
-            onAuthSuccess={() => {
-              navigate(View.DASHBOARD);
-            }}
-          />
+          <div style={{ padding: '20px', color: 'white' }}>
+            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>Digital ID</h1>
+            <p>Profile management is coming soon!</p>
+          </div>
         );
       default:
-        return <Dashboard onNavigate={navigate} />;
+        return <DashboardContent onNavigate={navigate} />;
     }
   })();
 
-  if (!session && currentView !== View.SPECTRUM && currentView !== View.AUTH) {
-    return (
-      <Auth
-        onAuthSuccess={() => {
-          navigate(View.DASHBOARD);
-        }}
-      />
-    );
+  // Show HopHub as full screen for DASHBOARD and CHAT (The OS Interface)
+  if (currentView === View.DASHBOARD || currentView === View.CHAT) {
+    return <HopHub user={user} onNavigate={navigate} />;
   }
 
-  if (currentView === View.SPECTRUM) {
-    return <LandingPage onStart={handleStart} />;
-  }
-
-  if (currentView === View.AUTH) {
-    return (
-      <Auth
-        onAuthSuccess={() => {
-          navigate(View.DASHBOARD);
-        }}
-      />
-    );
-  }
-
+  // Show LayoutEnhanced for other views
   return (
-    <Layout currentView={currentView} onNavigate={navigate} user={user} onLogout={handleLogout}>
+    <LayoutEnhanced currentView={currentView} onNavigate={navigate} onLogout={handleLogout}>
       {content}
-    </Layout>
+    </LayoutEnhanced>
   );
 }
 

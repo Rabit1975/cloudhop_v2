@@ -1,5 +1,5 @@
 // StrikeCoreTwitchPanel.tsx
-// CloudHop OS - StrikeCore Twitch Intelligence Dashboard Panel
+// CloudHop - StrikeCore Twitch Intelligence Dashboard Panel
 // Displays live followed streams and recommended streams with tactical aesthetic
 
 import React, { useEffect, useState } from "react";

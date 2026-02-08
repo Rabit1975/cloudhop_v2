@@ -52,14 +52,12 @@ export const SpectrumRuntime: React.FC<SpectrumRuntimeProps> = ({
 
   // Update fused mood based on all influences
   useEffect(() => {
-    if (!audioFeatures) return
-
     // Create music influence from audio features
     const musicInfluence: MusicInfluence = {
-      valence: audioFeatures.energy > 0.6 ? 0.7 : 0.4,
-      arousal: audioFeatures.energy,
-      dominance: audioFeatures.bass,
-      weight: 1.0
+      valence: audioFeatures ? (audioFeatures.energy > 0.6 ? 0.7 : 0.4) : 0.5,
+      arousal: audioFeatures ? audioFeatures.energy : 0.5,
+      dominance: audioFeatures ? audioFeatures.bass : 0.5,
+      weight: audioFeatures ? 1.0 : 0
     }
 
     // Create space influence
@@ -106,7 +104,6 @@ export const SpectrumRuntime: React.FC<SpectrumRuntimeProps> = ({
       orbitSpeed: fusedMood.emotionalState.arousal * 2,
       glyphResonance: leonardoResonance,
       particleCount: Math.floor(1000 + (audioFeatures?.energy ?? fusedMood.emotionalState.arousal) * 1000)
-      particleCount: Math.floor(1000 + fusedMood.emotionalState.energy * 1000)
     })
   }, [
     audioFeatures,

@@ -4,7 +4,7 @@ import { CloudHopLogo, Icons } from '../constants';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useSpace } from '../contexts/SpaceContext';
 import { useSettings } from '../hooks/useSettings';
-import AIAssistant from './AIAssistant';
+import AIAssistant from '../../components/AIAssistant';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -51,8 +51,6 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
     { id: View.DASHBOARD, label: 'Home', icon: Icons.Home },
     { id: View.CHAT, label: 'HopHub', icon: Icons.Chat },
     { id: View.MEETINGS, label: 'HopMeets', icon: Icons.Meetings },
-    { id: View.CORE, label: 'Hop Spaces', icon: Icons.Communities },
-    { id: View.ARCADE, label: 'GameHub', icon: Icons.Arcade }, // Restored to sidebar
   ];
 
   const viewLabels: Record<View, string> = {
@@ -166,8 +164,8 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
          ))}
       </div>
 
-      {/* Global AI Assistant */}
-      <AIAssistant currentView={currentView} />
+      {/* Global AI Assistant - Hide in Hub (CHAT) because it has a dedicated panel */}
+      {currentView !== View.CHAT && <AIAssistant currentView={currentView} />}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { VisibilityManager } from '../utils/visibilityManager';
 
 export function useVisibility(id: string) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true); // Default to true to ensure content renders
 
   useEffect(() => {
     const el = ref.current;

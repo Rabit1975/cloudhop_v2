@@ -16,11 +16,11 @@ interface HopHubProps {
   onNavigate: (view: any) => void;
 }
 
-type HubTab = 'hopspaces' | 'music' | 'gamehub';
+type HubTab = 'chat' | 'spaces' | 'music' | 'gamehub';
 type SpaceSubTab = 'groups' | 'channels';
 
 export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
-  const [activeTab, setActiveTab] = useState<HubTab>('hopspaces');
+  const [activeTab, setActiveTab] = useState<HubTab>('chat');
   const [activeSpaceTab, setActiveSpaceTab] = useState<SpaceSubTab>('groups');
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [selectedSpace, setSelectedSpace] = useState<HopSpace | null>(null);
@@ -164,9 +164,17 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
   };
 
   return (
-    <div ref={hubRef} className="h-full w-full flex flex-col bg-[#0a0d1f]">
+    <div ref={hubRef} className="h-full w-full flex flex-col relative overflow-hidden">
+      {/* Background with Nebula & Twinkle Effect */}
+      <div className="absolute inset-0 z-0">
+        <img src="/nebula.png" alt="Nebula" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-[#0a0d1f]/40" /> {/* Overlay for text readability */}
+        
+        {/* Removed generic grid twinkle to respect alignment request */}
+      </div>
+
       {/* HopHub Header */}
-      <div className="h-14 bg-[#0a0d1f] border-b border-white/10 flex items-center px-4 gap-4">
+      <div className="h-14 border-b border-white/10 flex items-center px-4 gap-4 relative z-10 bg-black/20 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">H</span>
@@ -229,15 +237,17 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate }) => {
       </div>
 
       {/* HopHub Navigation Tabs */}
-      <HubNavTabs
-        activeTab={activeTab}
-        activeSpaceTab={activeSpaceTab}
-        onTabChange={handleTabChange}
-        onSpaceTabChange={setActiveSpaceTab}
-      />
+      <div className="relative z-10">
+        <HubNavTabs
+          activeTab={activeTab}
+          activeSpaceTab={activeSpaceTab}
+          onTabChange={handleTabChange}
+          onSpaceTabChange={setActiveSpaceTab}
+        />
+      </div>
 
       {/* Main HopHub Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative z-10">
         {/* Left Panel */}
         <HubLeftPanel
           activeTab={activeTab}

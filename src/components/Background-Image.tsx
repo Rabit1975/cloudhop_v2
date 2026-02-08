@@ -5,15 +5,15 @@ interface BackgroundImageProps {
   opacity?: number;
   blur?: number;
   children?: React.ReactNode;
-  showNebula?: boolean; // Add nebula control
+  showNebula?: boolean;
 }
 
 const BackgroundImage: React.FC<BackgroundImageProps> = ({
-  imageUrl,
+  imageUrl = '/nebula.png', // This should now work since it's in public folder
   opacity = 0.8,
   blur = 0,
   children,
-  showNebula = true, // Default to showing nebula
+  showNebula = true,
 }) => {
   return (
     <div
@@ -25,17 +25,27 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({
         height: '100vh',
         zIndex: -1,
         overflow: 'hidden',
-        background: showNebula
-          ? `
-            radial-gradient(ellipse at top left, rgba(83, 200, 255, 0.3) 0%, transparent 50%),
-            radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
-            radial-gradient(ellipse at center, rgba(16, 185, 129, 0.2) 0%, transparent 40%),
-            linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%)
-          `
-          : '#050819', // Simple dark background when no nebula
       }}
     >
-      {/* Animated nebula particles for more dynamic effect */}
+      {/* Your PNG background image */}
+      {showNebula && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(${imageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            opacity: opacity,
+          }}
+        />
+      )}
+
+      {/* Keep your existing animated elements if you want them */}
       {showNebula && (
         <>
           <div
@@ -93,7 +103,7 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({
         </>
       )}
 
-      {/* Dark overlay for better text readability - only when nebula is shown */}
+      {/* Dark overlay for better text readability */}
       {showNebula && (
         <div
           style={{
@@ -129,3 +139,4 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({
 };
 
 export default BackgroundImage;
+

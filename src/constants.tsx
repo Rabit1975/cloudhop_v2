@@ -73,6 +73,16 @@ export const Icons = {
       />
     </svg>
   ),
+  Send: (props: any) => (
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+    </svg>
+  ),
+  Add: (props: any) => (
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+    </svg>
+  ),
   Meetings: (props: any) => (
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" {...props}>
       <path

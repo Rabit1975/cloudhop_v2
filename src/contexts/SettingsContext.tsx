@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../core/supabase/client';
 
 // Development flag for logging
 const DEBUG = import.meta.env.DEV;
