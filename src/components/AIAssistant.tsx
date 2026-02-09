@@ -48,24 +48,12 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
             prompt: 'List all action items and assigned tasks from this meeting.',
           },
         ];
-      case View.WORLD: // HopHub
+      case View.CHAT: // HopHub
         return [
           { label: 'Summarize Channel', prompt: 'Summarize the last 50 messages in this channel.' },
-          {
-            label: 'Draft Post',
-            prompt: 'Help me draft an engaging announcement for this community.',
-          },
-          {
-            label: 'Moderation Scan',
-            prompt: 'Scan recent messages for community guideline violations.',
-          },
-        ];
-      case View.CHAT:
-        return [
-          {
-            label: 'Suggest Reply',
-            prompt: 'Suggest a professional yet friendly reply to the last message.',
-          },
+          { label: 'Draft Post', prompt: 'Help me draft an engaging announcement for this community.' },
+          { label: 'Moderation Scan', prompt: 'Scan recent messages for community guideline violations.' },
+          { label: 'Suggest Reply', prompt: 'Suggest a professional yet friendly reply to the last message.' },
           { label: 'Translate Chat', prompt: 'Translate the recent messages into English.' },
           { label: 'Tone Check', prompt: 'Analyze the tone of my current draft message.' },
         ];

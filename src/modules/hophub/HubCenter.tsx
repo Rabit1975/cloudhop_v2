@@ -1,7 +1,7 @@
 import React from 'react';
 import { HopSpace } from '../../hopspaces/utils/types';
 import { HubChatArea } from '../../components/HopHub/HubChatArea';
-import CloudHopMusicPlayer from '../../components/CloudHopMusicPlayer';
+import { CloudHopMusicPlayer } from '../../components/CloudHopMusicPlayer';
 
 type HubTab = 'hopspaces' | 'music' | 'gamehub';
 type SpaceSubTab = 'groups' | 'channels';

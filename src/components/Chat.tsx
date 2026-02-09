@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI } from '@google/genai';
 import { Icons } from '../constants';
-import RabbitSettings from './RabbitSettings';
 import CallOverlay from './CallOverlay';
 import Modal from './Modal';
 import { useWebRTC } from '../hooks/useWebRTC';

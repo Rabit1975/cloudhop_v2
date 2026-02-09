@@ -17,7 +17,6 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
     { id: View.DASHBOARD, label: 'Home', icon: Icons.Home },
     { id: View.CHAT, label: 'HopHub', icon: Icons.Chat },
     { id: View.MEETINGS, label: 'HopMeets', icon: Icons.Meetings },
-    { id: View.CORE, label: 'Hop Spaces', icon: Icons.Communities },
     { id: View.ARCADE, label: 'GameHub', icon: Icons.Arcade },
   ];
 

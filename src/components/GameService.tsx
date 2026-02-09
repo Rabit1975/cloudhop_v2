@@ -69,6 +69,7 @@ const GameService: React.FC = () => {
   }, []);
 
   // Initialize constellation with some nodes
+  /*
   React.useEffect(() => {
     // Create initial star nodes
     addNode({ x: 20, y: 30, size: 3, brightness: 0.8, resonance: 1.0, clusterId: 'cluster-1' });
@@ -83,6 +84,7 @@ const GameService: React.FC = () => {
     addEdge('star-3', 'star-4', 0.6, 'harmony');
     addEdge('star-4', 'star-5', 0.8, 'tension');
   }, [addNode, addEdge]);
+  */
 
   return (
     <section className="game-service-section nebula-shift relative overflow-hidden">

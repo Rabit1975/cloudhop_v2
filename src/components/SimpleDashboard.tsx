@@ -40,15 +40,6 @@ const SimpleDashboard: React.FC<SimpleDashboardProps> = ({ onNavigate }) => {
           <span className="text-xs text-white font-medium">HopMeets</span>
         </button>
 
-        {/* HopSpaces */}
-        <button
-          onClick={() => onNavigate(View.CORE)}
-          className="p-3 bg-[#0E1430] border border-white/10 rounded-lg hover:border-[#53C8FF]/50 transition-all group flex-center flex-col"
-        >
-          <Icons.Communities className="w-5 h-5 text-[#53C8FF] mb-2 group-hover:scale-110 transition-transform" />
-          <span className="text-xs text-white font-medium">HopSpaces</span>
-        </button>
-
         {/* GameHub */}
         <button
           onClick={() => onNavigate(View.ARCADE)}

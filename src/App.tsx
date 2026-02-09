@@ -20,9 +20,9 @@ const mockSupabase = {
 };
 
 function App() {
-  const [currentView, setCurrentView] = useState<View>(View.DASHBOARD);
-  const [session] = useState<any>(null);
+  const [currentView, setCurrentView] = useState<View>(View.SPECTRUM);
   const [user, setUser] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
     // Get initial session

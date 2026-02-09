@@ -1,36 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { SecurityValidator } from '../core/security/validation';
+import { youtubeApi } from '../services/youtubeApi';
 
 const RealYouTubeMusic: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [currentVideo, setCurrentVideo] = useState<any>(null);
-  const [apiKey, setApiKey] = useState<string>(process.env.YOUTUBE_API_KEY || '');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Simple YouTube Data API v3 search
+  // Search using the centralized YouTube Service (proxied to Vercel)
   const searchYouTube = async () => {
-    if (!searchQuery.trim() || !apiKey.trim()) {
-      alert('Please enter both search query and API key');
+    if (!searchQuery.trim()) {
+      alert('Please enter a search query');
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&videoCategoryId=10&maxResults=20&key=${apiKey}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setResults(data.items || []);
+      const items = await youtubeApi.searchVideos(searchQuery);
+      setResults(items || []);
     } catch (error) {
       console.error('Search failed:', error);
-      alert('Search failed. Check your API key and try again.');
+      alert('Search failed. Please ensure the backend is deployed.');
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -44,20 +34,6 @@ const RealYouTubeMusic: React.FC = () => {
   return (
     <div className="bg-white/4 border border-white/8 rounded-lg p-6 max-w-2xl mx-auto">
       <h3 className="text-xl font-bold text-white mb-4">Real YouTube Music Search</h3>
-
-      {/* API Key Input */}
-      <div className="mb-4">
-        <label className="block text-white/80 text-sm font-medium mb-2">
-          YouTube Data API Key (get one free from Google Cloud Console)
-        </label>
-        <input
-          type="password"
-          value={apiKey}
-          onChange={e => setApiKey(e.target.value)}
-          placeholder="YOUR_API_KEY..."
-          className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-red-500 focus:bg-white/15"
-        />
-      </div>
 
       {/* Search Input */}
       <div className="mb-6">
@@ -103,8 +79,6 @@ const RealYouTubeMusic: React.FC = () => {
               className="w-full"
             />
           </div>
-          <p className="text-white mt-2">{currentVideo.snippet.title}</p>
-          <p className="text-white/60 text-sm">{currentVideo.snippet.channelTitle}</p>
         </div>
       )}
 
@@ -137,18 +111,6 @@ const RealYouTubeMusic: React.FC = () => {
         </div>
       )}
 
-      {/* Instructions */}
-      <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-        <h4 className="text-yellow-400 font-medium mb-2">🔑 How to get API Key:</h4>
-        <ol className="text-yellow-300 text-sm space-y-1 list-decimal list-inside">
-          <li>Go to Google Cloud Console</li>
-          <li>Create new project or use existing</li>
-          <li>Enable YouTube Data API v3</li>
-          <li>Create credentials → API Key</li>
-          <li>Copy and paste the key above</li>
-        </ol>
-        <p className="text-yellow-200 text-xs mt-2">Free tier: 10,000 queries per day</p>
-      </div>
     </div>
   );
 };

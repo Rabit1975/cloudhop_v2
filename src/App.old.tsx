@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard';
 import { HopHub } from './components/HopHub/HopHub';
 import Meetings from './components/Meetings';
 import GameHub from './components/GameHub';
-import CloudHopMusicPlayer from './components/CloudHopMusicPlayer';
+import { CloudHopMusicPlayer } from './components/CloudHopMusicPlayer';
 import GameService from './components/GameService';
 import Twitch from './components/Twitch';
 import Profile from './components/Profile';

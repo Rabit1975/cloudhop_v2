@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Icons } from '../../lib/constants';
-import RabbitSettings from './RabbitSettings';
-import CallOverlay from './CallOverlay';
+// import RabbitSettings from './RabbitSettings';
+// import CallOverlay from './CallOverlay';
 import Modal from '../../components/Modal';
 import { useWebRTC } from '../../hooks/useWebRTC';
 import { supabase } from '../../lib/supabaseClient';

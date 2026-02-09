@@ -122,6 +122,10 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
         quality: 80,
       });
 
+      if (!imageElement) {
+        throw new Error('Image generation returned no result');
+      }
+
       // Convert image to data URL for display
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
