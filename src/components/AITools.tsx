@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { GoogleGenAI } from '@google/genai';
+import { rabbitAIService } from '../services/RabbitAIService';
 
 const AITools: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -42,29 +42,9 @@ const AITools: React.FC = () => {
   const handleTranscription = async (blob: Blob) => {
     setIsLoading(true);
     try {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = async () => {
-        const base64Audio = (reader.result as string).split(',')[1];
-        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-        if (!apiKey) {
-          setError('API Key missing');
-          setIsLoading(false);
-          return;
-        }
-        const ai = new GoogleGenAI({ apiKey });
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.0-flash-exp',
-          contents: {
-            parts: [
-              { inlineData: { data: base64Audio, mimeType: 'audio/wav' } },
-              { text: 'Please transcribe this audio accurately.' },
-            ],
-          },
-        });
-        setOutputText(response.text || 'No transcription.');
-        setIsLoading(false);
-      };
+      // RabbitAI transcription is a placeholder for now
+      setOutputText("Audio transcription is currently unavailable via RabbitAI.");
+      setIsLoading(false);
     } catch (err) {
       setError('Transcription failed.');
       setIsLoading(false);
@@ -78,17 +58,7 @@ const AITools: React.FC = () => {
     setOutputText('');
 
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) {
-        setError('API Key missing');
-        setIsLoading(false);
-        return;
-      }
-      const ai = new GoogleGenAI({ apiKey });
       let prompt = '';
-      let model = 'gemini-2.0-flash-exp';
-      let config: unknown = {};
-
       switch (activeTab) {
         case 'Summarize':
           prompt = `Summarize: ${inputText}`;
@@ -104,16 +74,13 @@ const AITools: React.FC = () => {
           break;
         case 'Thinking Mode':
           prompt = `Analyze: ${inputText}`;
-          // Keeping pro for thinking if available, otherwise flash
-          model = 'gemini-2.0-flash-exp';
-          // config = { thinkingConfig: { thinkingBudget: 32768 } }; // Removing experimental config for stability
           break;
       }
 
-      const response = await ai.models.generateContent({ model, contents: prompt });
-      setOutputText(response.text || 'No response.');
+      const response = await rabbitAIService.generateText(prompt);
+      setOutputText(response || 'No response.');
     } catch (err) {
-      setError('AI Error. Please try again.');
+      setError('AI request failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

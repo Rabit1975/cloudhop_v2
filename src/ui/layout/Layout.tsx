@@ -19,10 +19,9 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
   const { settings } = useSettings();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [notifications, setNotifications] = useState<unknown[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   
   const { events, clearEvents } = useWebSocket(user?.id || "guest", currentSpace.id);
-  // Removed duplicate variable declarations
   
   useEffect(() => {
     if (events.length > 0) {
@@ -41,7 +40,7 @@ const Layout: React.FC<LayoutProps> = ({ children, currentView, onNavigate, user
       };
       setNotifications(prev => [...prev, newNotif]);
       setTimeout(() => {
-        setNotifications(prev => prev.filter(n => n.id !== newNotif.id));
+        setNotifications(prev => prev.filter((n: any) => n.id !== newNotif.id));
       }, 4000);
       clearEvents();
     }

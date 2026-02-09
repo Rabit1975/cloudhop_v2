@@ -2,6 +2,7 @@ import React from 'react';
 import { HopSpace } from '../../hopspaces/utils/types';
 import { HubChatArea } from '../../components/HopHub/HubChatArea';
 import { CloudHopMusicPlayer } from '../../components/CloudHopMusicPlayer';
+import GalaxyHomeScreen from '../spaces/GalaxyHomeScreen';
 
 type HubTab = 'hopspaces' | 'music' | 'gamehub';
 type SpaceSubTab = 'groups' | 'channels';
@@ -14,6 +15,7 @@ interface HubCenterProps {
   user: any;
   groups?: any[];
   channels?: any[];
+  spaces?: HopSpace[];
 }
 
 export const HubCenter: React.FC<HubCenterProps> = ({
@@ -22,6 +24,7 @@ export const HubCenter: React.FC<HubCenterProps> = ({
   selectedSpace,
   groups = [],
   channels = [],
+  spaces = [],
 }) => {
   
   // Resolve selected chat details
@@ -61,8 +64,6 @@ export const HubCenter: React.FC<HubCenterProps> = ({
         ) : selectedSpace ? (
            // If a space is selected but no specific chat (or space acts as chat)
            // For now, treat space selection as entering the space.
-           // But normally HubCenter shows the space content.
-           // If space has type 'fluid_art', maybe show something related?
            <div className="flex-1 flex items-center justify-center text-white">
              <div className="text-center">
                <h2 className="text-2xl font-bold mb-2">{selectedSpace.name}</h2>
@@ -73,11 +74,14 @@ export const HubCenter: React.FC<HubCenterProps> = ({
              </div>
            </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-white/20">
-            <div className="text-center">
-              <h2 className="text-xl font-bold mb-2">Select a Space or Group</h2>
-              <p>Choose from the sidebar to begin.</p>
-            </div>
+          // Default: Show Galaxy Home Screen (Spaces Map)
+          <div className="w-full h-full">
+            <GalaxyHomeScreen 
+              spaces={spaces} 
+              onCreateSpace={() => {}} // Handle create space
+              onEnterSpace={() => {}} // Handle enter space
+              galaxyMood="calm"
+            />
           </div>
         )
       ) : null}

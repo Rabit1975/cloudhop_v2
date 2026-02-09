@@ -1,84 +1,223 @@
-@import "tailwindcss";
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
 
-/* CloudHop  Global Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 220 30% 5%;
+    --foreground: 200 100% 85%;
+
+    --card: 220 30% 8%;
+    --card-foreground: 200 100% 90%;
+
+    --popover: 220 30% 8%;
+    --popover-foreground: 200 100% 90%;
+
+    --primary: 180 100% 50%;
+    --primary-foreground: 220 30% 5%;
+
+    --secondary: 270 100% 60%;
+    --secondary-foreground: 220 30% 5%;
+
+    --muted: 220 20% 35%;
+    --muted-foreground: 200 100% 70%;
+
+    --accent: 180 100% 50%;
+    --accent-foreground: 220 30% 5%;
+
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 220 30% 5%;
+
+    --border: 220 30% 25%;
+    --input: 220 30% 15%;
+    --ring: 180 100% 50%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 220 30% 8%;
+
+    --sidebar-foreground: 200 100% 85%;
+
+    --sidebar-primary: 180 100% 50%;
+
+    --sidebar-primary-foreground: 220 30% 5%;
+
+    --sidebar-accent: 270 100% 60%;
+
+    --sidebar-accent-foreground: 220 30% 5%;
+
+    --sidebar-border: 220 30% 25%;
+
+    --sidebar-ring: 180 100% 50%;
+
+    --neon-cyan: 180 100% 50%;
+    --neon-magenta: 270 100% 60%;
+    --neon-green: 120 100% 50%;
+    --neon-orange: 40 100% 55%;
+    --neon-red: 0 100% 60%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
 
-body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
-    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
-  background-color: #050819;
-  color: white;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
 }
 
-#root {
-  height: 100vh;
-  width: 100%;
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
 }
 
-code {
-  font-family: Monaco, Consolas, 'Courier New', monospace;
+@keyframes twinkle-slow {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
 }
 
-/* Basic CloudHop styles without Tailwind */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+@keyframes twinkle-fast {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
-.flex {
-  display: flex;
-}
+@layer components {
+  .nebula-bg {
+    background-image: url('https://cdn.builder.io/api/v1/image/assets%2F9a635ebefcaf44018ad40aa521cab19d%2F39d062d66339421c8d2619247489f326?format=webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
 
-.flex-col {
-  flex-direction: column;
-}
+  .nebula-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, white, transparent),
+      radial-gradient(1px 1px at 20% 30%, white, transparent),
+      radial-gradient(1px 1px at 50% 50%, white, transparent),
+      radial-gradient(1px 1px at 80% 10%, white, transparent),
+      radial-gradient(1px 1px at 90% 60%, white, transparent),
+      radial-gradient(1px 1px at 30% 80%, white, transparent),
+      radial-gradient(1px 1px at 70% 70%, white, transparent),
+      radial-gradient(1px 1px at 15% 60%, white, transparent),
+      radial-gradient(1px 1px at 60% 20%, white, transparent),
+      radial-gradient(1px 1px at 85% 85%, white, transparent),
+      radial-gradient(1px 1px at 25% 10%, white, transparent),
+      radial-gradient(1px 1px at 95% 35%, white, transparent),
+      radial-gradient(1px 1px at 40% 45%, white, transparent),
+      radial-gradient(1px 1px at 65% 90%, white, transparent),
+      radial-gradient(1px 1px at 12% 75%, white, transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle 3s ease-in-out infinite;
+  }
 
-.items-center {
-  align-items: center;
-}
+  .nebula-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 35% 40%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 55% 65%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 75% 45%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 22% 50%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 88% 25%, rgba(200, 200, 255, 0.8), transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle-slow 4s ease-in-out infinite 0.5s;
+  }
 
-.justify-between {
-  justify-content: space-between;
-}
+  .glass-panel {
+    @apply bg-black/15 backdrop-blur-sm border border-white/15;
+  }
 
-.h-screen {
-  height: 100vh;
-}
+  .glow-cyan {
+    @apply shadow-[0_0_20px_rgba(0,255,255,0.3)];
+  }
 
-.w-full {
-  width: 100%;
-}
+  .glow-magenta {
+    @apply shadow-[0_0_20px_rgba(255,0,255,0.3)];
+  }
 
-.bg-dark {
-  background-color: #050819;
-}
+  .glow-green {
+    @apply shadow-[0_0_20px_rgba(0,255,0,0.3)];
+  }
 
-.text-white {
-  color: white;
-}
+  .glow-orange {
+    @apply shadow-[0_0_20px_rgba(255,165,0,0.3)];
+  }
 
-.p-4 {
-  padding: 1rem;
-}
+  .neon-border-cyan {
+    @apply border border-cyan-400 shadow-[0_0_10px_rgba(0,255,255,0.5)] glow-cyan;
+  }
 
-.m-4 {
-  margin: 1rem;
-}
-
-.rounded {
-  border-radius: 0.375rem;
-}
-
-.border {
-  border: 1px solid #374151;
+  .neon-border-magenta {
+    @apply border border-magenta-400 shadow-[0_0_10px_rgba(255,0,255,0.5)] glow-magenta;
+  }
 }

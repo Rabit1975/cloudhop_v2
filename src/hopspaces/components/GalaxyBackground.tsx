@@ -18,111 +18,67 @@ const moodGradients: Record<HopSpaceMood, string[]> = {
 
 const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ mood, className = '', children }) => {
   const colors = moodGradients[mood] || moodGradients['calm'];
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  // PERFORMANCE OPTIMIZATION: CSS-only stars
+  // Generates static random stars with CSS animation for twinkling
+  const generateStars = (count: number) => {
+    let shadow = '';
+    for (let i = 0; i < count; i++) {
+      shadow += `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF, `;
+    }
+    return shadow.slice(0, -2);
+  };
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    const stars: { x: number; y: number; size: number; opacity: number; speed: number }[] = [];
-    const numStars = 200;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      
-      // Re-init stars on resize to ensure full coverage
-      stars.length = 0;
-      for (let i = 0; i < numStars; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 2 + 0.5,
-          opacity: Math.random(),
-          speed: (Math.random() - 0.5) * 0.02, // Twinkle speed
-        });
-      }
-    };
-    
-    window.addEventListener('resize', resize);
-    resize();
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      stars.forEach(star => {
-        // Twinkle effect
-        star.opacity += star.speed;
-        if (star.opacity > 1) {
-          star.opacity = 1;
-          star.speed = -Math.abs(star.speed);
-        } else if (star.opacity < 0.2) {
-          star.opacity = 0.2;
-          star.speed = Math.abs(star.speed);
-        }
-
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
+  // Memoize stars to prevent regeneration on render
+  const smallStars = React.useMemo(() => generateStars(700), []);
+  const mediumStars = React.useMemo(() => generateStars(200), []);
+  const bigStars = React.useMemo(() => generateStars(100), []);
 
   return (
     <div className={`relative w-full h-full overflow-hidden bg-[#050819] ${className}`}>
-      {/* Base Layer */}
-      <motion.div
+      <style>
+        {`
+          @keyframes twinkle {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+          }
+          .star-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+          }
+          .stars-small { width: 1px; height: 1px; box-shadow: ${smallStars}; animation: twinkle 4s infinite; }
+          .stars-medium { width: 2px; height: 2px; box-shadow: ${mediumStars}; animation: twinkle 6s infinite; }
+          .stars-big { width: 3px; height: 3px; box-shadow: ${bigStars}; animation: twinkle 8s infinite; }
+        `}
+      </style>
+
+      {/* Static Gradient Background (Nebula Base) */}
+      <div
         className="absolute inset-0 z-0"
-        animate={{
-          background: `linear-gradient(to bottom right, ${colors[0]}, ${colors[1]}, ${colors[2] || colors[0]})`,
-        }}
-        transition={{ duration: 2, ease: 'easeInOut' }}
-      />
-
-      {/* Star Layer */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-80" />
-
-      {/* Nebula Fog Layer 1 */}
-      <motion.div
-        className="absolute inset-0 z-0 opacity-30 mix-blend-screen"
         style={{
-          background: `radial-gradient(circle at 50% 50%, ${colors[1]} 0%, transparent 60%)`,
-          filter: 'blur(60px)',
+          background: `radial-gradient(ellipse at bottom, ${colors[1]} 0%, #090A0F 100%)`,
+          opacity: 0.8
         }}
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 20, -20, 0],
-          y: [0, -20, 20, 0],
+      />
+      
+      {/* Nebula Accents */}
+      <div 
+        className="absolute inset-0 z-0 opacity-40 mix-blend-screen"
+        style={{
+          background: `radial-gradient(circle at 20% 30%, ${colors[0]}, transparent 40%),
+                       radial-gradient(circle at 80% 70%, ${colors[2] || colors[0]}, transparent 40%)`
         }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Nebula Fog Layer 2 */}
-      <motion.div
-        className="absolute inset-0 z-0 opacity-20 mix-blend-overlay"
-        style={{
-          background: `radial-gradient(circle at 80% 20%, ${colors[2] || colors[0]} 0%, transparent 50%)`,
-          filter: 'blur(80px)',
-        }}
-        animate={{
-          scale: [1.2, 1, 1.2],
-          x: [0, -30, 30, 0],
-        }}
-        transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      {/* CSS Stars */}
+      <div className="star-layer stars-small" />
+      <div className="star-layer stars-medium" />
+      <div className="star-layer stars-big" />
 
       {/* Content Layer */}
       <div className="relative z-50 w-full h-full pointer-events-auto">{children}</div>

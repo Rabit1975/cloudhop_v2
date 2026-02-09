@@ -335,6 +335,7 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) =>
             groups={groups}
             channels={channels}
             user={user}
+            spaces={mockSpaces}
           />
 
           {/* Right Panel */}

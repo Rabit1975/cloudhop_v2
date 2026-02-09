@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenAI } from '@google/genai';
+// import { GoogleGenAI } from '@google/genai';
+import { rabbitAIService } from '../services/RabbitAIService';
 import { Icons } from '../constants';
 import CallOverlay from './CallOverlay';
 import Modal from './Modal';
@@ -611,22 +612,19 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
     if (!selectedChatId) return;
     setAiIsTyping(true);
     try {
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!apiKey) throw new Error('API Key missing');
-      const ai = new GoogleGenAI({ apiKey });
-
       const history =
         messages
           .map(m => `${m.sender_id === userId ? 'Me' : m.users?.username}: ${m.content}`)
           .join('\n') || 'No messages yet.';
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash-exp',
-        contents: `Summarize this conversation into a few concise bullet points:\n\n${history}`,
-      });
-      setAiSummary(response.text || 'No summary available.');
+      // Using RabbitAI Service
+      const response = await rabbitAIService.generateText(
+        `Summarize this conversation into a few concise bullet points:\n\n${history}`
+      );
+      setAiSummary(response || 'No summary available.');
     } catch (err) {
       console.error(err);
+      setAiSummary('Failed to generate summary with RabbitAI.');
     } finally {
       setAiIsTyping(false);
     }
