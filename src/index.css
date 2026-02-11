@@ -64,6 +64,66 @@
     position: relative;
   }
 
+  .hophub-bg {
+    background-image: url('/nebula.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .gamehub-bg {
+    background-image: url('/HomescreenNeb.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  .hophub-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, white, transparent),
+      radial-gradient(1px 1px at 20% 30%, white, transparent),
+      radial-gradient(1px 1px at 50% 50%, white, transparent),
+      radial-gradient(1px 1px at 80% 10%, white, transparent),
+      radial-gradient(1px 1px at 90% 60%, white, transparent),
+      radial-gradient(1px 1px at 30% 80%, white, transparent),
+      radial-gradient(1px 1px at 70% 70%, white, transparent),
+      radial-gradient(1px 1px at 15% 60%, white, transparent),
+      radial-gradient(1px 1px at 60% 20%, white, transparent),
+      radial-gradient(1px 1px at 85% 85%, white, transparent),
+      radial-gradient(1px 1px at 25% 10%, white, transparent),
+      radial-gradient(1px 1px at 95% 35%, white, transparent),
+      radial-gradient(1px 1px at 40% 45%, white, transparent),
+      radial-gradient(1px 1px at 65% 90%, white, transparent),
+      radial-gradient(1px 1px at 12% 75%, white, transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  .hophub-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 35% 40%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 55% 65%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 75% 45%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 22% 50%, rgba(200, 200, 255, 0.8), transparent),
+      radial-gradient(1px 1px at 88% 25%, rgba(200, 200, 255, 0.8), transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle-slow 4s ease-in-out infinite 0.5s;
+  }
+
   .nebula-bg::before {
     content: '';
     position: absolute;

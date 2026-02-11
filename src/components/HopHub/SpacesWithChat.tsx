@@ -12,6 +12,8 @@ interface Message {
   isThinking?: boolean;
 }
 
+import React from 'react';
+
 export default function SpacesWithChat() {
   const [messages, setMessages] = useState<Message[]>([
     {

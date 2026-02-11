@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useRef, useEffect, ReactNode } from 'react'
 import { MusicTransport } from './transports/MusicTransport'
 import { AudioElementTransport } from './transports/AudioElementTransport'
-import { YouTubeTransport } from './transports/YouTubeTransport'
 import { MusicSettings, defaultMusicSettings } from './MusicSettings'
 
 export interface MusicEngineContextValue {
   settings: MusicSettings
   transportRef: React.MutableRefObject<MusicTransport | null>
-  createTransport: (type: 'audio' | 'youtube') => MusicTransport
+  createTransport: (type: 'audio') => MusicTransport
 }
 
 const MusicEngineContext = createContext<MusicEngineContextValue | null>(null)
@@ -21,17 +20,16 @@ export function MusicEngineProvider({ children, settings: customSettings }: Musi
   const settings: MusicSettings = { ...defaultMusicSettings, ...customSettings }
   const transportRef = useRef<MusicTransport | null>(null)
 
-  const createTransport = (type: 'audio' | 'youtube'): MusicTransport => {
-    if (type === 'youtube') {
-      return new YouTubeTransport()
-    }
+  const createTransport = (type: 'audio'): MusicTransport => {
+    // For now, only support audio transport
+    // YouTube transport will be replaced with new OAuth implementation
     return new AudioElementTransport()
   }
 
   useEffect(() => {
     // Create default transport on mount
     if (!transportRef.current) {
-      transportRef.current = createTransport(settings.preferredTransport)
+      transportRef.current = createTransport('audio')
     }
 
     // Cleanup on unmount

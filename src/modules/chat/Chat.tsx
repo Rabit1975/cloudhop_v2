@@ -5,7 +5,18 @@ import { Icons } from '../../lib/constants';
 import Modal from '../../components/Modal';
 import { useWebRTC } from '../../hooks/useWebRTC';
 import { supabase } from '../../lib/supabaseClient';
-import { CallHistory, Message, ReactionSummary, Chat } from '../../types';
+import { CallHistory, Message, ReactionSummary } from '../../types/call';
+import { Message as MessageType } from '../../types/message';
+
+interface Chat {
+  id: string;
+  title: string;
+  type: 'space' | 'direct' | 'group';
+  participants?: string[];
+  last_message?: string;
+  created_at: string;
+  updated_at: string;
+}
 import { motion, AnimatePresence } from 'framer-motion';
 import { rabbitAIService } from '../../services/RabbitAIService';
 
@@ -540,13 +551,19 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
     if (!selectedChatId) return;
     setAiIsTyping(true);
     try {
-      const history = messages.map(m => `${m.sender_id === userId ? 'Me' : m.users?.username}: ${m.content}`).join('\n') || "No messages yet.";
+      // Limit to last 20 messages to avoid token limit issues
+      const recentMessages = messages.slice(-20);
+      const history = recentMessages.map(m => `${m.sender_id === userId ? 'Me' : m.users?.username}: ${m.content}`).join('\n') || "No messages yet.";
       
       const prompt = `Summarize this conversation into a few concise bullet points:\n\n${history}`;
       const response = await rabbitAIService.generateText(prompt);
       
       setAiSummary(response || "No summary available.");
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+      console.error(err); 
+      // Show user-friendly error message
+      setAiSummary("Unable to generate summary due to conversation length. Try again with fewer messages.");
+    }
     finally { setAiIsTyping(false); }
   };
 

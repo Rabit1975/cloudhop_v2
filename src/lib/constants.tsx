@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogoMain, Logo3D, LogoGlow, LogoQ1, LogoQ2, LogoQ3, LogoQ4 } from './components/AppLogos';
+import { LogoMain, Logo3D, LogoGlow, LogoQ1, LogoQ2, LogoQ3, LogoQ4 } from '../components/AppLogos';
 
 export const DOMAIN = "cloudhop.tech";
 

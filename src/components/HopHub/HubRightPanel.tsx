@@ -62,12 +62,17 @@ export const HubRightPanel: React.FC<HubRightPanelProps> = ({
     setIsThinking(true);
 
     try {
+      // Limit conversation history to last 10 messages to avoid token limit
+      const recentMessages = messages.slice(-10);
+      const conversationHistory = recentMessages.map(msg => `${msg.role}: ${msg.content}`).join('\n');
+      
       // Contextual prompt based on active tab
       let context = `Current view: ${activeTab}. `;
       if (activeTab === 'chat' && selectedChatId) context += `Chat ID: ${selectedChatId}. `;
       if (activeTab === 'spaces' && selectedSpace) context += `Space: ${selectedSpace.name}. `;
       
-      const responseText = await rabbitAIService.generateText(`${context} User asks: ${userMsg.content}`);
+      const prompt = `${context}\n\nRecent conversation:\n${conversationHistory}\n\nUser asks: ${userMsg.content}`;
+      const responseText = await rabbitAIService.generateText(prompt);
       
       const aiMsg: AIMessage = {
         id: (Date.now() + 1).toString(),

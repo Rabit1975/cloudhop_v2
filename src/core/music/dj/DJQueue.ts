@@ -1,6 +1,7 @@
-import { create } from 'zustand'
+import create from 'zustand'
 import { DJQueueItem } from './DJQueueItem'
 import { MusicTrack } from '../MusicState'
+import { QueueOperations } from './QueueOperations'
 
 export interface DJQueueState {
   queue: DJQueueItem[]
@@ -16,77 +17,55 @@ export interface DJQueueState {
   reorder: (fromIndex: number, toIndex: number) => void
 }
 
-export const useDJQueue = create<DJQueueState>((set, get) => ({
+export const useDJQueue = create<DJQueueState>((set: any, get: any) => ({
   queue: [],
   history: [],
   
-  add: (track, addedBy) => {
-    const item: DJQueueItem = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      track,
-      addedBy,
-      addedAt: Date.now(),
-      votes: 0,
-      votedBy: []
-    }
-    set((state) => ({ queue: [...state.queue, item] }))
+  add: (track: MusicTrack, addedBy: string) => {
+    set((state: any) => ({ 
+      queue: QueueOperations.addToQueue(state.queue, track, addedBy) 
+    }))
   },
   
-  remove: (id) => {
-    set((state) => ({ queue: state.queue.filter((item) => item.id !== id) }))
+  remove: (id: string) => {
+    set((state: any) => ({ 
+      queue: QueueOperations.removeFromQueue(state.queue, id) 
+    }))
   },
   
   next: () => {
     const { queue } = get()
-    if (queue.length === 0) return null
+    const { nextItem, remainingQueue } = QueueOperations.getNextItem(queue)
     
-    const nextItem = queue[0]
-    set((state) => ({
-      queue: state.queue.slice(1),
-      history: [nextItem, ...state.history]
-    }))
+    if (nextItem) {
+      set((state: any) => ({
+        queue: remainingQueue,
+        history: QueueOperations.addToHistory(state.history, nextItem)
+      }))
+    }
     
     return nextItem
   },
   
   clear: () => {
-    set({ queue: [] })
+    set({ queue: QueueOperations.clearQueue() })
   },
   
-  vote: (id, userId) => {
-    set((state) => ({
-      queue: state.queue.map((item) =>
-        item.id === id && !item.votedBy.includes(userId)
-          ? {
-              ...item,
-              votes: item.votes + 1,
-              votedBy: [...item.votedBy, userId]
-            }
-          : item
-      )
+  vote: (id: string, userId: string) => {
+    set((state: any) => ({
+      queue: QueueOperations.voteForItem(state.queue, id, userId)
     }))
   },
   
-  unvote: (id, userId) => {
-    set((state) => ({
-      queue: state.queue.map((item) =>
-        item.id === id && item.votedBy.includes(userId)
-          ? {
-              ...item,
-              votes: item.votes - 1,
-              votedBy: item.votedBy.filter((uid) => uid !== userId)
-            }
-          : item
-      )
+  unvote: (id: string, userId: string) => {
+    set((state: any) => ({
+      queue: QueueOperations.unvoteForItem(state.queue, id, userId)
     }))
   },
   
-  reorder: (fromIndex, toIndex) => {
-    set((state) => {
-      const newQueue = [...state.queue]
-      const [removed] = newQueue.splice(fromIndex, 1)
-      newQueue.splice(toIndex, 0, removed)
-      return { queue: newQueue }
-    })
+  reorder: (fromIndex: number, toIndex: number) => {
+    set((state: any) => ({ 
+      queue: QueueOperations.reorderQueue(state.queue, fromIndex, toIndex) 
+    }))
   }
 }))

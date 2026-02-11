@@ -1,0 +1,35 @@
+import React, { useState, ReactNode } from "react";
+import { Menu, X, LogOut, Search, Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "../../lib/utils";
+
+interface CloudHopLayoutProps {
+  children: ReactNode;
+  activeTab: "hophub" | "music" | "gamehub" | "spaces";
+  onTabChange: (tab: "hophub" | "music" | "gamehub" | "spaces") => void;
+  activeSection?: "home" | "hophub" | "meetings" | "settings";
+  onSectionChange?: (section: "home" | "hophub" | "meetings" | "settings") => void;
+}
+
+export default function CloudHopLayout({
+  children,
+  activeTab,
+  onTabChange,
+  activeSection = "home",
+  onSectionChange,
+}: CloudHopLayoutProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const tabs = [
+    { id: "hophub", label: "Hophub", icon: "💬" },
+    { id: "music", label: "Music", icon: "🎵" },
+    { id: "gamehub", label: "GameHub", icon: "🎮" },
+    { id: "spaces", label: "Spaces", icon: "🌍" },
+  ] as const;
+
+  return (
+    <div className={cn(
+      "h-screen w-screen overflow-hidden flex flex-col relative",
+      activeTab === "hophub" && activeSection === "hophub" ? "hophub-bg" : 
+      activeSection === "home" ? "home-bg" : 
+      "

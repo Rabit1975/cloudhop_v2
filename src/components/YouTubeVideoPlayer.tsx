@@ -45,11 +45,11 @@ const YouTubeVideoPlayer: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white/4 border border-white/8 rounded-lg p-6 max-w-2xl mx-auto">
+    <div className="w-full space-y-6">
       <h3 className="text-xl font-bold text-white mb-4">YouTube Music Video Player</h3>
 
       {/* URL Input */}
-      <div className="mb-6">
+      <div>
         <label className="block text-white/80 text-sm font-medium mb-2">
           YouTube Video URL or ID
         </label>
@@ -60,7 +60,7 @@ const YouTubeVideoPlayer: React.FC = () => {
             onChange={e => setVideoUrl(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Paste YouTube URL or video ID..."
-            className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-red-500 focus:bg-white/15"
+            className="flex-1 px-4 py-2 bg-black/30 border border-cyan-400/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400 focus:bg-black/40"
           />
           <button
             onClick={playVideo}
@@ -74,7 +74,7 @@ const YouTubeVideoPlayer: React.FC = () => {
 
       {/* Current Video Player */}
       {currentVideo && (
-        <div className="mb-6">
+        <div>
           <h4 className="text-white font-medium mb-3">Now Playing:</h4>
           <div className="rounded-lg overflow-hidden">
             <iframe
@@ -91,7 +91,7 @@ const YouTubeVideoPlayer: React.FC = () => {
       )}
 
       {/* Popular Music Videos */}
-      <div className="mb-6">
+      <div>
         <h4 className="text-white font-medium mb-3">Popular Music Videos (click to play):</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {popularVideos.map(video => (
@@ -101,25 +101,25 @@ const YouTubeVideoPlayer: React.FC = () => {
                 setCurrentVideo(video.id);
                 setError('');
               }}
-              className="text-left p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+              className="text-left p-3 bg-black/20 border border-cyan-400/20 rounded-lg hover:bg-cyan-400/10 transition-colors"
             >
               <p className="text-white font-medium text-sm">{video.title}</p>
-              <p className="text-white/60 text-xs">Click to play</p>
+              <p className="text-cyan-400 text-xs">Click to play</p>
             </button>
           ))}
         </div>
       </div>
 
       {/* Instructions */}
-      <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-        <h4 className="text-blue-400 font-medium mb-2">How to use:</h4>
-        <ul className="text-blue-300 text-sm space-y-1">
+      <div className="p-4 bg-cyan-500/10 border border-cyan-400/20 rounded-lg">
+        <h4 className="text-cyan-400 font-medium mb-2">How to use:</h4>
+        <ul className="text-cyan-300 text-sm space-y-1">
           <li>• Paste any YouTube music video URL</li>
           <li>• Or paste just the video ID (the part after v=)</li>
           <li>• Click popular videos to play instantly</li>
           <li>• Works with any YouTube music video</li>
         </ul>
-        <p className="text-blue-200 text-xs mt-2">
+        <p className="text-cyan-200 text-xs mt-2">
           Example: https://www.youtube.com/watch?v=hTWKbfoikeg
         </p>
       </div>

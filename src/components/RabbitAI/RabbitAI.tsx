@@ -1,3 +1,4 @@
+import React from 'react';
 import { cn } from "../../lib/utils";
 
 interface RabbitAIProps {
@@ -36,7 +37,7 @@ export default function RabbitAI({
 
       {/* Avatar Image with Border */}
       <img
-        src="https://cdn.builder.io/api/v1/image/assets%2F9a635ebefcaf44018ad40aa521cab19d%2F2accbe8620304a3989ae804c5c8de95c?format=webp"
+        src="/rabbitavatar1.PNG"
         alt="RabbitAI"
         className="relative z-10 w-full h-full rounded-full object-cover border-2 border-cyan-400/60 shadow-lg shadow-cyan-400/40"
       />

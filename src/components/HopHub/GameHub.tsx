@@ -17,6 +17,8 @@ interface Manifest {
   games: Game[];
 }
 
+import React from 'react';
+
 export default function GameHub() {
   const [games, setGames] = useState<Game[]>([]);
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);

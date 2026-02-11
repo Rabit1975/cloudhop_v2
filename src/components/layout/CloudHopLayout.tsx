@@ -1,55 +1,72 @@
-import { useState, ReactNode } from "react";
+import React, { useState, ReactNode } from "react";
 import { Menu, X, LogOut, Search, Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "../../lib/utils";
 
 interface CloudHopLayoutProps {
   children: ReactNode;
   activeTab: "hophub" | "music" | "gamehub" | "spaces";
   onTabChange: (tab: "hophub" | "music" | "gamehub" | "spaces") => void;
-  hideSecondaryMenu?: boolean;
+  activeSection?: "home" | "hophub" | "meetings" | "settings";
+  onSectionChange?: (section: "home" | "hophub" | "meetings" | "settings") => void;
 }
 
 export default function CloudHopLayout({
   children,
   activeTab,
   onTabChange,
-  hideSecondaryMenu = false,
+  activeSection = "home",
+  onSectionChange,
 }: CloudHopLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const tabs = [
-    { id: "hophub", label: "Hophub", icon: "💬" },
-    { id: "music", label: "Music", icon: "🎵" },
-    { id: "gamehub", label: "GameHub", icon: "🎮" },
-    { id: "spaces", label: "Spaces", icon: "🌍" },
-  ] as const;
+    { id: "hophub" as const, label: "Hophub", icon: "💬" },
+    { id: "music" as const, label: "Music", icon: "🎵" },
+    { id: "gamehub" as const, label: "GameHub", icon: "🎮" },
+    { id: "spaces" as const, label: "Spaces", icon: "🌍" },
+  ];
 
   return (
-    <div className="nebula-bg h-screen w-screen overflow-hidden flex flex-col relative">
-      {/* Top Navigation */}
+    <div className={cn(
+      "h-screen w-screen overflow-hidden flex flex-col relative",
+      activeSection === "hophub" ? "hophub-bg" : 
+      activeSection === "home" ? "home-bg" : 
+      "bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900"
+    )}>
+      {/* Top Navigation - Fixed Bar */}
       <nav className="glass-panel flex items-center justify-between px-6 py-4 border-b border-white/10 relative z-10">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
-              CH
-            </div>
+            <img 
+              src="/hopglow.png" 
+              alt="CloudHop" 
+              className="w-8 h-8 rounded object-contain"
+            />
             <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-300">
               CloudHop
             </span>
           </div>
 
+          {/* Main Navigation - Always visible */}
           <div className="hidden sm:flex items-center gap-1 ml-8">
-            {["Home", "Hophub", "HopMeetings", "Settings"].map((item) => (
+            {[
+              { id: "home" as const, label: "Home", section: "home" as const },
+              { id: "hophub" as const, label: "HopHub", section: "hophub" as const },
+              { id: "meetings" as const, label: "HopMeetings", section: "meetings" as const },
+              { id: "settings" as const, label: "Settings", section: "settings" as const }
+            ].map((item) => (
               <button
-                key={item}
+                key={item.id}
+                onClick={() => onSectionChange?.(item.section)}
                 className={cn(
                   "px-4 py-2 rounded text-sm font-medium transition-all",
-                  item === "Hophub"
+                  activeTab === "hophub" && activeSection === item.section
                     ? "text-cyan-400 bg-cyan-400/10 border border-cyan-400/30"
                     : "text-gray-300 hover:text-white hover:bg-white/5"
                 )}
               >
-                {item}
+                {item.label}
               </button>
             ))}
           </div>
@@ -86,8 +103,8 @@ export default function CloudHopLayout({
         </div>
       </nav>
 
-      {/* Secondary Menu */}
-      {!hideSecondaryMenu && (
+      {/* Secondary Navigation - Only visible when in HopHub section */}
+      {activeTab === "hophub" && activeSection === "hophub" && (
         <div className="glass-panel flex items-center gap-2 px-6 py-3 border-b border-white/10 overflow-x-auto relative z-10">
           {tabs.map((tab) => (
             <button
