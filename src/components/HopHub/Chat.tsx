@@ -4,6 +4,7 @@ import { cn } from "../../lib/utils";
 import CloudHopLayout from "../layout/CloudHopLayout";
 import GameHub from "./GameHub";
 import SpacesWithChat from "./SpacesWithChat";
+import OAuthYouTubeMusic from "../OAuthYouTubeMusic";
 
 interface Message {
   id: string;
@@ -190,17 +191,11 @@ export default function Chat() {
     );
   }
 
-  // Show placeholder for Music
+  // Show Music Player
   if (activeTab === "music") {
     return (
       <CloudHopLayout activeTab={activeTab} onTabChange={setActiveTab}>
-        <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-transparent to-black">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🎵</div>
-            <h2 className="text-2xl font-bold text-white mb-2">YouTube Music</h2>
-            <p className="text-gray-400">YouTube Music player integration coming soon</p>
-          </div>
-        </div>
+        <OAuthYouTubeMusic />
       </CloudHopLayout>
     );
   }

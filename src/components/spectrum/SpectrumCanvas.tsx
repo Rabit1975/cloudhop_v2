@@ -1,9 +1,4 @@
-import React, { Suspense } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Nebula } from './Nebula'
-import { Particles } from './Particles'
-import { SpaceOrbits } from './SpaceOrbits'
-import { LeonardoGlyph } from './LeonardoGlyph'
+import React from 'react'
 
 interface SpectrumCanvasProps {
   showNebula?: boolean
@@ -14,13 +9,9 @@ interface SpectrumCanvasProps {
 }
 
 export const SpectrumCanvas: React.FC<SpectrumCanvasProps> = ({
-  showNebula = false,
-  showParticles = false,
-  showOrbits = false,
-  showGlyph = false,
   backgroundColor = '#000000'
 }) => {
-  // PERFORMANCE: Return empty div to kill WebGL context
+  // PERFORMANCE: WebGL context disabled to prevent freezing
   return (
     <div
       style={{
@@ -31,7 +22,8 @@ export const SpectrumCanvas: React.FC<SpectrumCanvasProps> = ({
         height: '100%',
         zIndex: 0,
         pointerEvents: 'none',
-        background: backgroundColor
+        background: backgroundColor,
+        display: 'none' // Completely hide it
       }}
     />
   )

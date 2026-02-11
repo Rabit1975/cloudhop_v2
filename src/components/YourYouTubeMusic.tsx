@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
+import { useMusicEngine } from '../core/music/useMusicEngine';
+import { Play, Pause, SkipForward, Volume2, Search, Music } from 'lucide-react';
 
 const YourYouTubeMusic: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentVideo, setCurrentVideo] = useState<any>(null);
+  
+  // Use Music Engine Hooks
+  const { loadTrack, currentTrack, isPlaying, play, pause, volume, setVolume } = useMusicEngine({ 
+    role: 'owner', // Assuming owner for local user
+    autoPlay: true 
+  });
 
   // Search using your cookie via serverless function
   const searchYouTubeMusic = async () => {
@@ -34,120 +41,107 @@ const YourYouTubeMusic: React.FC = () => {
     }
   };
 
-  const playVideo = (track: any) => {
-    setCurrentVideo(track);
+  const handlePlayTrack = (track: any) => {
+    loadTrack({
+      id: track.videoId,
+      title: track.title,
+      artist: track.artist,
+      duration: 0, // Duration would come from API in a real scenario
+      provider: 'youtube',
+      url: `https://www.youtube.com/watch?v=${track.videoId}`
+    });
   };
 
   return (
-    <div className="bg-white/4 border border-white/8 rounded-lg p-6 max-w-2xl mx-auto">
-      <h3 className="text-xl font-bold text-white mb-4">🎵 Your YouTube Music Library</h3>
+    <div className="h-full w-full bg-gradient-to-br from-black to-purple-900/20 p-6 overflow-y-auto">
+      <div className="max-w-4xl mx-auto">
+        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+          <Music className="w-6 h-6 text-red-500" />
+          YouTube Music
+        </h3>
 
-      <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-        <h4 className="text-green-400 font-medium mb-2">✅ Using Your YouTube Music Cookie</h4>
-        <p className="text-green-300 text-sm">
-          Connected to your personal YouTube Music library with full search access
-        </p>
-      </div>
-
-      {/* Search Input */}
-      <div className="mb-6">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search your YouTube Music library..."
-            className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-red-500 focus:bg-white/15"
-            onKeyPress={e => e.key === 'Enter' && searchYouTubeMusic()}
-          />
-          <button
-            onClick={searchYouTubeMusic}
-            disabled={isLoading}
-            className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
-          >
-            {isLoading ? 'Searching...' : 'Search'}
-          </button>
+        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+          <h4 className="text-green-400 font-medium mb-2 flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            Connected
+          </h4>
+          <p className="text-green-300 text-sm">
+            Using secure connection to YouTube Music Library
+          </p>
         </div>
-      </div>
 
-      {/* Current Player */}
-      {currentVideo && (
-        <div className="mb-6 p-4 bg-white/10 rounded-lg">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-white font-medium">Now Playing:</h4>
+        {/* Search Input */}
+        <div className="mb-8">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search songs, artists, or albums..."
+                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-red-500 focus:bg-white/10 transition-all"
+                onKeyPress={e => e.key === 'Enter' && searchYouTubeMusic()}
+              />
+            </div>
             <button
-              onClick={() => setCurrentVideo(null)}
-              className="text-white/60 hover:text-white text-sm"
+              onClick={searchYouTubeMusic}
+              disabled={isLoading}
+              className="px-6 py-3 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 disabled:opacity-50 transition-all active:scale-95"
             >
-              Close
+              {isLoading ? 'Searching...' : 'Search'}
             </button>
           </div>
-          <div className="rounded-lg overflow-hidden">
-            <iframe
-              width="100%"
-              height="300"
-              src={`https://www.youtube.com/embed/${currentVideo.videoId}?autoplay=1&controls=1`}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full"
-            />
-          </div>
-          <p className="text-white mt-2 font-medium">{currentVideo.title}</p>
-          <p className="text-white/60">{currentVideo.artist}</p>
-          {currentVideo.album && <p className="text-white/60 text-sm">{currentVideo.album}</p>}
         </div>
-      )}
 
-      {/* Results */}
-      {results.length > 0 && (
-        <div className="space-y-3">
-          <h4 className="text-white font-medium">Found {results.length} results:</h4>
-          {results.map((track, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 cursor-pointer transition-colors"
-              onClick={() => playVideo(track)}
-            >
-              <img src={track.thumbnail} alt={track.title} className="w-12 h-12 rounded" />
-              <div className="flex-1">
-                <p className="text-white font-medium">{track.title}</p>
-                <p className="text-white/60 text-sm">{track.artist}</p>
-                {track.album && <p className="text-white/40 text-xs">{track.album}</p>}
+        {/* Now Playing Widget */}
+        {currentTrack && (
+          <div className="mb-8 p-6 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+                 {/* Thumbnail logic would go here */}
+                 <Music className="w-10 h-10 text-gray-600" />
               </div>
-              <div className="text-right">
-                {track.duration && <p className="text-white/60 text-sm">{track.duration}</p>}
-                <button className="text-red-400 hover:text-red-300 mt-1">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+              <div className="flex-1">
+                <h4 className="text-xl font-bold text-white mb-1">{currentTrack.title}</h4>
+                <p className="text-gray-400">{currentTrack.artist}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => isPlaying ? pause() : play()}
+                  className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform"
+                >
+                  {isPlaying ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current pl-1" />}
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Results Grid */}
+        <div className="grid gap-4">
+          {results.map((track, idx) => (
+            <div 
+              key={idx}
+              className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors group cursor-pointer border border-transparent hover:border-white/10"
+              onClick={() => handlePlayTrack(track)}
+            >
+              <div className="w-12 h-12 bg-gray-800 rounded-lg overflow-hidden relative">
+                {track.thumbnail && <img src={track.thumbnail} alt={track.title} className="w-full h-full object-cover" />}
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Play className="w-6 h-6 text-white fill-current" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <h5 className="font-medium text-white group-hover:text-red-400 transition-colors">{track.title}</h5>
+                <p className="text-sm text-gray-400">{track.artist} • {track.album}</p>
+              </div>
+              <div className="text-sm text-gray-500 font-mono">
+                {track.duration}
               </div>
             </div>
           ))}
         </div>
-      )}
-
-      {/* No Results */}
-      {results.length === 0 && searchQuery && !isLoading && (
-        <div className="text-center py-8 text-white/60">
-          <p>No results found for "{searchQuery}"</p>
-          <p className="text-sm mt-2">Try a different search term</p>
-        </div>
-      )}
-
-      {/* Instructions */}
-      <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-        <h4 className="text-blue-400 font-medium mb-2">🎯 How this works:</h4>
-        <ul className="text-blue-300 text-sm space-y-1">
-          <li>• Uses your personal YouTube Music cookie</li>
-          <li>• Searches your actual library and recommendations</li>
-          <li>• Serverless function bypasses CORS restrictions</li>
-          <li>• Works when deployed on Vercel</li>
-        </ul>
-        <p className="text-blue-200 text-xs mt-2">
-          Deploy to Vercel to enable full YouTube Music library access
-        </p>
       </div>
     </div>
   );

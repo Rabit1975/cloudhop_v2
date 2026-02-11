@@ -1,84 +1,46 @@
-import React, { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
 import { HopSpaceMood } from '../../utils/types';
 
 interface GalaxyBackgroundProps {
-  mood: HopSpaceMood;
+  mood?: HopSpaceMood;
   className?: string;
   children?: React.ReactNode;
 }
 
-const moodGradients: Record<HopSpaceMood, string[]> = {
-  calm: ['#0F172A', '#1E3A8A', '#0F172A'], // Blue/Slate
-  dreamy: ['#2E1065', '#7C3AED', '#4C1D95'], // Purple/Violet
-  intense: ['#450A0A', '#991B1B', '#7F1D1D'], // Red/Maroon
-  chaotic: ['#0F172A', '#BE123C', '#1D4ED8', '#047857'], // Multicolor
-  ethereal: ['#0F172A', '#0D9488', '#3B82F6'], // Teal/Cyan/Blue
-};
-
-const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ mood, className = '', children }) => {
-  const colors = moodGradients[mood] || moodGradients['calm'];
-  
-  // PERFORMANCE OPTIMIZATION: CSS-only stars
-  // Generates static random stars with CSS animation for twinkling
-  const generateStars = (count: number) => {
-    let shadow = '';
-    for (let i = 0; i < count; i++) {
-      shadow += `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF, `;
-    }
-    return shadow.slice(0, -2);
-  };
-
-  // Memoize stars to prevent regeneration on render
-  const smallStars = React.useMemo(() => generateStars(700), []);
-  const mediumStars = React.useMemo(() => generateStars(200), []);
-  const bigStars = React.useMemo(() => generateStars(100), []);
-
+const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({ className = '', children }) => {
   return (
-    <div className={`relative w-full h-full overflow-hidden bg-[#050819] ${className}`}>
+    <div className={`nebula-bg w-full h-full relative overflow-hidden ${className}`}>
+      {/* 
+        PERFORMANCE OPTIMIZATION:
+        Using pure CSS for star twinkling to avoid JS main thread blocking.
+        Animations are "powered way down" (slow, low opacity) as requested.
+      */}
       <style>
         {`
-          @keyframes twinkle {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
+          @keyframes twinkle-slow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
           }
-          .star-layer {
+          .star {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: transparent;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle-slow 4s infinite ease-in-out;
           }
-          .stars-small { width: 1px; height: 1px; box-shadow: ${smallStars}; animation: twinkle 4s infinite; }
-          .stars-medium { width: 2px; height: 2px; box-shadow: ${mediumStars}; animation: twinkle 6s infinite; }
-          .stars-big { width: 3px; height: 3px; box-shadow: ${bigStars}; animation: twinkle 8s infinite; }
         `}
       </style>
-
-      {/* Static Gradient Background (Nebula Base) */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background: `radial-gradient(ellipse at bottom, ${colors[1]} 0%, #090A0F 100%)`,
-          opacity: 0.8
-        }}
-      />
       
-      {/* Nebula Accents */}
-      <div 
-        className="absolute inset-0 z-0 opacity-40 mix-blend-screen"
-        style={{
-          background: `radial-gradient(circle at 20% 30%, ${colors[0]}, transparent 40%),
-                       radial-gradient(circle at 80% 70%, ${colors[2] || colors[0]}, transparent 40%)`
-        }}
-      />
-
-      {/* CSS Stars */}
-      <div className="star-layer stars-small" />
-      <div className="star-layer stars-medium" />
-      <div className="star-layer stars-big" />
+      {/* Static Star Field - generated once via fixed positions for performance */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="star" style={{ top: '10%', left: '20%', width: '2px', height: '2px', animationDelay: '0s' }} />
+        <div className="star" style={{ top: '30%', left: '80%', width: '3px', height: '3px', animationDelay: '1s' }} />
+        <div className="star" style={{ top: '50%', left: '40%', width: '1px', height: '1px', animationDelay: '2s' }} />
+        <div className="star" style={{ top: '70%', left: '10%', width: '2px', height: '2px', animationDelay: '3s' }} />
+        <div className="star" style={{ top: '85%', left: '85%', width: '2px', height: '2px', animationDelay: '0.5s' }} />
+        <div className="star" style={{ top: '15%', left: '60%', width: '1px', height: '1px', animationDelay: '1.5s' }} />
+        <div className="star" style={{ top: '45%', left: '90%', width: '2px', height: '2px', animationDelay: '2.5s' }} />
+        <div className="star" style={{ top: '90%', left: '30%', width: '3px', height: '3px', animationDelay: '3.5s' }} />
+      </div>
 
       {/* Content Layer */}
       <div className="relative z-50 w-full h-full pointer-events-auto">{children}</div>
