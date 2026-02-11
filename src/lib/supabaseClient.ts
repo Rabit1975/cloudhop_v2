@@ -1,10 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'http://localhost:54321';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'development-key-placeholder';
 
-// Singleton pattern to prevent multiple instances during hot reloads
+// Only initialize Supabase if we have real credentials
 const getSupabaseClient = () => {
+  // Skip Supabase initialization in development without real credentials
+  if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+    console.warn('Supabase credentials not found - running in development mode');
+    return null;
+  }
+
   const globalWithSupabase = globalThis as unknown as {
     _supabaseClient: ReturnType<typeof createClient> | undefined;
   };

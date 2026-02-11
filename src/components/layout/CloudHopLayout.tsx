@@ -2,6 +2,9 @@ import React, { useState, ReactNode } from "react";
 import { Menu, X, LogOut, Search, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "../../lib/utils";
+import YouTubeMusicIntegration from "../YouTubeMusicIntegration";
+import GameHub from "../GameHub/GameHub";
+import SpacesWithChat from "../HopHub/SpacesWithChat";
 
 interface CloudHopLayoutProps {
   children: ReactNode;
@@ -20,11 +23,10 @@ export default function CloudHopLayout({
 }: CloudHopLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const tabs = [
-    { id: "hophub" as const, label: "Hophub", icon: "💬" },
-    { id: "music" as const, label: "Music", icon: "🎵" },
-    { id: "gamehub" as const, label: "GameHub", icon: "🎮" },
-    { id: "spaces" as const, label: "Spaces", icon: "🌍" },
+  const hophubTabs = [
+    { id: "chat" as const, label: "Chat", icon: "💬" },
+    { id: "channels" as const, label: "Channels", icon: "📢" },
+    { id: "groups" as const, label: "Groups", icon: "👥" },
   ];
 
   return (
@@ -104,9 +106,9 @@ export default function CloudHopLayout({
       </nav>
 
       {/* Secondary Navigation - Only visible when in HopHub section */}
-      {activeTab === "hophub" && activeSection === "hophub" && (
+      {activeSection === "hophub" && (
         <div className="glass-panel flex items-center gap-2 px-6 py-3 border-b border-white/10 overflow-x-auto relative z-10">
-          {tabs.map((tab) => (
+          {hophubTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => {
@@ -117,7 +119,7 @@ export default function CloudHopLayout({
                 "px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all flex items-center gap-2",
                 activeTab === tab.id
                   ? "bg-cyan-500/30 border border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-400/20"
-                  : "text-gray-300 hover:bg-white/5 hover:text-white border border-transparent"
+                  : "text-gray-300 hover:text-white hover:bg-white/5"
               )}
             >
               <span>{tab.icon}</span>
@@ -127,8 +129,19 @@ export default function CloudHopLayout({
         </div>
       )}
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-hidden relative z-10">{children}</div>
+      <main className="flex-1 overflow-hidden relative">
+        {/* Show children for all sections */}
+        {activeSection === "hophub" ? (
+          <div className="flex h-full">
+            {children}
+          </div>
+        ) : (
+          /* For other sections - show full width content */
+          <div className="w-full h-full">
+            {children}
+          </div>
+        )}
+      </main>
     </div>
   );
 }

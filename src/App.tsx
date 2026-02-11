@@ -33,30 +33,16 @@ function App() {
   };
 
   const renderContent = () => {
-    // Handle top navigation sections (Home, HopMeetings, Settings)
-    if (activeTab === "hophub") {
-      switch (activeSection) {
-        case "home":
-          return <Home />;
-        case "hophub":
-          return <Chat />;
-        case "meetings":
-          return <HopMeetings />;
-        case "settings":
-          return <Settings />;
-        default:
-          return <Home />;
-      }
-    }
-
-    // Handle tab navigation (Music, GameHub, Spaces)
-    switch (activeTab) {
-      case "music":
-        return <YouTubeMusicIntegration />;
-      case "gamehub":
-        return <GameHub />;
-      case "spaces":
-        return <SpacesWithChat />;
+    // Handle main navigation sections (Home, HopHub, HopMeetings, Settings)
+    switch (activeSection) {
+      case "home":
+        return <Home />;
+      case "hophub":
+        return <Chat />;
+      case "meetings":
+        return <HopMeetings />;
+      case "settings":
+        return <Settings />;
       default:
         return <Home />;
     }

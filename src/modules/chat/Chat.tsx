@@ -780,7 +780,7 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
   });
 
   return (
-    <div className="h-full flex gap-1 rounded-[32px] overflow-hidden border border-white/5 bg-[#080C22] shadow-2xl animate-fade-in font-sans">
+    <div className="h-full flex gap-1 rounded-[32px] overflow-hidden border border-white/5 shadow-2xl animate-fade-in font-sans">
       <AnimatePresence>
       {deletingMessageId && (
         <motion.div 
@@ -895,7 +895,7 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
       )}
 
       {/* LEFT SIDEBAR: Unified Chat List */}
-      <div className="w-80 bg-[#050819] flex flex-col border-r border-white/5">
+      <div className="w-80 bg-black/30 backdrop-blur-md flex flex-col border-r border-white/5">
          {/* Header */}
          <div className="h-16 flex items-center justify-between px-4 border-b border-white/5 shrink-0">
              <div className="flex items-center gap-2">
@@ -913,8 +913,8 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
              </button>
              </div>
 
-             {/* Folders Bar */}
-             <div className="flex gap-1 p-2 overflow-x-auto custom-scrollbar border-b border-white/5 shrink-0">
+             {/* Folders Bar - REMOVED since these don't belong here */}
+             {/* <div className="flex gap-1 p-2 overflow-x-auto custom-scrollbar border-b border-white/5 shrink-0 sticky top-0 bg-black/30 backdrop-blur-md z-10">
               {['All', 'Personal', 'Work', 'Crypto', 'Gaming'].map(folder => (
                   <button
                      key={folder}
@@ -924,7 +924,7 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
                       {folder}
                   </button>
               ))}
-             </div>
+             </div> */}
 
          {/* Search & Call History Toggle */}
          <div className="p-2 border-b border-white/5 flex gap-2">
@@ -1033,8 +1033,8 @@ const Chat: React.FC<ChatProps> = ({ userId: userIdProp = '' }) => {
          </div>
       </div>
 
-      <div className="flex-1 flex flex-col bg-[#0E1430] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative">
-        <div className="p-4 border-b border-white/5 flex items-center justify-between bg-[#080C22]/40 backdrop-blur-xl">
+      <div className="flex-1 flex flex-col bg-transparent border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative">
+        <div className="p-4 border-b border-white/5 flex items-center justify-between bg-black/20 backdrop-blur-xl">
           <div className="flex items-center gap-4">
             <div>
                 <h3 className="font-black text-xs uppercase tracking-[0.2em]">{currentChat.title || 'General Lobby'}</h3>

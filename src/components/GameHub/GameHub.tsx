@@ -25,7 +25,7 @@ export default function GameHub() {
     title: "StrikeForce",
     description:
       "Experience intense tactical combat in a dystopian future. Command elite units through strategic battlefield encounters with stunning real-time graphics and immersive gameplay.",
-    image: "/strikeforce.jpg",
+    image: "/Robotninja .png",
     rating: 4.8,
     players: 12543,
     genre: "Action",
