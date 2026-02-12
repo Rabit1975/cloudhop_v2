@@ -1,0 +1,45 @@
+---
+description: A presence indicator for HopHub contexts
+labels: ['presence', 'indicator', 'status', 'ui']
+---
+
+A presence indicator to display the user status within HopHub.
+
+### Basic Usage
+
+Displays the presence indicator for various user statuses.
+
+```tsx
+<HopHubPresenceIndicator status="online" />
+<HopHubPresenceIndicator status="away" />
+<HopHubPresenceIndicator status="busy" />
+<HopHubPresenceIndicator status="offline" />
+```
+### Customizing Size
+Demonstrates how to adjust the size of the presence indicator using the size prop.
+```tsx
+<HopHubPresenceIndicator status="online" size="small" />
+<HopHubPresenceIndicator status="away" size="medium" />
+<HopHubPresenceIndicator status="busy" size="large" />
+```
+### Integration with Avatar
+Illustrates placing the presence indicator on top of an avatar to show user status.
+```tsx
+<div style={{ position: 'relative', width: '48px', height: '48px' }}>
+  <div style={{ 
+    width: '100%', 
+    height: '100%', 
+    borderRadius: '9999px', 
+    backgroundColor: '#6366f1',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    fontWeight: 'bold'
+  }}>
+    JD
+  </div>
+  <div style={{ position: 'absolute', bottom: '-2px', right: '-2px' }}>
+    <HopHubPresenceIndicator status="online" size="large" />
+  </div>
+</div>

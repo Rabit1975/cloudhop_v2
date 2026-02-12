@@ -1,0 +1,113 @@
+---
+description: A React hook for managing AI settings, including fetching and updating.
+labels: ['hook', 'react', 'ai', 'settings']
+---
+
+A React hook for managing AI settings, including fetching and updating. It provides capabilities to retrieve current AI configuration and to submit changes to these settings.
+
+### Basic AI Settings Fetching
+
+This example demonstrates how to fetch AI settings using the useAiSettings hook. It shows the current settings or a loading state.
+
+```tsx
+import React from 'react';
+import { useAiSettings } from './use-ai-settings.js';
+
+const AiSettingsFetcher = () => {
+  const { settings, loading, error, refetch } = useAiSettings();
+  if (loading) return <p>Loading AI settings...</p>;
+  if (error) return <p>Error loading settings: {error}</p>;
+  if (!settings) return <p>No AI settings found.</p>;
+  return (
+    <div>
+      <h2>Current AI Settings</h2>
+      <p>Provider: {settings.defaultProvider}</p>
+      <p>Model: {settings.defaultModel}</p>
+      <p>Temperature: {settings.temperature}</p>
+      <p>Max Tokens: {settings.maxTokens}</p>
+      <button onClick={refetch}>Refetch Settings</button>
+    </div>
+  );
+};
+```
+
+### Updating AI Settings
+
+This example shows how to use the useUpdateAiSettings hook to modify existing AI settings. It includes handling the loading and error states during the update process.
+
+```tsx
+import React, { useState } from 'react';
+import { useUpdateAiSettings } from './use-update-ai-settings.js';
+
+const AiSettingsUpdater = () => {
+  const [newTemp, setNewTemp] = useState(0.7);
+  const { updateAiSettings, loading, error, data: updatedSettings } = useUpdateAiSettings();
+  const handleUpdate = async () => {
+    try {
+      await updateAiSettings({
+        defaultProvider: 'openai', // Example: Use a fixed provider
+        defaultModel: 'gpt-4',     // Example: Use a fixed model
+        apiKey: 'sk-xxxxxx',       // Example: Use a placeholder API key
+        temperature: newTemp,
+        maxTokens: 200,
+      });
+      alert('Settings updated successfully!');
+    } catch (err: any) {
+      alert(`Failed to update settings: ${error || err.message}`);
+    }
+  };
+  return (
+    <div>
+      <h3>Update AI Settings</h3>
+      <label>
+        New Temperature:
+        <input
+          type="number"
+          step="0.1"
+          min="0"
+          max="1"
+          value={newTemp}
+          onChange={(e) => setNewTemp(parseFloat(e.target.value))}
+          disabled={loading}
+        />
+      </label>
+      <button onClick={handleUpdate} disabled={loading}>
+        {loading ? 'Updating...' : 'Update Temperature'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {updatedSettings && <p>Last updated model: {updatedSettings.defaultModel}</p>}
+    </div>
+  );
+};
+```
+
+### Fetching AI Settings with Mock Data
+
+This example demonstrates how to use the useAiSettings hook with mock data, which is useful for testing or development environments.
+
+```tsx
+import React from 'react';
+import { useAiSettings } from './use-ai-settings.js';
+
+const AiSettingsMockFetcher = () => {
+  const mockAiSettingsData = {
+    defaultProvider: 'mock-provider',
+    defaultModel: 'mock-model',
+    apiKey: 'mock-key-123',
+    temperature: 0.8,
+    maxTokens: 500,
+  };
+  const { settings, loading, error } = useAiSettings({ mockData: mockAiSettingsData });
+  if (loading) return <p>Loading mock AI settings...</p>;
+  if (error) return <p>Error loading mock settings: {error}</p>;
+  if (!settings) return <p>No mock AI settings found.</p>;
+  return (
+    <div>
+      <h2>Mock AI Settings</h2>
+      <p>Provider: {settings.defaultProvider}</p>
+      <p>Model: {settings.defaultModel}</p>
+      <p>Temperature: {settings.temperature}</p>
+      <p>Max Tokens: {settings.maxTokens}</p>
+    </div>
+  );
+};

@@ -1,0 +1,65 @@
+---
+description: A UI component for managing calendar synchronization settings.
+labels: ['calendar', 'sync', 'settings', 'ui']
+---
+The `CalendarSyncSettings` component provides an interface for users to manage their external calendar integrations. It allows connecting new calendar accounts and disconnecting existing ones, displaying connected calendars with their details.
+
+This component is designed to be easily integrated into user settings pages or dashboards where calendar synchronization is required. It handles the display of connected accounts, provides actions for connection and disconnection, and shows loading or error states.
+
+### Basic Usage
+
+This example demonstrates the basic usage of the CalendarSyncSettings component with multiple calendar accounts already connected.
+
+```tsx
+<CloudrabbitTheme>
+  <MockProvider>
+    <CalendarSyncSettings
+      mockIntegrations={[
+        {
+          id: '1',
+          userId: 'user-123',
+          provider: 'google',
+          email: 'alice.w@example.com',
+          connectedAt: new Date('2023-10-15').toISOString(),
+        },
+        {
+          id: '2',
+          userId: 'user-123',
+          provider: 'outlook',
+          email: 'alice.work@corporate.com',
+          connectedAt: new Date('2023-11-02').toISOString(),
+        },
+      ]}
+    />
+  </MockProvider>
+</CloudrabbitTheme>
+```
+
+### Empty State
+This example shows the CalendarSyncSettings component when no external calendars are connected, displaying the empty state.
+```tsx
+<CloudrabbitTheme>
+  <MockProvider>
+    <CalendarSyncSettings mockIntegrations={[]} />
+  </MockProvider>
+</CloudrabbitTheme>
+```
+
+### Single Integration
+This example illustrates the CalendarSyncSettings component with a single calendar integration.
+```tsx
+<CloudrabbitTheme>
+  <MockProvider>
+    <CalendarSyncSettings
+      mockIntegrations={[
+        {
+          id: '3',
+          userId: 'user-456',
+          provider: 'apple',
+          email: 'designer@icloud.com',
+          connectedAt: new Date('2024-01-20').toISOString(),
+        }
+      ]}
+    />
+  </MockProvider>
+</CloudrabbitTheme>

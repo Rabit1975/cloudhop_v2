@@ -1,0 +1,127 @@
+---
+description: A React Hook for fetching and managing music track data. It provides methods for listing tracks, getting a single track, uploading user audio, and importing external tracks.
+labels: ['hook', 'react', 'music', 'tracks', 'graphql']
+---
+
+### Listing All Music Tracks
+
+This example demonstrates fetching and displaying a list of all available music tracks. It handles loading and error states during the data retrieval process.
+
+```tsx
+import React from 'react';
+import { useListMusicTracks } from './use-list-music-tracks.js';
+const MusicTrackList = () => {
+  const { tracks, loading, error } = useListMusicTracks();
+  if (loading) return <p>Loading tracks...</p>;
+  if (error) return <p>Error loading tracks: {error.message}</p>;
+  return (
+    <div>
+      <h2>Music Tracks</h2>
+      {tracks.length === 0 ? (
+        <p>No tracks found.</p>
+      ) : (
+        <ul>
+          {tracks.map((track) => (
+            <li key={track.id}>
+              {track.title} by {track.artist || 'Unknown Artist'} ({track.duration}s)
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+```
+
+### Fetching a Specific Music Track
+
+This example illustrates how to retrieve details for a single music track by its ID. It includes handling for loading and error states.
+
+```tsx
+import React from 'react';
+import { useGetMusicTrack } from './use-get-music-track.js';
+const SingleMusicTrackDetail = () => {
+  const trackIdToFetch = 'some-existing-track-id'; // Replace with a real track ID from your backend
+  const { track, loading, error } = useGetMusicTrack({
+    variables: { trackId: trackIdToFetch },
+  });
+  if (loading) return <p>Loading track...</p>;
+  if (error) return <p>Error loading track: {error.message}</p>;
+  if (!track) return <p>Track not found. Please ensure a track with ID 'some-existing-track-id' exists.</p>;
+  return (
+    <div>
+      <h2>Track Details</h2>
+      <p>Title: {track.title}</p>
+      <p>Artist: {track.artist || 'Unknown'}</p>
+      <p>Duration: {track.duration} seconds</p>
+      <p>Source: {track.sourceType}</p>
+    </div>
+  );
+};
+```
+
+### Uploading a New Audio Track
+
+This example demonstrates how to upload a new audio track from a user. It shows how to trigger the upload and handle the result.
+
+```tsx
+import React, { useState } from 'react';
+import { useUploadUserAudio } from './use-upload-user-audio.js';
+const UploadAudioComponent = () => {
+  const { uploadUserAudio, loading, error, data: uploadedTrack } = useUploadUserAudio();
+  const [title, setTitle] = useState('');
+  const [artist, setArtist] = useState('');
+  const [fileUrl, setFileUrl] = useState('');
+  const [duration, setDuration] = useState(0);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // In a real application, 'audioFileUrl' would be a URL obtained after
+      // uploading the actual file to a storage service (e.g., S3).
+      const newTrack = await uploadUserAudio({
+        title,
+        artist,
+        duration,
+        audioFileUrl: fileUrl, // This should be a URL to the hosted audio file
+        isPublic: true,
+      });
+      console.log('Uploaded track:', newTrack);
+      alert(`Track "${newTrack.title}" uploaded successfully!`);
+      setTitle('');
+      setArtist('');
+      setFileUrl('');
+      setDuration(0);
+    } catch (err) {
+      console.error('Upload failed:', err);
+      alert(`Upload failed: ${err.message}`);
+    }
+  };
+  return (
+    <div>
+      <h2>Upload Your Audio</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Title:</label>
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        </div>
+        <div>
+          <label>Artist:</label>
+          <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} />
+        </div>
+        <div>
+          <label>Audio File URL:</label>
+          <input type="url" value={fileUrl} onChange={(e) => setFileUrl(e.target.value)} required />
+        </div>
+        <div>
+          <label>Duration (seconds):</label>
+          <input type="number" value={duration} onChange={(e) => setDuration(parseInt(e.target.value, 10))} required />
+        </div>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Uploading...' : 'Upload Track'}
+        </button>
+      </form>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {uploadedTrack && <p>Successfully uploaded: {uploadedTrack.title}</p>}
+    </div>
+  );
+};

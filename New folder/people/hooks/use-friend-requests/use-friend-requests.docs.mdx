@@ -1,0 +1,139 @@
+---
+description: A React Hook for managing friend requests. It provides hooks for fetching incoming and outgoing requests, and actions to send, accept, reject, or cancel requests.
+labels: ['hook', 'react', 'friend-requests', 'social']
+---
+
+A React Hook for managing friend requests. This collection of hooks allows you to fetch incoming and outgoing friend requests, send new requests, and manage existing ones by accepting, rejecting, or cancelling them. It handles loading and error states for a smooth user experience.
+
+## Usage
+
+### Displaying and managing incoming requests
+
+This example demonstrates how to fetch and display a list of incoming friend requests. It also shows how to accept or reject these requests using the respective hooks.
+
+```tsx
+import React from 'react';
+import { useIncomingFriendRequests, useAcceptFriendRequest, useRejectFriendRequest } from './index.js';
+
+const IncomingRequestsList = () => {
+  const { friendRequests, loading, error, refetch } = useIncomingFriendRequests();
+  const { acceptFriendRequest, loading: accepting } = useAcceptFriendRequest();
+  const { rejectFriendRequest, loading: rejecting } = useRejectFriendRequest();
+
+  if (loading) return <p>Loading incoming friend requests...</p>;
+  if (error) return <p>Error loading requests: {error.message}</p>;
+
+  const handleAccept = async (requestId: string) => {
+    try {
+      await acceptFriendRequest(requestId);
+      alert('Friend request accepted!');
+      refetch();
+    } catch (err) {
+      console.error('Failed to accept request:', err);
+    }
+  };
+
+  const handleReject = async (requestId: string) => {
+    try {
+      await rejectFriendRequest(requestId);
+      alert('Friend request rejected!');
+      refetch();
+    } catch (err) {
+      console.error('Failed to reject request:', err);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Incoming Friend Requests</h2>
+      {friendRequests.length === 0 ? (
+        <p>No incoming friend requests.</p>
+      ) : (
+        <ul>
+          {friendRequests.map((request) => (
+            <li key={request.id}>
+              From User ID: {request.fromUserId}
+              <button onClick={() => handleAccept(request.id)} disabled={accepting}>
+                {accepting ? 'Accepting...' : 'Accept'}
+              </button>
+              <button onClick={() => handleReject(request.id)} disabled={rejecting}>
+                {rejecting ? 'Rejecting...' : 'Reject'}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+```
+
+### Sending and managing outgoing requests
+
+This example shows how to send a new friend request to another user and how to list and cancel friend requests that have been sent.
+
+```tsx
+import React, { useState } from 'react';
+import { useSendFriendRequest, useOutgoingFriendRequests, useCancelFriendRequest } from './index.js';
+
+const OutgoingRequestsManager = () => {
+  const [toUserId, setToUserId] = useState('');
+  const { sendFriendRequest, loading: sending } = useSendFriendRequest();
+  const { friendRequests, loading: loadingOutgoing, error: outgoingError, refetch } = useOutgoingFriendRequests();
+  const { cancelFriendRequest, loading: cancelling } = useCancelFriendRequest();
+
+  const handleSendRequest = async () => {
+    if (!toUserId) return;
+    try {
+      await sendFriendRequest(toUserId);
+      alert('Friend request sent!');
+      setToUserId('');
+      refetch();
+    } catch (err) {
+      console.error('Failed to send request:', err);
+    }
+  };
+
+  const handleCancelRequest = async (requestId: string) => {
+    try {
+      await cancelFriendRequest(requestId);
+      alert('Friend request cancelled!');
+      refetch();
+    } catch (err) {
+      console.error('Failed to cancel request:', err);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Send Friend Request</h2>
+      <input
+        type="text"
+        placeholder="Enter user ID"
+        value={toUserId}
+        onChange={(e) => setToUserId(e.target.value)}
+      />
+      <button onClick={handleSendRequest} disabled={sending}>
+        {sending ? 'Sending...' : 'Send Request'}
+      </button>
+
+      <h2>Outgoing Friend Requests</h2>
+      {loadingOutgoing && <p>Loading outgoing friend requests...</p>}
+      {outgoingError && <p>Error loading outgoing requests: {outgoingError.message}</p>}
+      {!loadingOutgoing && friendRequests.length === 0 ? (
+        <p>No outgoing friend requests.</p>
+      ) : (
+        <ul>
+          {friendRequests.map((request) => (
+            <li key={request.id}>
+              To User ID: {request.toUserId} - Status: {request.status}
+              <button onClick={() => handleCancelRequest(request.id)} disabled={cancelling}>
+                {cancelling ? 'Cancelling...' : 'Cancel Request'}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};

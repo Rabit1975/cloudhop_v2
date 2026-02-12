@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudHop Platform - UI Components</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .component-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+
+        .component-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .component-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .status.ready {
+            background: #48bb78;
+            color: white;
+        }
+
+        .status.beta {
+            background: #ed8936;
+            color: white;
+        }
+
+        .file-path {
+            background: #f7fafc;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #2d3748;
+            border-left: 4px solid #667eea;
+        }
+
+        .demo-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .demo-section h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .button-demo {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .input-demo {
+            margin-bottom: 20px;
+        }
+
+        .input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .card-demo {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 300px;
+            color: #333;
+        }
+
+        .card-demo h3 {
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tech-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .navigation {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 CloudHop Platform</h1>
+            <p>Modular Operating System for Next-Gen Communication</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎨 Live UI Component Demo</h2>
+            
+            <div class="navigation">
+                <a href="#" class="nav-item active">Overview</a>
+                <a href="#" class="nav-item">Components</a>
+                <a href="#" class="nav-item">Themes</a>
+                <a href="#" class="nav-item">Documentation</a>
+            </div>
+
+            <div class="button-demo">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+                <button class="btn btn-primary" disabled>Disabled</button>
+            </div>
+
+            <div class="input-demo">
+                <input type="text" class="input" placeholder="Enter your message...">
+            </div>
+
+            <div style="display: flex; gap: 20px; align-items: flex-start;">
+                <div class="card-demo">
+                    <h3>Game Card Component</h3>
+                    <p>Interactive game cards with ratings and platform badges.</p>
+                    <div class="status ready">Production Ready</div>
+                </div>
+                
+                <div class="card-demo">
+                    <h3>Message Bubble</h3>
+                    <p>Chat messages with avatars and timestamps.</p>
+                    <div class="status ready">Production Ready</div>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <span class="tech-tag">React 18</span>
+                <span class="tech-tag">TypeScript</span>
+                <span class="tech-tag">SCSS Modules</span>
+                <span class="tech-tag">Bit.dev</span>
+                <span class="tech-tag">Design Tokens</span>
+            </div>
+        </div>
+
+        <div class="component-grid">
+            <div class="component-card">
+                <div class="status ready">Production Ready</div>
+                <h3 class="component-title">🤖 AI Chat Interface</h3>
+                <p class="component-description">Complete chat system with message bubbles, avatars, and AI integration. Supports both light and dark themes with smooth animations.</p>
+                <div class="file-path">📁 ai/ui/chat-message</div>
+            </div>
+
+            <div class="component-card">
+                <div class="status ready">Production Ready</div>
+                <h3 class="component-title">🎮 Game Hub System</h3>
+                <p class="component-description">Gaming platform with achievements, leaderboards, and game activity tracking. Supports HTML5, Unity, and streaming games.</p>
+                <div class="file-path">📁 gamehub/ui</div>
+            </div>
+
+            <div class="component-card">
+                <div class="status ready">Production Ready</div>
+                <h3 class="component-title">💬 HopHub Communication</h3>
+                <p class="component-description">Real-time messaging system with channels, conversations, and direct messages. Features rich media attachments.</p>
+                <div class="file-path">📁 hophub/ui</div>
+            </div>
+
+            <div class="component-card">
+                <div class="status ready">Production Ready</div>
+                <h3 class="component-title">🎨 Design System</h3>
+                <p class="component-description">Comprehensive theming system with light/dark modes, design tokens, and nebula effects. Fully customizable.</p>
+                <div class="file-path">📁 design/cloudrabbit-theme</div>
+            </div>
+
+            <div class="component-card">
+                <div class="status beta">Beta</div>
+                <h3 class="component-title">🎵 Music Studio</h3>
+                <p class="component-description">Music creation and playlist management system with audio upload, track editing, and studio project management.</p>
+                <div class="file-path">📁 music/ui</div>
+            </div>
+
+            <div class="component-card">
+                <div class="status beta">Beta</div>
+                <h3 class="component-title">📹 HopMeets Video</h3>
+                <p class="component-description">Video conferencing and meeting system with calendar integration, meeting rooms, and scheduling.</p>
+                <div class="file-path">📁 hopmeets/ui</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: white; padding: 40px;">
+            <h2>🎯 Ready for Development</h2>
+            <p>All components are fully functional and ready for integration.</p>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                Each module can be developed and tested independently using Bit.dev workspaces.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (!this.disabled) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                }
+            });
+        });
+
+        // Navigation interaction
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

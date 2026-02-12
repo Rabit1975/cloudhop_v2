@@ -1,0 +1,114 @@
+---
+description: A versatile and visually engaging card component that serves as a flexible container for various content types.
+labels: ['card', 'ui', 'layout']
+---
+
+A versatile and visually engaging card component that serves as a flexible container for various content types. It supports children, an optional title, variant, header, footer, image, imageAlt, interactive behavior, and custom class names.
+
+## Basic Card
+
+This example shows a card with a title and main content. It uses the default variant.
+
+```tsx
+<Card title="Welcome to CloudHop">
+  <p style={{ margin: 0, lineHeight: '1.5' }}>
+    Experience the modular operating system for next-generation communication.
+    Combine chat, video, music, and gaming in one unified interface.
+  </p>
+</Card>
+```
+## Interactive Card with Image and Footer
+This example demonstrates an interactive card with an image, a title, body content, and a custom footer. The card responds to hover interactions.
+```tsx
+const imageUrl = "https://storage.googleapis.com/bit-generated-images/images/image_abstract_digital_art__flowing__0_1770832599185.png";
+<Card
+  title="Cyber Odyssey"
+  image={imageUrl}
+  imageAlt="Digital abstract art representing a game world"
+  interactive
+  variant="outlined"
+  footer={
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <span style={{ fontSize: '12px', color: 'var(--colors-text-secondary)', fontWeight: 500 }}>RPG • Adventure</span>
+      <button style={{
+        background: 'var(--colors-primary-default)',
+        color: 'var(--colors-primary-contrast)',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: 'var(--borders-radius-medium)',
+        cursor: 'pointer',
+        fontWeight: 'bold',
+        fontSize: '12px'
+      }}>
+        Play Now
+      </button>
+    </div>
+  }
+>
+  <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
+    Dive into the neon-soaked streets of the digital frontier.
+    A masterpiece showcase on the GameHub platform.
+  </p>
+</Card>
+```
+## Card with Custom Header and Footer
+This example illustrates a card with a fully customized header and footer. It highlights a meeting schedule using the elevated variant.
+```tsx
+<Card
+  variant="elevated"
+  header={
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+      <span style={{ fontWeight: 'bold', color: 'var(--colors-text-primary)' }}>Design Sync</span>
+      <span style={{
+        backgroundColor: 'var(--colors-surface-tertiary)',
+        padding: '4px 10px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        color: 'var(--colors-text-secondary)',
+        fontWeight: 500
+      }}>
+        10:00 AM
+      </span>
+    </div>
+  }
+  footer={
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <span style={{ 
+        fontSize: '13px', 
+        color: 'var(--colors-primary-default)', 
+        cursor: 'pointer',
+        fontWeight: 600
+      }}>
+        Join Meeting &rarr;
+      </span>
+    </div>
+  }
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+    <div style={{ display: 'flex' }}>
+      {[1, 2, 3].map((i) => (
+        <div key={i} style={{
+          width: 32,
+          height: 32,
+          borderRadius: '50%',
+          backgroundColor: `hsl(${200 + i * 20}, 60%, 80%)`,
+          border: '2px solid var(--colors-surface-secondary)',
+          marginLeft: i > 1 ? -10 : 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '10px',
+          fontWeight: 'bold',
+          color: '#333'
+        }}>
+          U{i}
+        </div>
+      ))}
+    </div>
+    <span style={{ fontSize: '12px', color: 'var(--colors-text-secondary)' }}>+4 others attending</span>
+  </div>
+  <p style={{ margin: 0, fontSize: '14px', color: 'var(--colors-text-secondary)', lineHeight: '1.5' }}>
+    Weekly synchronization for the CloudHop product design team. 
+    Reviewing new card components and nebula themes.
+  </p>
+</Card>

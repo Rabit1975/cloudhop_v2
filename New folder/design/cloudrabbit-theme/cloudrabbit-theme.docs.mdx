@@ -1,0 +1,95 @@
+---
+description: A theme providing design tokens and styling for light and dark modes with nebula effects.
+labels: ['react', 'theme', 'design-system', 'dark-mode', 'nebula']
+---
+
+The CloudrabbitTheme component provides a comprehensive design system for the CloudHop platform. It includes predefined design tokens for colors, typography, spacing, and effects, supporting both light and dark modes. Additionally, it integrates a unique nebula background effect to enhance the visual experience, particularly for social hubs.
+
+This theme ensures a consistent look and feel across all CloudHop modules, while allowing for dynamic theme switching.
+
+### Basic Theme Application
+
+This example shows the basic integration of CloudrabbitTheme to provide styling and design tokens to child components. By default, it applies the light theme mode to its content.
+
+```tsx
+import { CloudrabbitTheme } from './cloudrabbit-theme.js';
+export default function BasicThemeExample() {
+  return (
+    <CloudrabbitTheme>
+      <div style={{ padding: '24px', borderRadius: 'var(--borders-radius-medium)', backgroundColor: 'var(--colors-surface-primary)', color: 'var(--colors-text-primary)' }}>
+        <h2 style={{ fontSize: 'var(--typography-sizes-heading-h2)', marginBottom: '16px', color: 'var(--colors-primary-default)' }}>
+          Welcome to CloudHop
+        </h2>
+        <p style={{ fontSize: 'var(--typography-sizes-body-default)' }}>
+          This content is styled by the CloudrabbitTheme.
+          Observe the default light mode colors and typography.
+        </p>
+      </div>
+    </CloudrabbitTheme>
+  );
+}
+```
+### Dark Mode Application
+This example demonstrates how to explicitly apply the dark theme mode using the initialTheme prop. Notice the changes in background, text, and primary colors to match the dark aesthetic.
+```tsx
+import { CloudrabbitTheme } from './cloudrabbit-theme.js';
+export default function DarkThemeExample() {
+  return (
+    <CloudrabbitTheme initialTheme="dark">
+      <div style={{ padding: '24px', borderRadius: 'var(--borders-radius-medium)', backgroundColor: 'var(--colors-surface-primary)', color: 'var(--colors-text-primary)' }}>
+        <h2 style={{ fontSize: 'var(--typography-sizes-heading-h2)', marginBottom: '16px', color: 'var(--colors-primary-default)' }}>
+          CloudHop in Dark Mode
+        </h2>
+        <p style={{ fontSize: 'var(--typography-sizes-body-default)' }}>
+          The interface has switched to dark mode, providing a different visual experience.
+        </p>
+      </div>
+    </CloudrabbitTheme>
+  );
+}
+```
+### Dynamic Theme Toggling
+This example illustrates how to dynamically switch between light and dark themes using the useThemeController hook. A button allows users to toggle the theme mode, updating the styles of the wrapped content.
+```tsx
+import { useState } from 'react';
+import { CloudrabbitTheme, useThemeController } from './cloudrabbit-theme.js';
+function ThemeSwitcherContent() {
+  const { themeMode, toggleTheme } = useThemeController();
+  return (
+    <div style={{ 
+      padding: '24px', 
+      borderRadius: 'var(--borders-radius-medium)', 
+      backgroundColor: 'var(--colors-surface-primary)', 
+      color: 'var(--colors-text-primary)',
+      border: '1px solid var(--colors-border-default)'
+    }}>
+      <h2 style={{ fontSize: 'var(--typography-sizes-heading-h2)', marginBottom: '16px', color: 'var(--colors-primary-default)' }}>
+        Current Theme: {themeMode.charAt(0).toUpperCase() + themeMode.slice(1)}
+      </h2>
+      <p style={{ fontSize: 'var(--typography-sizes-body-default)', marginBottom: '24px' }}>
+        Click the button to change the theme mode.
+      </p>
+      <button 
+        onClick={toggleTheme} 
+        style={{
+          padding: '10px 20px',
+          backgroundColor: 'var(--colors-primary-default)',
+          color: 'var(--colors-primary-contrast)',
+          border: 'none',
+          borderRadius: 'var(--borders-radius-medium)',
+          cursor: 'pointer',
+          fontSize: 'var(--typography-sizes-body-default)'
+        }}
+      >
+        Toggle to {themeMode === 'light' ? 'Dark' : 'Light'} Mode
+      </button>
+    </div>
+  );
+}
+export default function DynamicThemeExample() {
+  return (
+    <CloudrabbitTheme>
+      <ThemeSwitcherContent />
+    </CloudrabbitTheme>
+  );
+}

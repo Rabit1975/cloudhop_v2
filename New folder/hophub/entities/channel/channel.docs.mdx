@@ -1,0 +1,107 @@
+---
+description: A Channel data entity for the HopHub platform.
+labels: ['channel', 'entity', 'hophub']
+---
+
+A `Channel` represents a communication channel within the HopHub platform, designed for real-time chat and group interactions. It supports various properties like `id`, `name`, `description`, `type` (public or private), `ownerId`, `memberIds`, and timestamps for creation and updates.
+
+## Get started
+
+Install and use the component in your code:
+
+```ts
+import { Channel } from './channel.js';
+import { PlainChannel } from './channel-type.js';
+// Example: Define a plain channel object
+const plainChannelData: PlainChannel = {
+  id: 'hophub-channel-123',
+  name: 'CloudHop Developers',
+  description: 'A channel for all CloudHop developers to collaborate.',
+  type: 'public',
+  ownerId: 'user-dev-lead',
+  memberIds: ['user-dev-lead', 'user-dev-alice', 'user-dev-bob'],
+  createdAt: '2023-10-26T10:00:00Z',
+  updatedAt: '2023-10-26T11:30:00Z',
+};
+// Create a Channel instance from a plain object
+const myChannel = Channel.from(plainChannelData);
+console.log(myChannel.name);
+```
+
+## Creating a channel instance
+
+Use the `Channel.from` static method to create a new Channel instance from a plain object. This is useful when reconstructing channel objects from data received from an API or storage.
+
+```ts
+import { Channel } from './channel.js';
+const channelData = {
+  id: 'project-alpha-channel',
+  name: 'Project Alpha Team',
+  description: 'Discussions for Project Alpha.',
+  type: 'private',
+  ownerId: 'pm-charlie',
+  memberIds: ['pm-charlie', 'dev-david', 'qa-eve'],
+  createdAt: '2023-09-15T09:00:00Z',
+};
+const projectChannel = Channel.from(channelData);
+console.log(`Channel Name: ${projectChannel.name}`);
+console.log(`Owner ID: ${projectChannel.ownerId}`);
+```
+
+## Serializing a channel instance
+
+Convert a Channel instance back to a plain JavaScript object using the `toObject` method. This is useful for sending channel data over an API or saving it to a database.
+
+```ts
+import { Channel } from './channel.js';
+const channelInstance = new Channel(
+  'community-channel-456',
+  'CloudHop Community',
+  'General discussions for the CloudHop community.',
+  'public',
+  'admin-global',
+  ['admin-global', 'user-1', 'user-2', 'user-3'],
+  '2023-08-01T14:00:00Z'
+);
+const plainObject = channelInstance.toObject();
+console.log(plainObject);
+/*
+Expected output (approximately):
+{
+  id: 'community-channel-456',
+  name: 'CloudHop Community',
+  description: 'General discussions for the CloudHop community.',
+  type: 'public',
+  ownerId: 'admin-global',
+  memberIds: [ 'admin-global', 'user-1', 'user-2', 'user-3' ],
+  createdAt: '2023-08-01T14:00:00Z',
+  updatedAt: undefined
+}
+*/
+```
+
+## Working with mock channel data
+
+Use `mockChannels` to get an array of mock Channel instances for development or testing purposes. `createMockChannel` allows you to generate a single mock Channel with optional overrides.
+
+```ts
+import { mockChannels, createMockChannel } from './channel.mock.js';
+// Get a list of mock channels
+const allMockChannels = mockChannels();
+console.log('All mock channels:', allMockChannels);
+// Create a single mock channel with custom properties
+const customMockChannel = createMockChannel({
+  name: 'Design Team Brainstorm',
+  type: 'private',
+  ownerId: 'designer-lead',
+});
+console.log('Custom mock channel:', customMockChannel);
+/*
+Example output:
+All mock channels: [
+  Channel { id: 'channel-1', name: 'General', ... },
+  Channel { id: 'channel-2', name: 'Announcements', ... },
+  Channel { id: 'channel-3', name: 'Secret Project', ... }
+]
+Custom mock channel: Channel { id: 'uuid-...', name: 'Design Team Brainstorm', ... }
+*/

@@ -1,0 +1,31 @@
+.spaceSearchResult {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.iconOverlay {
+  position: absolute;
+  top: var(--spacing-medium);
+  left: var(--spacing-medium);
+  z-index: 1;
+  pointer-events: none;
+  background-color: var(--colors-surface-primary);
+  border-radius: var(--borders-radius-medium);
+  padding: var(--spacing-xs);
+  box-shadow: var(--effects-shadows-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--colors-border-subtle);
+}
+
+.icon {
+  color: var(--colors-primary-default);
+  width: 20px;
+  height: 20px;
+}
+
+.card {
+  height: 100%;
+}

@@ -39,3 +39,10 @@ export interface Channel {
   members: string[]
   createdAt: string
 }
+
+// Missing type that was being imported
+export interface ReactionSummary {
+  emoji: string
+  count: number
+  users: string[]
+}

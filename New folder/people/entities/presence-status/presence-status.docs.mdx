@@ -1,0 +1,47 @@
+---
+description: A data entity for a user presence status
+labels: ['presence', 'entity', 'status']
+---
+
+A component to represent a user's presence status, including their current state and last seen timestamp. This entity supports creation from plain objects and serialization back to plain objects.
+
+### Create a PresenceStatus instance
+
+Create a new PresenceStatus object with a specified user ID, status, and last seen timestamp.
+
+```ts
+import { PresenceStatus } from './presence-status.js';
+const now = new Date().toISOString();
+const onlineStatus = PresenceStatus.from({
+  userId: 'user456',
+  status: 'online',
+  lastSeenAt: now
+});
+console.log(onlineStatus.userId);
+console.log(onlineStatus.status);
+```
+
+### Serialize a PresenceStatus object
+
+Convert a PresenceStatus instance into a plain JavaScript object for data transfer or storage.
+
+```ts
+import { PresenceStatus } from './presence-status.js';
+const now = new Date().toISOString();
+const awayStatus = PresenceStatus.from({
+  userId: 'user789',
+  status: 'away',
+  lastSeenAt: now
+});
+const plainObject = awayStatus.toObject();
+console.log(plainObject);
+```
+
+### Generate mock presence status data
+
+Use mock data for development and testing purposes.
+
+```ts
+import { mockPresenceStatuses } from './presence-status.mock.js';
+const mockData = mockPresenceStatuses();
+console.log(mockData[0].toObject());

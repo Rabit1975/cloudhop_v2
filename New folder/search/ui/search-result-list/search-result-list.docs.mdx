@@ -1,0 +1,40 @@
+---
+description: A component to display a list of search results.
+labels: ['search', 'list', 'ui']
+---
+
+A `SearchResultList` component displays a collection of search results using `SearchResultCard` components. It handles states for loading and when no results are found.
+
+### Basic list of results
+
+This example demonstrates how to render a basic list of search results.
+
+```tsx
+<SearchResultList results={[
+  {
+    id: '1',
+    title: 'HopHub General',
+    description: 'The main gathering place for the CloudHop community. Join the conversation and connect with others.',
+    type: 'Channel',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_futuristic_and_abstract_digi_0_1770835145692.png',
+    link: '/channels/general',
+  },
+  {
+    id: '2',
+    title: 'Cyber Nebula RPG',
+    description: 'An immersive RPG experience available now on GameHub. Explore the vast digital universe.',
+    type: 'Game',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_futuristic_and_abstract_digi_0_1770835145692.png',
+    link: '/gamehub/cyber-nebula',
+  },
+]} />
+```
+### Loading state
+This example shows the loading state of the component while search results are being fetched.
+```tsx
+<SearchResultList loading />
+```
+### No results found
+This example illustrates the display when no search results are returned.
+```tsx
+<SearchResultList results={[]} emptyMessage="No channels or games found. Try a different search term." />

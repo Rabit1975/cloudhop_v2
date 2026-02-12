@@ -1,0 +1,64 @@
+---
+description: A MediaAttachment entity used for handling message attachments.
+labels: ['media-attachment', 'entity', 'data']
+---
+
+A data entity for managing media attachments within messages. It supports various media types like images, videos, and general files, including properties for URLs, filenames, and sizes. This component provides serialization and deserialization capabilities for seamless integration across different parts of an application.
+
+### Creating a Media Attachment
+
+Instantiate a MediaAttachment for an image file with basic properties.
+
+```ts
+// import { MediaAttachment } from './media-attachment.js'; // Removed import
+// Assume MediaAttachment class is available in the context
+const imageAttachment = new MediaAttachment(
+  'img_001',
+  'image',
+  'https://example.com/photos/beach.jpg',
+  'https://example.com/photos/beach-thumb.jpg',
+  'beach.jpg',
+  123456
+);
+console.log(imageAttachment.url);
+// Expected output: https://example.com/photos/beach.jpg
+```
+
+### Using different media types
+Demonstrates how to create MediaAttachment instances for a video and a document, showing flexibility with optional properties.
+
+```ts
+// import { MediaAttachment } from './media-attachment.js'; // Removed import
+// Assume MediaAttachment class is available in the context
+const videoAttachment = MediaAttachment.from({
+  id: 'vid_002',
+  type: 'video',
+  url: 'https://example.com/videos/promo.mp4',
+  thumbnailUrl: 'https://example.com/videos/promo-thumb.jpg',
+  filename: 'promo.mp4',
+  size: 50000000
+});
+const documentAttachment = MediaAttachment.from({
+  id: 'doc_003',
+  type: 'file',
+  url: 'https://example.com/docs/report.pdf',
+  filename: 'report.pdf',
+  size: 200000
+});
+console.log(videoAttachment.type);
+// Expected output: video
+console.log(documentAttachment.filename);
+// Expected output: report.pdf
+```
+
+### Using mock data
+Generate a list of mock media attachments for development and testing purposes.
+
+```ts
+// import { mockMediaAttachments } from './media-attachment.mock.js'; // Removed import
+// Assume mockMediaAttachments function is available in the context
+const attachments = mockMediaAttachments();
+console.log(attachments.length);
+// Expected output: 3
+console.log(attachments[0].type);
+// Expected output: image

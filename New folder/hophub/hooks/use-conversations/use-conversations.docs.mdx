@@ -1,0 +1,164 @@
+---
+description: A React Hook for listing user conversations, ordered by last activity.
+labels: ['hook', 'react', 'conversations', 'real-time']
+---
+
+A React Hook for managing and displaying user conversations, including channels and direct messages. This hook provides conversations ordered by their last activity and can include unread counts, making it suitable for real-time communication platforms.
+
+## Usage
+
+### Displaying User Conversations
+
+This example shows how to fetch and display a list of conversations for the authenticated user, including their names and unread message counts. The conversations are ordered by their last activity.
+
+```tsx
+const ConversationList = () => {
+  const mockConversations = [
+    {
+      id: 'conv1',
+      type: 'CHANNEL',
+      name: 'General Discussion',
+      createdAt: '2024-01-01T10:00:00Z',
+      updatedAt: '2024-01-05T14:30:00Z',
+      unreadCount: 5
+    },
+    {
+      id: 'conv2',
+      type: 'DM',
+      name: 'Alice',
+      createdAt: '2024-01-02T11:00:00Z',
+      updatedAt: '2024-01-06T09:15:00Z',
+      unreadCount: 2
+    },
+    {
+      id: 'conv3',
+      type: 'CHANNEL',
+      name: 'Project Updates',
+      createdAt: '2024-01-03T09:00:00Z',
+      updatedAt: '2024-01-04T17:00:00Z',
+      unreadCount: 0
+    },
+  ];
+  const { conversations, loading, error } = useConversations({ mockData: mockConversations });
+
+  if (loading) return <div>Loading conversations...</div>;
+  if (error) return <div>Error: Failed to load conversations.</div>;
+
+  return (
+    <div>
+      <h2>My Conversations</h2>
+      <ul>
+        {conversations.map((conv) => (
+          <li key={conv.id}>
+            {conv.name} ({conv.type})
+            {conv.unreadCount > 0 && <span> ({conv.unreadCount} unread)</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+### Filtering Conversations by Type
+
+This example demonstrates how to filter conversations to show only direct messages by passing the conversation type as an option to the hook.
+
+```tsx
+const DirectMessagesList = () => {
+  const mockConversations = [
+    {
+      id: 'conv1',
+      type: 'CHANNEL',
+      name: 'General Discussion',
+      createdAt: '2024-01-01T10:00:00Z',
+      updatedAt: '2024-01-05T14:30:00Z',
+      unreadCount: 5
+    },
+    {
+      id: 'conv2',
+      type: 'DM',
+      name: 'Alice',
+      createdAt: '2024-01-02T11:00:00Z',
+      updatedAt: '2024-01-06T09:15:00Z',
+      unreadCount: 2
+    },
+    {
+      id: 'conv3',
+      type: 'CHANNEL',
+      name: 'Project Updates',
+      createdAt: '2024-01-03T09:00:00Z',
+      updatedAt: '2024-01-04T17:00:00Z',
+      unreadCount: 0
+    },
+    {
+      id: 'conv4',
+      type: 'DM',
+      name: 'Bob',
+      createdAt: '2024-01-07T10:00:00Z',
+      updatedAt: '2024-01-07T10:00:00Z',
+      unreadCount: 1
+    },
+  ];
+  // Pass type 'DM' to filter for direct messages
+  const { conversations, loading, error } = useConversations({ mockData: mockConversations, type: 'DM' });
+
+  if (loading) return <div>Loading direct messages...</div>;
+  if (error) return <div>Error: Failed to load direct messages.</div>;
+
+  return (
+    <div>
+      <h2>My Direct Messages</h2>
+      <ul>
+        {conversations.map((conv) => (
+          <li key={conv.id}>
+            {conv.name}
+            {conv.unreadCount > 0 && <span> ({conv.unreadCount} unread)</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+### Managing Loading and Error States
+
+This example illustrates how to handle loading states while conversations are being fetched and display error messages if fetching fails. Note that for a real application, `loading` and `error` states are observed from the hook's return value, and their actual occurrence depends on the underlying data fetching logic (e.g., an Apollo Client query).
+
+```tsx
+const ConversationStatus = () => {
+  const mockConversations = [
+    {
+      id: 'conv1',
+      type: 'CHANNEL',
+      name: 'General',
+      createdAt: '2024-01-01T10:00:00Z',
+      updatedAt: '2024-01-05T14:30:00Z',
+      unreadCount: 5
+    },
+  ];
+
+  // When mockData is provided, loading will typically be false and no error will occur.
+  // To truly demonstrate loading/error for a live query, you would omit mockData
+  // and configure your Apollo client (or data source) to simulate these states.
+  const { conversations, loading, error } = useConversations({ mockData: mockConversations });
+
+  if (loading) {
+    return <div>Fetching conversations, please wait...</div>;
+  }
+  if (error) {
+    return <div style={{ color: 'red' }}>Error: {error.message}</div>;
+  }
+
+  return (
+    <div>
+      <h2>Conversations Status</h2>
+      {conversations.length === 0 ? (
+        <p>No conversations found.</p>
+      ) : (
+        <p>Successfully loaded {conversations.length} conversations.</p>
+      )}
+    </div>
+  );
+};

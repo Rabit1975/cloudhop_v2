@@ -1,0 +1,20 @@
+---
+description: A component to embed Twitch live streams using channel name or stream URL.
+labels: ['twitch', 'viewer', 'stream', 'video', 'embed']
+---
+
+### Embedding with Channel Name
+Embed a Twitch stream by providing the channel name. This is the most straightforward way to display a live broadcast.
+
+```tsx
+<TwitchViewer channelName="twitch" />
+```
+### Embedding with Stream URL
+Embed a Twitch stream by providing the full stream URL. The component automatically extracts the channel name from the URL.
+```tsx
+<TwitchViewer twitchStreamUrl="https://www.twitch.tv/rocketleague" />
+```
+### Muted Autoplay Stream
+Control the initial playback state of the embedded stream. The stream will automatically start playing but remain muted until the user interacts.
+```tsx
+<TwitchViewer channelName="riotgames" autoplay={true} muted={true} />

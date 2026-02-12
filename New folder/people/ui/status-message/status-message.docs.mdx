@@ -1,0 +1,33 @@
+---
+description: A UI component to display a users custom status message with truncation and a tooltip.
+labels: ['status', 'message', 'ui']
+---
+
+A component to display a user's custom status message. It handles truncation for long messages and provides a tooltip on hover to show the full message.
+
+### Basic Status Message
+
+Displays a simple status message. This shows the basic rendering of the component.
+
+```tsx
+<StatusMessage message="Working from home 🏠" />
+```
+### Long Status Message Truncation
+Demonstrates how long messages are automatically truncated to fit the available width. Hovering over the message reveals the full text in a tooltip.
+```tsx
+<div style={{ width: '200px', border: '1px dashed grey', padding: '8px' }}>
+  <StatusMessage message="Listening to CloudHop FM • Chill Beats for Coding and Focus 🎵" />
+</div>
+```
+### Usage in a User Profile Card
+Integrates the status message component within a user profile card example, showcasing its use in a common UI layout.
+```tsx
+<div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px', border: '1px solid #ccc', borderRadius: '8px' }}>
+  <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#666', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+    JD
+  </div>
+  <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+    <span style={{ fontWeight: 'bold' }}>John Doe</span>
+    <StatusMessage message="In a meeting - do not disturb" />
+  </div>
+</div>

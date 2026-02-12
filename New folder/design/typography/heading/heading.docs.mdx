@@ -1,0 +1,63 @@
+---
+description: A semantic and visually consistent heading component that enhances content structure and readability
+labels: ['heading', 'typography', 'ui']
+---
+
+### Basic Heading Hierarchy
+
+Define the semantic level of your headings using the element prop to structure your content correctly for accessibility and SEO.
+
+```tsx
+<Heading element="h1">CloudHop Platform (H1)</Heading>
+<Heading element="h2">Communication Evolved (H2)</Heading>
+<Heading element="h3">HopHub Channels (H3)</Heading>
+<Heading element="h4">Direct Messages (H4)</Heading>
+<Heading element="h5">Online Users (H5)</Heading>
+<Heading element="h6">Settings (H6)</Heading>
+```
+
+### Customizing Visual Appearance
+
+Use the visualLevel prop to apply different typographic styles like display or body sizes independent of the semantic element. This allows for flexible design while maintaining document structure.
+
+```tsx
+<Heading element="h1" visualLevel="display-large">
+  Experience the Nebula
+</Heading>
+<Heading element="h2" visualLevel="display-medium">
+  Unified Digital Space
+</Heading>
+<Heading element="h3" visualLevel="display-small">
+  Seamless Connectivity
+</Heading>
+<Heading element="h4" visualLevel="body-large">
+  Important Notice
+</Heading>
+<Heading element="h5" visualLevel="body-medium">
+  Sub-section detail
+</Heading>
+<Heading element="h6" visualLevel="h3">
+  Another Heading
+</Heading>
+```
+
+### Inverse Color for Dark Backgrounds
+
+Apply the inverseColor prop when placing headings on dark backgrounds or nebula-themed sections to ensure optimal readability and visual contrast.
+
+```tsx
+<div
+  style={{
+    padding: '48px',
+    backgroundColor: 'var(--colors-surface-nebula)',
+    background: 'var(--effects-gradients-nebula)',
+    borderRadius: 'var(--borders-radius-large)',
+  }}
+>
+  <Heading element="h2" visualLevel="display-small" inverseColor>
+    Welcome to HopHub
+  </Heading>
+  <Heading element="h3" visualLevel="h4" inverseColor style={{ opacity: 0.9 }}>
+    Connect with your community in real-time, share moments, and explore the galaxy of content.
+  </Heading>
+</div>

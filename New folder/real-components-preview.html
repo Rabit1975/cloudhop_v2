@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudHop - Real Components Preview</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .component-showcase {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .component-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .component-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        /* UserBar Styles (from actual component) */
+        .userBar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 16px 24px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .userBar.loading {
+            justify-content: center;
+        }
+
+        .userBar.authButtons {
+            gap: 12px;
+        }
+
+        .loginLink {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .loginLink:hover {
+            background: #f7fafc;
+        }
+
+        .userTrigger {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .userTrigger:hover {
+            background: #f7fafc;
+        }
+
+        .userDetails {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .userName {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .userEmail {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .chevron {
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        /* Avatar Styles */
+        .avatar {
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .avatar.sm {
+            width: 32px;
+            height: 32px;
+            font-size: 12px;
+        }
+
+        .avatar.md {
+            width: 40px;
+            height: 40px;
+            font-size: 14px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdownContent {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 200px;
+            z-index: 1000;
+            margin-top: 4px;
+        }
+
+        .dropdownHeader {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .headerName {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .headerEmail {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .menuItem {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 14px;
+            color: #2d3748;
+        }
+
+        .menuItem:hover {
+            background: #f7fafc;
+        }
+
+        .menuItem.destructive {
+            color: #e53e3e;
+        }
+
+        .separator {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 4px 0;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        }
+
+        body.dark-theme .component-card {
+            background: rgba(45, 55, 72, 0.95);
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .component-title {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .userBar {
+            background: #2d3748;
+            border-bottom-color: #4a5568;
+        }
+
+        body.dark-theme .loginLink:hover {
+            background: #4a5568;
+        }
+
+        body.dark-theme .userTrigger:hover {
+            background: #4a5568;
+        }
+
+        body.dark-theme .userName {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .dropdownContent {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+
+        body.dark-theme .menuItem {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .menuItem:hover {
+            background: #4a5568;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-controls {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-controls h3 {
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .control-group label {
+            min-width: 120px;
+        }
+
+        .control-group input, .control-group select {
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Mock User Entity (simplified version)
+        const User = {
+            from: (data) => ({
+                ...data,
+                id: data.id,
+                username: data.username,
+                displayName: data.displayName,
+                email: data.email,
+                imageUrl: data.imageUrl
+            })
+        };
+
+        // Avatar Component
+        const Avatar = ({ src, letters, size = 'md', alt = 'Avatar' }) => {
+            const [imageError, setImageError] = useState(false);
+            const showImage = src && !imageError;
+            
+            const sizeStyles = {
+                sm: { width: '32px', height: '32px', fontSize: '12px' },
+                md: { width: '40px', height: '40px', fontSize: '14px' }
+            };
+
+            return (
+                <div 
+                    className="avatar" 
+                    style={sizeStyles[size]}
+                    title={alt}
+                >
+                    {showImage ? (
+                        <img 
+                            src={src} 
+                            alt={alt}
+                            onError={() => setImageError(true)}
+                            style={{ width: '100%', height: '100%', borderRadius: '50%' }}
+                        />
+                    ) : (
+                        <span>{letters?.slice(0, 2)}</span>
+                    )}
+                </div>
+            );
+        };
+
+        // Button Component
+        const Button = ({ children, href, appearance = 'primary', onClick, ...props }) => {
+            const className = `btn btn-${appearance}`;
+            
+            if (href) {
+                return (
+                    <a href={href} className={className} onClick={onClick} {...props}>
+                        {children}
+                    </a>
+                );
+            }
+            
+            return (
+                <button className={className} onClick={onClick} {...props}>
+                    {children}
+                </button>
+            );
+        };
+
+        // Dropdown Component
+        const Dropdown = ({ placeholder, children, openPosition = 'left' }) => {
+            const [isOpen, setIsOpen] = useState(false);
+            const dropdownRef = useRef(null);
+
+            useEffect(() => {
+                const handleClickOutside = (event) => {
+                    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                        setIsOpen(false);
+                    }
+                };
+
+                document.addEventListener('mousedown', handleClickOutside);
+                return () => document.removeEventListener('mousedown', handleClickOutside);
+            }, []);
+
+            return (
+                <div className="dropdown" ref={dropdownRef}>
+                    <div onClick={() => setIsOpen(!isOpen)}>
+                        {placeholder}
+                    </div>
+                    {isOpen && (
+                        <div className="dropdownContent" style={{ 
+                            [openPosition]: 0,
+                            ...(openPosition === 'right' ? { left: 'auto' } : { right: 'auto' })
+                        }}>
+                            {children}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // UserBar Component (based on actual code)
+        const UserBar = ({ menuItems = [], className, mockUser }) => {
+            const [user, setUser] = useState(mockUser);
+            const [loading, setLoading] = useState(false);
+
+            const logout = () => {
+                alert('Logging out...');
+                setUser(null);
+            };
+
+            if (loading) {
+                return (
+                    <div className={`userBar loading ${className}`}>
+                        <Avatar size="md" />
+                    </div>
+                );
+            }
+
+            if (!user) {
+                return (
+                    <div className={`userBar authButtons ${className}`}>
+                        <a href="/login" className="loginLink">
+                            Log in
+                        </a>
+                        <Button href="/signup" appearance="primary">
+                            Get started
+                        </Button>
+                    </div>
+                );
+            }
+
+            const UserTrigger = (
+                <div className="userTrigger">
+                    <Avatar
+                        src={user.imageUrl}
+                        letters={user.username?.slice(0, 2)}
+                        size="sm"
+                        alt={user.username}
+                    />
+                    <div className="userDetails">
+                        <span className="userName">{user.displayName || user.username}</span>
+                        <span className="userEmail">{user.email}</span>
+                    </div>
+                    <span className="chevron">▼</span>
+                </div>
+            );
+
+            return (
+                <div className={`userBar ${className}`}>
+                    <Dropdown placeholder={UserTrigger} openPosition="right">
+                        <div className="dropdownHeader">
+                            <div className="headerName">{user.displayName || user.username}</div>
+                            <div className="headerEmail">{user.email}</div>
+                        </div>
+
+                        {menuItems.map((item, index) => {
+                            const ItemComponent = item.href ? 'a' : 'button';
+                            const itemProps = item.href 
+                                ? { href: item.href } 
+                                : { onClick: item.onClick, type: 'button' };
+
+                            return (
+                                <ItemComponent
+                                    key={`${item.label}-${index}`}
+                                    className={`menuItem ${item.destructive ? 'destructive' : ''}`}
+                                    {...itemProps}
+                                >
+                                    {item.icon}
+                                    <span>{item.label}</span>
+                                </ItemComponent>
+                            );
+                        })}
+
+                        {menuItems.length > 0 && <div className="separator" />}
+
+                        <button
+                            className="menuItem destructive"
+                            onClick={logout}
+                            type="button"
+                        >
+                            <span>🚪</span>
+                            <span>Sign Out</span>
+                        </button>
+                    </Dropdown>
+                </div>
+            );
+        };
+
+        // Main App
+        const App = () => {
+            const [isDarkTheme, setIsDarkTheme] = useState(false);
+            const [isLoggedIn, setIsLoggedIn] = useState(true);
+            const [userName, setUserName] = useState('NebulaWalker');
+            const [userEmail, setUserEmail] = useState('nebula@cloudhop.com');
+
+            const mockUser = User.from({
+                id: 'u1',
+                userId: 'user-01',
+                username: userName,
+                displayName: userName,
+                email: userEmail,
+                roles: [],
+                imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_modern_and_minimalist_user_a_0_1770835130247.png'
+            });
+
+            const menuItems = [
+                { label: 'Profile', href: '/profile', icon: <span>👤</span> },
+                { label: 'Settings', href: '/settings', icon: <span>⚙️</span> },
+                { label: 'Help', onClick: () => alert('Help clicked!'), icon: <span>❓</span> },
+            ];
+
+            useEffect(() => {
+                document.body.className = isDarkTheme ? 'dark-theme' : '';
+            }, [isDarkTheme]);
+
+            return (
+                <div className="app-container">
+                    <button 
+                        className="theme-toggle"
+                        onClick={() => setIsDarkTheme(!isDarkTheme)}
+                    >
+                        {isDarkTheme ? '☀️ Light' : '🌙 Dark'}
+                    </button>
+
+                    <div className="header">
+                        <h1>🚀 CloudHop UserBar Component</h1>
+                        <p>Real Component from Codebase - Fully Interactive</p>
+                    </div>
+
+                    <div className="demo-controls">
+                        <h3>🎛️ Demo Controls</h3>
+                        <div className="control-group">
+                            <label>User State:</label>
+                            <select value={isLoggedIn ? 'logged-in' : 'logged-out'} onChange={(e) => setIsLoggedIn(e.target.value === 'logged-in')}>
+                                <option value="logged-in">Logged In</option>
+                                <option value="logged-out">Logged Out</option>
+                            </select>
+                        </div>
+                        <div className="control-group">
+                            <label>Username:</label>
+                            <input 
+                                type="text" 
+                                value={userName} 
+                                onChange={(e) => setUserName(e.target.value)}
+                                placeholder="Enter username"
+                            />
+                        </div>
+                        <div className="control-group">
+                            <label>Email:</label>
+                            <input 
+                                type="email" 
+                                value={userEmail} 
+                                onChange={(e) => setUserEmail(e.target.value)}
+                                placeholder="Enter email"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="component-showcase">
+                        <div className="component-card">
+                            <h2 className="component-title">👤 UserBar Component</h2>
+                            <UserBar 
+                                mockUser={isLoggedIn ? mockUser : null}
+                                menuItems={menuItems}
+                            />
+                        </div>
+
+                        <div className="component-card">
+                            <h2 className="component-title">📋 Component Info</h2>
+                            <div style={{ lineHeight: 1.6 }}>
+                                <p><strong>File:</strong> cloudhop-platform/composites/user-bar/user-bar.tsx</p>
+                                <p><strong>Features:</strong></p>
+                                <ul style={{ marginLeft: '20px', marginTop: '10px' }}>
+                                    <li>✅ Authentication states (logged in/out)</li>
+                                    <li>✅ User avatar with fallback initials</li>
+                                    <li>✅ Dropdown menu with menu items</li>
+                                    <li>✅ Logout functionality</li>
+                                    <li>✅ Responsive design</li>
+                                    <li>✅ Theme support</li>
+                                </ul>
+                                <p><strong>Try:</strong> Click the user avatar to open dropdown, change user details above, toggle theme!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

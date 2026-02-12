@@ -1,0 +1,48 @@
+---
+description: An input component for users to type AI prompts and send them for generation
+labels: ['prompt', 'input', 'ai', 'ui']
+---
+
+A dedicated input component for AI prompt entry. It includes a text area for typing and a button to initiate content generation.
+
+### Basic prompt input
+
+A standard prompt input field with a generate button to submit text.
+
+```tsx
+<PromptInput 
+  onSubmit={(value) => alert(`Prompt submitted: ${value}`)} 
+  placeholder="Enter your AI prompt here..."
+/>
+```
+### Controlled input with character count
+Manage the input value externally and display a character limit.
+```tsx
+const ControlledPromptExample = () => {
+  const [prompt, setPrompt] = useState('');
+  return (
+    <>
+      <PromptInput
+        value={prompt}
+        onChange={setPrompt}
+        maxLength={100}
+        placeholder="Type a short prompt (max 100 chars)"
+        onSubmit={(value) => alert(`Controlled prompt submitted: ${value}`)}
+      />
+      <div style={{ marginTop: '10px', fontSize: '14px', color: 'gray' }}>
+        Current prompt length: {prompt.length}
+      </div>
+    </>
+  );
+};
+<ControlledPromptExample />
+```
+### Loading state
+Indicate that content generation is in progress, disabling the input and button.
+```tsx
+<PromptInput
+  value="Generate a futuristic city skyline with flying vehicles and towering skyscrapers, in a cyberpunk style."
+  isLoading={true}
+  disabled={true}
+  onSubmit={(value) => console.log(value)}
+/>

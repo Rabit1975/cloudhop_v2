@@ -1,0 +1,67 @@
+---
+description: A data entity for social connections between users.
+labels: ['social', 'connection', 'entity', 'data-entity']
+---
+
+A `SocialConnection` represents a connection between two users, tracking its status and other relevant information. This entity can be used for managing friendships, followers, or block lists within a social platform.
+
+### Creating a new social connection
+
+This example shows how to create a new SocialConnection object with all required properties.
+
+```ts
+import { SocialConnection } from './social-connection.js';
+const newConnection = new SocialConnection(
+  'conn-456',
+  'user-alice',
+  'user-bob',
+  'pending',
+  new Date().toISOString()
+);
+console.log(newConnection.toObject());
+// {
+//   id: 'conn-456',
+//   userId1: 'user-alice',
+//   userId2: 'user-bob',
+//   status: 'pending',
+//   createdAt: '2024-01-01T12:00:00.000Z' // Example date
+// }
+```
+
+### Creating a social connection from a plain object
+This example demonstrates how to create a SocialConnection instance from a simple JavaScript object, useful when deserializing data.
+```ts
+import { SocialConnection } from './social-connection.js';
+const plainConnectionData = {
+  id: 'conn-789',
+  userId1: 'user-charlie',
+  userId2: 'user-diana',
+  status: 'accepted',
+  createdAt: '2023-11-15T10:30:00.000Z',
+  updatedAt: '2023-11-20T14:45:00.000Z',
+};
+const connection = SocialConnection.from(plainConnectionData);
+console.log(connection.status);
+// accepted
+```
+
+### Generating mock social connections
+This example demonstrates how to generate mock data for SocialConnection objects, useful for development and testing.
+```ts
+import { mockSocialConnection, mockSocialConnections } from './social-connection.mock.js';
+// Generate a single mock connection
+const singleMock = mockSocialConnection({ userId1: 'user-admin', status: 'blocked' });
+console.log(singleMock.toObject());
+// {
+//   id: 'conn-default',
+//   userId1: 'user-admin',
+//   userId2: 'user-2',
+//   status: 'blocked',
+//   createdAt: '2024-01-01T00:00:00.000Z'
+// }
+// Generate a list of mock connections
+const multipleMocks = mockSocialConnections();
+console.log(multipleMocks.length);
+// 3
+console.log(multipleMocks[0].status);
+// accepted

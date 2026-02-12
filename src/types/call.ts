@@ -36,3 +36,13 @@ export interface MediaStream {
   type: 'audio' | 'video' | 'screen'
   stream: MediaStream
 }
+
+// Missing types that were being imported
+export interface CallHistory {
+  id: string
+  callId: string
+  userId: string
+  duration: number
+  timestamp: string
+  type: CallType
+}

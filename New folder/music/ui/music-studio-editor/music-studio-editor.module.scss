@@ -1,0 +1,495 @@
+.studioEditor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--colors-surface-background);
+  color: var(--colors-text-primary);
+  font-family: var(--typography-font-family);
+  overflow: hidden;
+  user-select: none;
+  box-sizing: border-box; // Ensure consistent box model
+}
+
+.topBar {
+  height: 64px;
+  min-height: 64px;
+  border-bottom: 1px solid var(--colors-border-subtle);
+  background-color: var(--colors-surface-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-large);
+  box-shadow: var(--effects-shadows-small);
+  z-index: var(--interactions-z-index-sticky);
+}
+
+.projectMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.logo {
+  font-weight: var(--typography-font-weight-bold);
+  font-size: var(--typography-sizes-heading-h6);
+  background: var(--effects-gradients-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--colors-border-subtle);
+}
+
+.projectTitle {
+  margin: 0;
+  font-size: var(--typography-sizes-body-large);
+  color: var(--colors-text-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.zoomControl {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+  margin-right: var(--spacing-large);
+
+  .zoomSlider {
+    width: 100px;
+    height: 4px;
+    -webkit-appearance: none;
+    background: var(--colors-surface-tertiary);
+    border-radius: 2px;
+    outline: none;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--colors-primary-default);
+      cursor: pointer;
+    }
+  }
+}
+
+.mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.timelineHeader {
+  display: flex;
+  height: 32px;
+  background-color: var(--colors-surface-secondary);
+  border-bottom: 1px solid var(--colors-border-subtle);
+}
+
+.trackHeaderSpacer {
+  width: 260px;
+  min-width: 260px;
+  border-right: 1px solid var(--colors-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--colors-surface-primary);
+}
+
+.addTrackBtn {
+  font-size: var(--typography-sizes-caption-default) !important;
+  padding: 4px 12px !important;
+  height: 24px !important;
+  gap: 4px;
+}
+
+.rulerContainer {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  /* Sync scroll handled by JS logic or playhead tracking */
+}
+
+.rulerContent {
+  height: 100%;
+  position: relative;
+  background-image: linear-gradient(90deg, var(--colors-border-subtle) 1px, transparent 1px);
+  background-size: 50px 100%; // Default grid assumption
+}
+
+.rulerMarkerMajor {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-left: 1px solid var(--colors-text-secondary);
+  padding-left: 4px;
+  font-size: 10px;
+  color: var(--colors-text-secondary);
+  pointer-events: none;
+}
+
+.rulerMarkerMinor {
+  position: absolute;
+  bottom: 0;
+  height: 6px;
+  border-left: 1px solid var(--colors-border-subtle);
+  pointer-events: none;
+}
+
+.playheadHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--colors-primary-default);
+  z-index: 10;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -5px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid var(--colors-primary-default);
+  }
+}
+
+.timelineBody {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  background-color: #121212; // Dark background for tracks
+}
+
+.tracksContainer {
+  position: relative;
+  min-height: 100%;
+}
+
+.trackLane {
+  display: flex;
+  height: 100px;
+  border-bottom: 1px solid var(--colors-border-subtle);
+  position: relative;
+}
+
+.trackHeader {
+  width: 260px;
+  min-width: 260px;
+  background-color: var(--colors-surface-primary);
+  border-right: 1px solid var(--colors-border-subtle);
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.trackInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.trackIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.trackName {
+  font-size: var(--typography-sizes-body-small);
+  font-weight: var(--typography-font-weight-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trackControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-small);
+}
+
+.volumeControl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  margin-right: 8px;
+  color: var(--colors-text-secondary);
+}
+
+.volumeBar {
+  flex: 1;
+  height: 4px;
+  background-color: var(--colors-surface-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.volumeLevel {
+  height: 100%;
+  background-color: var(--colors-primary-default);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 4px;
+}
+
+.trackBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--colors-surface-secondary);
+  border: 1px solid var(--colors-border-default);
+  border-radius: 4px;
+  color: var(--colors-text-secondary);
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+
+  &:hover {
+    background: var(--colors-surface-tertiary);
+  }
+
+  &.active {
+    border-color: transparent;
+    color: #fff;
+  }
+}
+
+.trackBtn[aria-label="Mute"].active {
+  background-color: var(--colors-status-negative-default);
+}
+
+.trackBtn[aria-label="Solo"].active {
+  background-color: var(--colors-status-warning-default);
+}
+
+.trackContent {
+  flex: 1;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.gridLines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 50px 100%;
+}
+
+.clip {
+  position: absolute;
+  top: 10px;
+  height: calc(100% - 20px);
+  border-radius: var(--borders-radius-small);
+  cursor: grab;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--effects-shadows-small);
+  transition: border-color 0.2s;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  &.selected {
+    border: 1px solid #fff;
+    box-shadow: 0 0 0 1px #fff, var(--effects-shadows-medium);
+    z-index: 2;
+  }
+}
+
+.clipHeader {
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  pointer-events: none;
+}
+
+.clipName {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.waveformContainer {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.waveform {
+  width: 100%;
+  height: 100%;
+}
+
+.clipHandleLeft,
+.clipHandleRight {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  background: rgba(0,0,0,0.1);
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 3;
+
+  &:hover {
+    background: rgba(255,255,255,0.3);
+  }
+}
+
+.clip:hover .clipHandleLeft,
+.clip:hover .clipHandleRight {
+  opacity: 1;
+}
+
+.clipHandleLeft { left: 0; }
+.clipHandleRight { right: 0; }
+
+.playheadLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--colors-primary-default);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.bottomBar {
+  height: 80px;
+  background-color: var(--colors-surface-primary);
+  border-top: 1px solid var(--colors-border-subtle);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--interactions-z-index-sticky);
+}
+
+.transportBar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+  padding: 0 var(--spacing-large);
+  width: 100%;
+  max-width: var(--layout-max-page-width);
+  justify-content: space-between;
+}
+
+.transportControls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.iconBtn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--colors-text-secondary) !important;
+
+  &:hover {
+    color: var(--colors-primary-default) !important;
+    background-color: var(--colors-surface-secondary) !important;
+  }
+}
+
+.playBtn {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  
+  &.playing {
+    background-color: var(--colors-secondary-default) !important;
+  }
+}
+
+.recordIcon {
+  color: var(--colors-status-negative-default);
+}
+
+.transportDisplay {
+  display: flex;
+  align-items: center;
+  background-color: var(--colors-surface-background);
+  border: 1px solid var(--colors-border-subtle);
+  border-radius: var(--borders-radius-medium);
+  padding: 8px 24px;
+  gap: 24px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.timeDisplay, .tempoDisplay, .signatureDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+}
+
+.timeValue, .tempoValue, .signatureValue {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--colors-primary-default);
+}
+
+.timeLabel, .tempoLabel, .signatureLabel {
+  font-size: 10px;
+  color: var(--colors-text-secondary);
+  letter-spacing: 1px;
+}
+
+.transportSettings {
+  display: flex;
+  gap: var(--spacing-medium);
+}

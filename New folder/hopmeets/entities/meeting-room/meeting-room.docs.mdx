@@ -1,0 +1,48 @@
+---
+description: A data entity for managing meeting room details in the CloudHop platform.
+labels: ['meeting-room', 'data-entity', 'cloudhop']
+---
+
+### Create a new meeting room
+Directly instantiate a MeetingRoom object by providing all its required properties.
+
+```typescript
+const newRoom = new MeetingRoom(
+  'room-456',
+  'Conference Room A',
+  15,
+  false,
+  'user-abc',
+  undefined
+);
+console.log(`Room name: ${newRoom.name}`);
+```
+### Build a meeting room from a simple object
+Use the static from method to construct a MeetingRoom instance from a plain JavaScript object, typically received from an API or storage.
+```typescript
+const plainData = {
+  id: 'room-101',
+  name: 'Training Room',
+  capacity: 20,
+  isPrivate: false,
+  ownerId: 'user-xyz',
+  currentMeetingId: 'meeting-def'
+};
+const trainingRoom = MeetingRoom.from(plainData);
+console.log(`Room ID: ${trainingRoom.id}`);
+console.log(`Is private: ${trainingRoom.isPrivate}`);
+```
+### Serialize a meeting room instance
+Convert a MeetingRoom object into a plain JavaScript object. This is useful for sending data over a network or storing it persistently.
+```typescript
+const existingRoom = new MeetingRoom(
+  'room-secret',
+  'Private Discussion',
+  4,
+  true,
+  'user-secure',
+  'meeting-secure-001'
+);
+const serializedRoom = existingRoom.toObject();
+console.log(`Serialized name: ${serializedRoom.name}`);
+console.log(`Serialized owner ID: ${serializedRoom.ownerId}`);

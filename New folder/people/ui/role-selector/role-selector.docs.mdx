@@ -1,0 +1,88 @@
+---
+description: A component for selecting one or multiple user roles.
+labels: ['role-selector', 'ui', 'form', 'selection']
+---
+
+This component allows users to select one or more predefined user roles. It provides both single and multi-selection modes, adapting its UI based on the configuration.
+
+### Multi-Selection
+
+This example demonstrates how to allow selection of multiple user roles.
+
+```tsx
+import { useState } from 'react';
+import { UserRole } from '@cloudrabbit/cloudhop-platform.entities.user';
+import { RoleSelector } from './role-selector.js';
+
+function MultiSelectExample() {
+  const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([UserRole.User]);
+  return (
+    <div style={{ padding: '20px', maxWidth: '400px' }}>
+      <RoleSelector
+        label="Assign user roles"
+        selectedRoles={selectedRoles}
+        onChange={setSelectedRoles}
+      />
+      <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
+        Selected roles: {selectedRoles.join(', ') || 'None'}
+      </div>
+    </div>
+  );
+}
+export default MultiSelectExample;
+```
+
+### Single Selection
+
+This example shows how to configure the selector for single role assignment.
+
+```tsx
+import { useState } from 'react';
+import { UserRole } from '@cloudrabbit/cloudhop-platform.entities.user';
+import { RoleSelector } from './role-selector.js';
+
+function SingleSelectExample() {
+  const [selectedRole, setSelectedRole] = useState<UserRole[]>([UserRole.Admin]);
+  return (
+    <div style={{ padding: '20px', maxWidth: '400px' }}>
+      <RoleSelector
+        singleSelection
+        label="Select primary role"
+        selectedRoles={selectedRole}
+        onChange={setSelectedRole}
+      />
+      <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
+        Current primary role: {selectedRole[0] || 'None'}
+      </div>
+    </div>
+  );
+}
+export default SingleSelectExample;
+```
+
+### Disabled State
+
+This example illustrates rendering the role selector in a non-interactive, disabled state.
+
+```tsx
+import { UserRole } from '@cloudrabbit/cloudhop-platform.entities.user';
+import { RoleSelector } from './role-selector.js';
+
+function DisabledStateExample() {
+  return (
+    <div style={{ padding: '20px', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <RoleSelector
+        disabled
+        label="Disabled multi-select"
+        selectedRoles={[UserRole.User, UserRole.Moderator]}
+      />
+      <RoleSelector
+        disabled
+        singleSelection
+        label="Disabled single-select"
+        selectedRoles={[UserRole.Admin]}
+      />
+    </div>
+  );
+}
+export default DisabledStateExample;

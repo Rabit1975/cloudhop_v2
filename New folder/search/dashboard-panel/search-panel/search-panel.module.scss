@@ -1,0 +1,84 @@
+.searchPanel {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box; // Ensures padding and border are included in the element's total width and height
+}
+
+.icon {
+  color: var(--colors-primary-default);
+  width: 20px;
+  height: 20px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium) 0;
+  height: 100%;
+  justify-content: center;
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding-right: 48px; // Make room for the button
+  
+  // Enhance input appearance for "prominence"
+  input {
+    height: 48px;
+    font-size: var(--typography-sizes-body-large);
+    background-color: var(--colors-surface-secondary);
+    border-color: var(--colors-border-subtle);
+    
+    &:focus {
+      border-color: var(--colors-primary-default);
+      box-shadow: 0 0 0 2px rgba(var(--colors-primary-default), 0.2);
+    }
+  }
+}
+
+.searchButton {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background-color: var(--colors-primary-default);
+  border-radius: var(--borders-radius-medium);
+  cursor: var(--interactions-cursor-pointer);
+  transition: background-color var(--interactions-transitions-duration-fast);
+  padding: 0;
+
+  &:hover {
+    background-color: var(--colors-primary-hover);
+  }
+
+  &:active {
+    background-color: var(--colors-primary-active);
+  }
+}
+
+.buttonIcon {
+  color: var(--colors-primary-contrast);
+  width: 18px;
+  height: 18px;
+}
+
+.helperText {
+  margin: 0;
+  color: var(--colors-text-secondary);
+  font-size: var(--typography-sizes-caption-default);
+  text-align: center;
+}

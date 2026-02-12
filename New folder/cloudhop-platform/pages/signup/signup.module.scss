@@ -1,0 +1,103 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: var(--spacing-medium);
+  box-sizing: border-box;
+  background-color: var(--colors-surface-background);
+  background-image: var(--effects-gradients-nebula);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--colors-surface-primary);
+  border: 1px solid var(--colors-border-subtle);
+  border-radius: var(--borders-radius-large);
+  padding: var(--spacing-xl);
+  box-shadow: var(--effects-shadows-large);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+  position: relative;
+  z-index: var(--interactions-z-index-base);
+  
+  // Ensure glassmorphism effect if supported by theme context
+  backdrop-filter: var(--effects-blur-small);
+}
+
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.title {
+  color: var(--colors-text-primary);
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--colors-text-secondary);
+  font-size: var(--typography-sizes-body-default);
+  line-height: var(--typography-line-height-base);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+.input {
+  width: 100%;
+}
+
+.submitButton {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--spacing-small);
+}
+
+.errorMessage {
+  background-color: var(--colors-status-negative-subtle);
+  color: var(--colors-status-negative-default);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--borders-radius-medium);
+  font-size: var(--typography-sizes-caption-default);
+  font-weight: var(--typography-font-weight-medium);
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--colors-border-subtle);
+}
+
+.footerText {
+  color: var(--colors-text-secondary);
+  font-size: var(--typography-sizes-caption-default);
+}
+
+.loginLink {
+  padding: var(--spacing-xs) var(--spacing-small);
+  font-size: var(--typography-sizes-caption-default);
+  min-height: auto;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--spacing-large);
+  }
+}

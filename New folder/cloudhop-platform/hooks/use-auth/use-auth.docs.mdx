@@ -1,0 +1,103 @@
+---
+description: A React Hook for managing authentication state. It provides methods for user login, signup, and logout.
+labels: ['hook', 'react', 'authentication', 'auth']
+---
+
+A React Hook for managing authentication state. It provides methods for user login, signup, and logout.
+
+### User Login and Logout
+
+This example demonstrates how to use the useAuth hook to manage user login and logout. The login function takes user credentials. The logout function clears the user state.
+
+```tsx
+const AuthComponent = () => {
+  const { user, loading, login, logout } = useAuth();
+  const handleLogin = async () => {
+    try {
+      // In a real application, you would get these from form inputs
+      await login({ email: 'test@example.com', password: 'password123' });
+      console.log('Logged in successfully!');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+  const handleLogout = async () => {
+    try {
+      await logout();
+      console.log('Logged out successfully!');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+  if (loading) {
+    return <p>Loading user state...</p>;
+  }
+  return (
+    <div>
+      {user ? (
+        <div>
+          <p>Welcome, {user.username}!</p>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      ) : (
+        <button onClick={handleLogin}>Login</button>
+      )}
+    </div>
+  );
+};
+```
+### User Signup
+This example shows how to use the signup method. The signup function takes user information and registers a new user.
+```tsx
+const SignupComponent = () => {
+  const { user, loading, signup } = useAuth();
+  const handleSignup = async () => {
+    try {
+      // In a real application, you would get these from form inputs
+      await signup({ 
+        name: 'New User', 
+        email: 'newuser@example.com', 
+        password: 'securepassword' 
+      });
+      console.log('Signed up successfully!');
+    } catch (error) {
+      console.error('Signup failed:', error);
+    }
+  };
+  if (loading) {
+    return <p>Loading user state...</p>;
+  }
+  return (
+    <div>
+      {user ? (
+        <p>Already logged in as {user.username}</p>
+      ) : (
+        <button onClick={handleSignup}>Signup</button>
+      )}
+    </div>
+  );
+};
+```
+### Display User Information
+This example shows how to display details of the currently authenticated user. It also demonstrates conditional rendering based on the user login state.
+```tsx
+const UserInfoComponent = () => {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return <p>Loading user information...</p>;
+  }
+  return (
+    <div>
+      {user ? (
+        <div>
+          <h2>User Profile</h2>
+          <p>Username: {user.username}</p>
+          <p>Email: {user.email}</p>
+          <p>ID: {user.id}</p>
+        </div>
+      ) : (
+        <p>No user is currently logged in.</p>
+      )}
+    </div>
+  );
+};

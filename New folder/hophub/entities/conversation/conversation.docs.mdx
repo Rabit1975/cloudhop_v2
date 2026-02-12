@@ -1,0 +1,156 @@
+---
+description: A data entity for a generic HopHub conversation, representing a channel or direct message.
+labels: ['conversation', 'entity', 'hophub']
+---
+
+A component for a Conversation entity, which can represent either a channel or a direct message. It includes properties like id, type, lastMessage (a simplified message entity), and unreadCount.
+
+## Get started
+
+This component allows for serialization and deserialization of Conversation objects, making it suitable for both backend and frontend usage.
+
+## Creating a Conversation instance
+
+This demonstrates how to create a Conversation object from a plain data object.
+
+```typescript
+// For demonstration, a simplified Message entity and type are provided.
+// In a real application, you would import these from the appropriate component.
+class Message {
+  constructor(public id: string, public content: string, public senderId: string, public createdAt: string) {}
+  toObject() { return { id: this.id, content: this.content, senderId: this.senderId, createdAt: this.createdAt }; }
+  static from(plain: any) { return new Message(plain.id, plain.content, plain.senderId, plain.createdAt); }
+}
+type PlainMessage = { id: string; content: string; senderId: string; createdAt: string; };
+const plainConversationData = {
+  id: 'conv-123',
+  type: 'CHANNEL',
+  name: 'General Discussion',
+  description: 'A general channel for everyone.',
+  members: [{ userId: 'user-01', role: 'admin', joinedAt: '2023-01-01T10:00:00Z' }],
+  createdAt: '2023-01-01T09:00:00Z',
+  lastMessage: {
+    id: 'msg-456',
+    content: 'Hello team!',
+    senderId: 'user-01',
+    createdAt: '2023-01-01T10:30:00Z'
+  } as PlainMessage,
+  unreadCount: 5,
+};
+// Assuming Conversation class is available from this component
+// import { Conversation } from './conversation.js';
+// This is how you would use it with the actual component
+// const conversation = Conversation.from(plainConversationData);
+// console.log(conversation.id);
+// console.log(conversation.type);
+// console.log(conversation.lastMessage?.content);
+```
+## Serializing a Conversation to a plain object
+This shows how to convert a Conversation object back into a plain JavaScript object.
+```typescript
+// For demonstration, a simplified Message entity and type are provided.
+// In a real application, you would import these from the appropriate component.
+class Message {
+  constructor(public id: string, public content: string, public senderId: string, public createdAt: string) {}
+  toObject() { return { id: this.id, content: this.content, senderId: this.senderId, createdAt: this.createdAt }; }
+  static from(plain: any) { return new Message(plain.id, plain.content, plain.senderId, plain.createdAt); }
+}
+type PlainMessage = { id: string; content: string; senderId: string; createdAt: string; };
+// Assuming Conversation class is available from this component
+// import { Conversation } from './conversation.js';
+// Re-defining Conversation minimally for this example to avoid external imports in MDX
+class Conversation {
+  constructor(
+    public id: string,
+    public type: 'DM' | 'GROUP' | 'CHANNEL',
+    public members: any[],
+    public createdAt: string,
+    public name?: string,
+    public description?: string,
+    public imageUrl?: string,
+    public updatedAt?: string,
+    public lastMessage?: Message,
+    public unreadCount: number = 0
+  ) {}
+  toObject(): any {
+    return {
+      id: this.id,
+      type: this.type,
+      name: this.name,
+      description: this.description,
+      imageUrl: this.imageUrl,
+      members: this.members,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      lastMessage: this.lastMessage?.toObject(),
+      unreadCount: this.unreadCount,
+    };
+  }
+  static from(plain: any): Conversation {
+    const lastMessage = plain.lastMessage ? Message.from(plain.lastMessage) : undefined;
+    return new Conversation(
+      plain.id,
+      plain.type,
+      plain.members,
+      plain.createdAt,
+      plain.name,
+      plain.description,
+      plain.imageUrl,
+      plain.updatedAt,
+      lastMessage,
+      plain.unreadCount
+    );
+  }
+}
+const message = new Message('msg-789', 'Welcome to the group!', 'user-02', '2023-01-05T11:00:00Z');
+const conversationInstance = new Conversation(
+  'conv-456',
+  'GROUP',
+  [{ userId: 'user-01', role: 'member', joinedAt: '2023-01-04T09:00:00Z' }, { userId: 'user-02', role: 'admin', joinedAt: '2023-01-04T09:00:00Z' }],
+  '2023-01-04T08:00:00Z',
+  'Team Project Alpha',
+  'Discussion for Project Alpha',
+  undefined,
+  undefined,
+  message,
+  3
+);
+const plainObject = conversationInstance.toObject();
+console.log(plainObject.id);
+console.log(plainObject.lastMessage?.content);
+```
+## Using mock Conversation data
+This illustrates how to generate mock Conversation data for development and testing.
+```typescript
+// Assuming mockConversations function is available from this component
+// import { mockConversations } from './conversation.mock.js';
+// For demonstration, a simplified mockConversations function is provided.
+// In a real application, you would import this from the appropriate component.
+const mockConversations = () => {
+  // In a real scenario, this would generate structured mock data.
+  // For this example, we return a basic array.
+  return [
+    {
+      id: 'mock-conv-1',
+      type: 'DM',
+      members: [{ userId: 'user-a', role: 'member', joinedAt: '2023-01-01T00:00:00Z' }],
+      createdAt: '2023-01-01T00:00:00Z',
+      unreadCount: 1,
+      toObject: () => ({ /* simplified plain object */ id: 'mock-conv-1' })
+    },
+    {
+      id: 'mock-conv-2',
+      type: 'CHANNEL',
+      name: 'Development',
+      members: [{ userId: 'user-b', role: 'admin', joinedAt: '2023-01-02T00:00:00Z' }],
+      createdAt: '2023-01-02T00:00:00Z',
+      unreadCount: 0,
+      toObject: () => ({ /* simplified plain object */ id: 'mock-conv-2' })
+    }
+  ];
+};
+const conversations = mockConversations();
+console.log(`Total mock conversations: ${conversations.length}`);
+if (conversations.length > 0) {
+  console.log(`First conversation ID: ${conversations[0].id}`);
+}

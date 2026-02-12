@@ -1,0 +1,42 @@
+.gameCard {
+  text-decoration: none;
+  display: block;
+  height: 100%;
+  box-sizing: border-box; /* Added for overflow prevention */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+  color: var(--colors-status-warning-default);
+  font-size: var(--typography-sizes-caption-default);
+  font-weight: var(--typography-font-weight-bold);
+}
+
+.starIcon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.platformBadge {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}

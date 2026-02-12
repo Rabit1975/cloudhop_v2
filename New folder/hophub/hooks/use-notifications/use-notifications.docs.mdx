@@ -1,0 +1,128 @@
+---
+description: A React Hook for managing HopHub notifications. It provides methods for fetching, marking as read, and deleting notifications.
+labels: ['hook', 'react', 'notifications', 'hophub']
+---
+
+A React Hook for managing HopHub notifications. It provides methods for fetching a user is notifications, marking notifications as read, and deleting notifications.
+
+## Usage
+
+### Fetching Notifications
+
+This example demonstrates how to fetch a user is notifications and display them. It also shows handling loading and error states.
+
+```tsx
+import { useNotifications } from './use-notifications.js'; // Assuming this import is available in your environment
+const NotificationsDisplay = () => {
+  // In a real application, you would wrap this in an ApolloProvider
+  // to provide the necessary GraphQL client.
+  const { notifications, loading, error, refetch } = useNotifications();
+  if (loading) return <p>Loading notifications...</p>;
+  if (error) return <p>Error fetching notifications: {error.message}</p>;
+  return (
+    <div>
+      <h3>Your Notifications</h3>
+      <button onClick={() => refetch()}>Refetch Notifications</button>
+      {notifications.length === 0 ? (
+        <p>No notifications.</p>
+      ) : (
+        <ul>
+          {notifications.map((notification) => (
+            <li key={notification.id} style={{ marginBottom: '8px' }}>
+              <strong>[{notification.type}]</strong> {notification.message}
+              
+
+              <small>{notification.read ? 'Read' : 'Unread'} - {new Date(notification.timestamp).toLocaleString()}</small>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+```
+### Marking a Notification as Read
+This example illustrates how to mark a specific notification as read. It shows how to use the markAsRead function provided by the hook.
+```tsx
+import { useState } from 'react';
+import { useMarkNotificationAsRead } from './use-mark-notification-as-read.js'; // Assuming this import is available in your environment
+const MarkAsReadExample = () => {
+  const [notificationIdToMark, setNotificationIdToMark] = useState('');
+  const { markAsRead, loading, error } = useMarkNotificationAsRead();
+  const handleMarkAsRead = async () => {
+    if (!notificationIdToMark) {
+      alert('Please enter a notification ID.');
+      return;
+    }
+    try {
+      const updatedNotification = await markAsRead({ notificationId: notificationIdToMark });
+      if (updatedNotification) {
+        alert(`Notification ${updatedNotification.id} marked as read. Message: ${updatedNotification.message}`);
+      } else {
+        alert('Failed to mark notification as read, no data returned.');
+      }
+      setNotificationIdToMark(''); // Clear input after action
+    } catch (e: any) {
+      alert(`Failed to mark notification as read: ${e.message}`);
+    }
+  };
+  return (
+    <div>
+      <h3>Mark a Notification as Read</h3>
+      <input
+        type="text"
+        placeholder="Enter Notification ID"
+        value={notificationIdToMark}
+        onChange={(e) => setNotificationIdToMark(e.target.value)}
+        style={{ marginRight: '8px', padding: '4px' }}
+      />
+      <button onClick={handleMarkAsRead} disabled={loading}>
+        {loading ? 'Marking...' : 'Mark as Read'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+    </div>
+  );
+};
+```
+### Deleting a Notification
+This example demonstrates how to delete a notification. It shows how to use the deleteNotification function and update the UI accordingly.
+```tsx
+import { useState } from 'react';
+import { useDeleteNotification } from './use-delete-notification.js'; // Assuming this import is available in your environment
+const DeleteNotificationExample = () => {
+  const [notificationIdToDelete, setNotificationIdToDelete] = useState('');
+  const { deleteNotification, loading, error } = useDeleteNotification();
+  const handleDelete = async () => {
+    if (!notificationIdToDelete) {
+      alert('Please enter a notification ID.');
+      return;
+    }
+    try {
+      const success = await deleteNotification({ notificationId: notificationIdToDelete });
+      if (success) {
+        alert(`Notification ${notificationIdToDelete} deleted successfully.`);
+      } else {
+        alert(`Failed to delete notification ${notificationIdToDelete}.`);
+      }
+      setNotificationIdToDelete(''); // Clear input after action
+    } catch (e: any) {
+      alert(`Error deleting notification: ${e.message}`);
+    }
+  };
+  return (
+    <div>
+      <h3>Delete a Notification</h3>
+      <input
+        type="text"
+        placeholder="Enter Notification ID"
+        value={notificationIdToDelete}
+        onChange={(e) => setNotificationIdToDelete(e.target.value)}
+        style={{ marginRight: '8px', padding: '4px' }}
+      />
+      <button onClick={handleDelete} disabled={loading}>
+        {loading ? 'Deleting...' : 'Delete Notification'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+    </div>
+  );
+};

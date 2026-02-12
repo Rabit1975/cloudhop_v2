@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { RealtimeChannel } from '@supabase/supabase-js';
-import { showError, showSuccess, showLoading, updateToast, dismissToast } from '../utils/toast'; // Import toast utilities
+import { showError, showSuccess, showLoading, updateToast, dismissToast } from '../utils/toast';
 
 const ICE_SERVERS = [{ urls: 'stun:stun.l.google.com:19302' }];
 
@@ -9,430 +9,326 @@ type CallState = 'idle' | 'calling' | 'incoming' | 'connected' | 'ended';
 
 interface WebRTCState {
   callState: CallState;
-  localStream: MediaStream | null;
-  remoteStream: MediaStream | null;
-  startCall: (receiverId: string, chatId?: string) => Promise<void>;
-  acceptCall: () => Promise<void>;
-  rejectCall: () => void;
-  endCall: () => void;
-  incomingCallFrom: string | null;
-  toggleMic: () => void;
-  toggleCamera: () => void;
-  switchCamera: () => void;
-  toggleSpeaker: () => void;
+  localStream?: MediaStream;
+  remoteStream?: MediaStream;
+  incomingCallFrom?: string;
   isMicOn: boolean;
   isCameraOn: boolean;
 }
 
-export const useWebRTC = (userId: string | undefined): WebRTCState => {
+export const useWebRTC = (userId: string): WebRTCState & {
+  startCall: (toUserId: string, chatId?: string) => void;
+  acceptCall: () => void;
+  rejectCall: () => void;
+  endCall: () => void;
+  toggleMic: () => void;
+  toggleCamera: () => void;
+  switchCamera: () => void;
+  toggleSpeaker: () => void;
+} => {
   const [callState, setCallState] = useState<CallState>('idle');
-  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const [incomingCallFrom, setIncomingCallFrom] = useState<string | null>(null);
-  const [remoteUserId, setRemoteUserId] = useState<string | null>(null);
+  const [localStream, setLocalStream] = useState<MediaStream | undefined>();
+  const [remoteStream, setRemoteStream] = useState<MediaStream | undefined>();
+  const [incomingCallFrom, setIncomingCallFrom] = useState<string | undefined>();
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
+  const [remoteUserId, setRemoteUserId] = useState<string | null>(null);
   const [callId, setCallId] = useState<string | null>(null);
-  const callStartTimeRef = useRef<number | null>(null); // To track call duration
 
   const pc = useRef<RTCPeerConnection | null>(null);
   const signalingChannel = useRef<RealtimeChannel | null>(null);
   const pendingCandidates = useRef<RTCIceCandidateInit[]>([]);
   const callToastId = useRef<string | null>(null);
 
-  useEffect(() => {
-    if (!userId) return;
+  // Initialize peer connection
+  const initializePeerConnection = () => {
+    if (pc.current) {
+      pc.current.close();
+    }
 
-    // Subscribe to signaling channel (user's private channel)
-    const channel = supabase.channel(`calls:${userId}`);
+    pc.current = new RTCPeerConnection({
+      iceServers: ICE_SERVERS,
+    });
 
-    channel
-      .on('broadcast', { event: 'call-offer' }, async ({ payload }) => {
-        if (payload.toUserId && payload.toUserId !== userId) return; // Client-side filtering as a backup
-
-        console.log('Received call offer from:', payload.fromUserId);
-        setIncomingCallFrom(payload.fromUserId);
-        setRemoteUserId(payload.fromUserId);
-        setCallId(payload.callId); // Track the DB ID of the call
-        setCallState('incoming');
-        showLoading(`Incoming call from ${payload.fromUserId}`, { id: 'incoming-call' });
-
-        // Store offer to set later
-        (window as any).pendingOffer = payload.offer;
-      })
-      .on('broadcast', { event: 'call-answer' }, async ({ payload }) => {
-        console.log('Received call answer');
-        if (callToastId.current) {
-          updateToast(callToastId.current, 'success', 'Call connected!');
-          dismissToast(callToastId.current);
-          callToastId.current = null;
+    // Handle ICE candidates
+    pc.current.onicecandidate = (event) => {
+      if (event.candidate && supabase && remoteUserId) {
+        try {
+          const channel = supabase.channel(`calls:${remoteUserId}`);
+          channel.send({
+            type: 'broadcast',
+            event: 'ice-candidate',
+            payload: {
+              candidate: event.candidate,
+              toUserId: remoteUserId,
+              fromUserId: userId,
+            },
+          });
+        } catch (error) {
+          console.error('Error sending ICE candidate:', error);
         }
-        if (pc.current) {
-          await pc.current.setRemoteDescription(new RTCSessionDescription(payload.answer));
-        }
-      })
-      .on('broadcast', { event: 'call-rejected' }, () => {
-        console.log('Call rejected by remote');
-        if (callToastId.current) {
-          updateToast(callToastId.current, 'error', 'Call rejected.');
-          dismissToast(callToastId.current);
-          callToastId.current = null;
-        }
-        // Update history if we initiated
-        if (callId) {
-          supabase
-            .from('call_history')
-            .update({ status: 'rejected', ended_at: new Date().toISOString() })
-            .eq('id', callId)
-            .then();
-        }
-        cleanupCall();
-      })
-      .on('broadcast', { event: 'ice-candidate' }, async ({ payload }) => {
-        console.log('Received ICE candidate');
-        if (pc.current && pc.current.remoteDescription) {
-          await pc.current.addIceCandidate(new RTCIceCandidate(payload.candidate));
-        } else {
-          pendingCandidates.current.push(payload.candidate);
-        }
-      })
-      .on('broadcast', { event: 'call-end' }, () => {
-        console.log('Call ended by remote');
-        showSuccess('Call ended.');
-        cleanupCall();
-      })
-      .subscribe();
-
-    signalingChannel.current = channel;
-
-    return () => {
-      channel.unsubscribe();
-      cleanupCall();
-    };
-  }, [userId, callId]);
-
-  const createPeerConnection = () => {
-    if (pc.current) return pc.current;
-
-    const peer = new RTCPeerConnection({ iceServers: ICE_SERVERS });
-
-    peer.onicecandidate = event => {
-      if (event.candidate && remoteUserId) {
-        const channel = supabase.channel(`calls:${remoteUserId}`);
-        channel.subscribe(async status => {
-          if (status === 'SUBSCRIBED') {
-            await channel.send({
-              type: 'broadcast',
-              event: 'ice-candidate',
-              payload: { fromUserId: userId, candidate: event.candidate },
-            });
-          }
-        });
       }
     };
 
-    peer.ontrack = event => {
-      console.log('Received remote track');
+    // Handle remote stream
+    pc.current.ontrack = (event) => {
       setRemoteStream(event.streams[0]);
     };
-
-    peer.onconnectionstatechange = () => {
-      if (peer.connectionState === 'connected') {
-        setCallState('connected');
-        callStartTimeRef.current = Date.now(); // Record start time
-      } else if (peer.connectionState === 'disconnected' || peer.connectionState === 'failed') {
-        cleanupCall();
-      }
-    };
-
-    pc.current = peer;
-    return peer;
   };
 
-  const startCall = async (receiverId: string, chatId?: string) => {
-    if (!userId) {
-      showError('User ID not available. Cannot start call.');
+  // Initialize local media
+  const initializeLocalMedia = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      setLocalStream(stream);
+      return stream;
+    } catch (error) {
+      console.error('Error accessing media devices:', error);
+      showError('Failed to access camera/microphone');
+      return null;
+    }
+  };
+
+  // Start a call
+  const startCall = async (toUserId: string, chatId?: string) => {
+    if (!supabase) {
+      showError('Supabase not available - calls disabled in development');
       return;
     }
-    setRemoteUserId(receiverId);
+
+    setRemoteUserId(toUserId);
     setCallState('calling');
-    callToastId.current = showLoading(`Calling ${receiverId}...`);
 
-    // Create DB entry
-    const { data: history, error: dbError } = await supabase
-      .from('call_history')
-      .insert({
-        caller_id: userId,
-        receiver_id: receiverId,
-        chat_id: chatId, // Optional, might be null if not in a chat or P2P
-        started_at: new Date().toISOString(),
-        status: 'active', // Set to active initially, update later
-      })
-      .select()
-      .single();
+    const stream = await initializeLocalMedia();
+    if (!stream) return;
 
-    if (dbError) {
-      showError('Failed to log call history.');
-      console.error('Supabase error:', dbError);
-      cleanupCall();
-      return;
-    }
+    initializePeerConnection();
+    if (pc.current) {
+      stream.getTracks().forEach(track => pc.current!.addTrack(track, stream));
 
-    if (history) setCallId(history.id);
+      try {
+        const offer = await pc.current.createOffer();
+        await pc.current.setLocalDescription(offer);
 
-    const peer = createPeerConnection();
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-      setLocalStream(stream);
-      stream.getTracks().forEach(track => peer.addTrack(track, stream));
-
-      const offer = await peer.createOffer();
-      await peer.setLocalDescription(offer);
-
-      const channel = supabase.channel(`calls:${receiverId}`);
-      channel.subscribe(async status => {
-        if (status === 'SUBSCRIBED') {
-          await channel.send({
-            type: 'broadcast',
-            event: 'call-offer',
-            payload: { fromUserId: userId, toUserId: receiverId, offer, callId: history?.id },
-          });
-        }
-      });
-    } catch (e: unknown) {
-      showError(`Failed to get media access: ${e.message}`);
-      console.error('Error starting call:', e);
-      cleanupCall();
-    }
-  };
-
-  const acceptCall = async () => {
-    if (!remoteUserId || !userId) {
-      showError('Cannot accept call: missing user info.');
-      return;
-    }
-    dismissToast('incoming-call'); // Dismiss incoming call toast
-
-    // Update DB to 'active'
-    if (callId) {
-      await supabase.from('call_history').update({ status: 'active' }).eq('id', callId);
-    }
-
-    const peer = createPeerConnection();
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-      setLocalStream(stream);
-      stream.getTracks().forEach(track => peer.addTrack(track, stream));
-
-      const offer = (window as any).pendingOffer;
-      if (!offer) {
-        showError('No pending offer found to accept.');
-        return;
-      }
-
-      await peer.setRemoteDescription(new RTCSessionDescription(offer));
-
-      while (pendingCandidates.current.length > 0) {
-        const candidate = pendingCandidates.current.shift();
-        if (candidate) await peer.addIceCandidate(new RTCIceCandidate(candidate));
-      }
-
-      const answer = await peer.createAnswer();
-      await peer.setLocalDescription(answer);
-
-      const channel = supabase.channel(`calls:${remoteUserId}`);
-      channel.subscribe(async status => {
-        if (status === 'SUBSCRIBED') {
-          await channel.send({
-            type: 'broadcast',
-            event: 'call-answer',
-            payload: { fromUserId: userId, answer },
-          });
-          setCallState('connected');
-        }
-      });
-    } catch (e: any) {
-      showError(`Failed to accept call: ${e.message}`);
-      console.error('Error accepting call:', e);
-      cleanupCall();
-    }
-  };
-
-  const rejectCall = () => {
-    if (remoteUserId) {
-      const channel = supabase.channel(`calls:${remoteUserId}`);
-      channel.subscribe(async status => {
-        if (status === 'SUBSCRIBED') {
-          await channel.send({
-            type: 'broadcast',
-            event: 'call-rejected',
-            payload: { fromUserId: userId },
-          });
-        }
-      });
-      // Update DB if we have the ID
-      if (callId) {
-        supabase
-          .from('call_history')
-          .update({ status: 'rejected', ended_at: new Date().toISOString() })
-          .eq('id', callId)
-          .then();
-      }
-    }
-    dismissToast('incoming-call'); // Dismiss incoming call toast
-    cleanupCall();
-  };
-
-  const endCall = () => {
-    if (remoteUserId) {
-      const channel = supabase.channel(`calls:${remoteUserId}`);
-      channel.subscribe(async status => {
-        if (status === 'SUBSCRIBED') {
-          await channel.send({
-            type: 'broadcast',
-            event: 'call-end',
-            payload: { fromUserId: userId },
-          });
-        }
-      });
-
-      // Update DB
-      if (callId && callStartTimeRef.current) {
-        const duration = Math.floor((Date.now() - callStartTimeRef.current) / 1000);
-        supabase
-          .from('call_history')
-          .update({ status: 'ended', ended_at: new Date().toISOString(), duration })
-          .eq('id', callId)
-          .then();
-      } else if (callId) {
-        // If call didn't connect, it might still be 'active' or 'missed'
-        supabase
-          .from('call_history')
-          .update({ status: 'ended', ended_at: new Date().toISOString() })
-          .eq('id', callId)
-          .then();
-      }
-    }
-    cleanupCall();
-  };
-
-  const toggleMic = () => {
-    if (!localStream) return; // Should not happen if call is active
-
-    const audioTracks = localStream.getAudioTracks();
-    if (audioTracks.length > 0) {
-      audioTracks.forEach(track => {
-        track.enabled = !track.enabled;
-      });
-      setIsMicOn(audioTracks[0].enabled);
-    }
-  };
-
-  const toggleCamera = () => {
-    if (!localStream) return; // Should not happen if call is active
-
-    const videoTracks = localStream.getVideoTracks();
-    if (videoTracks.length > 0) {
-      videoTracks.forEach(track => {
-        track.enabled = !track.enabled;
-      });
-      setIsCameraOn(videoTracks[0].enabled);
-    }
-  };
-
-  const switchCamera = async () => {
-    if (!localStream) return;
-
-    try {
-      const videoTracks = localStream.getVideoTracks();
-      if (videoTracks.length === 0) {
-        showError('No camera found to switch.');
-        return;
-      }
-
-      const currentCamera = videoTracks[0];
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(device => device.kind === 'videoinput');
-
-      if (videoDevices.length <= 1) {
-        showError('Only one camera available.');
-        return;
-      }
-
-      const currentDeviceId = currentCamera.getSettings().deviceId;
-      const nextDevice = videoDevices.find(device => device.deviceId !== currentDeviceId);
-
-      if (nextDevice) {
-        currentCamera.stop(); // Stop current track
-        localStream.removeTrack(currentCamera); // Remove from stream
-
-        const newStream = await navigator.mediaDevices.getUserMedia({
-          video: { deviceId: { exact: nextDevice.deviceId } },
-          audio: true, // Keep audio enabled
+        // Send offer via Supabase
+        const channel = supabase.channel(`calls:${toUserId}`);
+        channel.send({
+          type: 'broadcast',
+          event: 'call-offer',
+          payload: {
+            offer,
+            fromUserId: userId,
+            toUserId,
+            chatId,
+          },
         });
 
-        const newVideoTrack = newStream.getVideoTracks()[0];
-        localStream.addTrack(newVideoTrack); // Add new track to existing stream
-        setLocalStream(newStream); // Update local stream state
-        showSuccess(`Switched to ${nextDevice.label || 'new camera'}`);
+        showSuccess('Calling...');
+      } catch (error) {
+        console.error('Error starting call:', error);
+        showError('Failed to start call');
+        setCallState('idle');
       }
-    } catch (e: any) {
-      showError(`Failed to switch camera: ${e.message}`);
-      console.error('Error switching camera:', e);
     }
   };
 
-  const toggleSpeaker = () => {
-    // This is typically handled by system volume controls or specific audio output device selection.
-    // For a simple toggle, we can't directly control system speakers via WebRTC.
-    // A more advanced implementation would involve enumerating audio output devices and setting `sinkId` on video/audio elements.
-    showError('Speaker control is usually managed by system settings.');
-    console.log('Toggling speaker (mock action)');
+  // Accept an incoming call
+  const acceptCall = async () => {
+    if (!supabase || !remoteUserId) return;
+
+    setCallState('connected');
+    const stream = await initializeLocalMedia();
+    if (!stream) return;
+
+    initializePeerConnection();
+    if (pc.current) {
+      stream.getTracks().forEach(track => pc.current!.addTrack(track, stream));
+
+      try {
+        const answer = await pc.current.createAnswer();
+        await pc.current.setLocalDescription(answer);
+
+        // Send answer via Supabase
+        const channel = supabase.channel(`calls:${remoteUserId}`);
+        channel.send({
+          type: 'broadcast',
+          event: 'call-answer',
+          payload: {
+            answer,
+            fromUserId: userId,
+            toUserId: remoteUserId,
+          },
+        });
+
+        showSuccess('Call connected');
+      } catch (error) {
+        console.error('Error accepting call:', error);
+        showError('Failed to accept call');
+        setCallState('idle');
+      }
+    }
   };
 
-  const cleanupCall = () => {
+  // Reject a call
+  const rejectCall = () => {
+    if (!supabase || !remoteUserId) return;
+
+    try {
+      const channel = supabase.channel(`calls:${remoteUserId}`);
+      channel.send({
+        type: 'broadcast',
+        event: 'call-reject',
+        payload: {
+          fromUserId: userId,
+          toUserId: remoteUserId,
+        },
+      });
+
+      setCallState('idle');
+      setIncomingCallFrom(undefined);
+      setRemoteUserId(null);
+      dismissToast('incoming-call');
+    } catch (error) {
+      console.error('Error rejecting call:', error);
+    }
+  };
+
+  // End a call
+  const endCall = () => {
     if (pc.current) {
       pc.current.close();
       pc.current = null;
     }
+
     if (localStream) {
-      localStream.getTracks().forEach(t => {
-        t.stop();
-      });
-      setLocalStream(null);
+      localStream.getTracks().forEach(track => track.stop());
+      setLocalStream(undefined);
     }
-    setRemoteStream(null);
+
+    if (remoteStream) {
+      setRemoteStream(undefined);
+    }
+
     setCallState('idle');
-    setIncomingCallFrom(null);
+    setIncomingCallFrom(undefined);
     setRemoteUserId(null);
-    pendingCandidates.current = [];
-    setIsMicOn(true);
-    setIsCameraOn(true);
     setCallId(null);
-    callStartTimeRef.current = null;
-    dismissToast('incoming-call'); // Ensure incoming call toast is dismissed
+
     if (callToastId.current) {
       dismissToast(callToastId.current);
       callToastId.current = null;
     }
   };
 
+  // Toggle microphone
+  const toggleMic = () => {
+    if (localStream) {
+      const audioTrack = localStream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsMicOn(audioTrack.enabled);
+      }
+    }
+  };
+
+  // Toggle camera
+  const toggleCamera = () => {
+    if (localStream) {
+      const videoTrack = localStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setIsCameraOn(videoTrack.enabled);
+      }
+    }
+  };
+
+  // Switch camera (for mobile)
+  const switchCamera = () => {
+    // Implementation for switching between front/back cameras
+    console.log('Switch camera');
+  };
+
+  // Toggle speaker
+  const toggleSpeaker = () => {
+    console.log('Toggle speaker');
+  };
+
+  // Set up signaling channel
+  useEffect(() => {
+    if (!userId || !supabase) return;
+
+    try {
+      const channel = supabase.channel(`calls:${userId}`);
+      signalingChannel.current = channel;
+
+      channel
+        .on('broadcast', { event: 'call-offer' }, async ({ payload }) => {
+          if (payload.toUserId && payload.toUserId !== userId) return;
+
+          console.log('Received call offer from:', payload.fromUserId);
+          setIncomingCallFrom(payload.fromUserId);
+          setRemoteUserId(payload.fromUserId);
+          setCallState('incoming');
+          showLoading(`Incoming call from ${payload.fromUserId}`, { id: 'incoming-call' });
+        })
+        .on('broadcast', { event: 'call-answer' }, async ({ payload }) => {
+          if (payload.toUserId && payload.toUserId !== userId) return;
+
+          console.log('Received call answer from:', payload.fromUserId);
+          if (pc.current && payload.answer) {
+            await pc.current.setRemoteDescription(payload.answer);
+            setCallState('connected');
+            showSuccess('Call connected');
+          }
+        })
+        .on('broadcast', { event: 'call-reject' }, ({ payload }) => {
+          if (payload.toUserId && payload.toUserId !== userId) return;
+
+          console.log('Call rejected by:', payload.fromUserId);
+          setCallState('idle');
+          setRemoteUserId(null);
+          showError('Call was rejected');
+        })
+        .on('broadcast', { event: 'ice-candidate' }, async ({ payload }) => {
+          if (payload.toUserId && payload.toUserId !== userId) return;
+
+          if (pc.current && payload.candidate) {
+            try {
+              await pc.current.addIceCandidate(payload.candidate);
+            } catch (error) {
+              console.error('Error adding ICE candidate:', error);
+            }
+          }
+        })
+        .subscribe();
+
+      return () => {
+        channel.unsubscribe();
+        signalingChannel.current = null;
+      };
+    } catch (error) {
+      console.error('Error setting up signaling channel:', error);
+      return () => {};
+    }
+  }, [userId, supabase]);
+
   return {
     callState,
     localStream,
     remoteStream,
+    incomingCallFrom,
+    isMicOn,
+    isCameraOn,
     startCall,
     acceptCall,
     rejectCall,
     endCall,
-    incomingCallFrom,
     toggleMic,
     toggleCamera,
     switchCamera,
     toggleSpeaker,
-    isMicOn,
-    isCameraOn,
   };
 };

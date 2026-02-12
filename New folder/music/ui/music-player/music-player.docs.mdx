@@ -1,0 +1,74 @@
+---
+description: A UI component to display and control music playback
+labels: ['music', 'player', 'ui', 'audio']
+---
+
+### Basic music player
+Demonstrates the music player with a single track loaded
+
+```tsx
+const mockTrack = {
+  id: '1',
+  title: 'Neon Nebula',
+  artist: 'Cyber Synth',
+  duration: 185,
+  sourceType: 'upload',
+  sourceIdentifier: 'file-123',
+  isPublic: true,
+  createdAt: new Date().toISOString(),
+  thumbnailUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_modern_and_minimalist_music__0_1770835129831.png'
+};
+<MusicPlayer track={mockTrack} />
+```
+
+### Interactive music player with controls
+Shows how to handle play pause seek and volume changes
+```tsx
+function InteractiveMusicPlayerExample() {
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [currentTime, setCurrentTime] = React.useState(0);
+  const [volume, setVolume] = React.useState(75);
+  const mockTrack = {
+    id: '1',
+    title: 'Lo-Fi Coding Beats',
+    artist: 'ChillHop Stream',
+    duration: 300,
+    sourceType: 'youtube',
+    sourceIdentifier: 'yt-abc',
+    isPublic: true,
+    createdAt: new Date().toISOString(),
+    thumbnailUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_modern_and_minimalist_music__0_1770835129831.png'
+  };
+  React.useEffect(() => {
+    let interval;
+    if (isPlaying && currentTime < mockTrack.duration) {
+      interval = setInterval(() => {
+        setCurrentTime((prev) => Math.min(prev + 1, mockTrack.duration));
+      }, 1000);
+    } else if (currentTime >= mockTrack.duration) {
+      setIsPlaying(false);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, currentTime, mockTrack.duration]);
+  return (
+    <MusicPlayer
+      track={mockTrack}
+      isPlaying={isPlaying}
+      currentTime={currentTime}
+      volume={volume}
+      onPlay={() => setIsPlaying(true)}
+      onPause={() => setIsPlaying(false)}
+      onNext={() => { /* Implement next track logic */ }}
+      onPrevious={() => { /* Implement previous track logic */ }}
+      onSeek={(time) => setCurrentTime(time)}
+      onVolumeChange={(newVolume) => setVolume(newVolume)}
+    />
+  );
+}
+<InteractiveMusicPlayerExample />
+```
+
+### Player in an empty state
+Illustrates the appearance of the player when no track is loaded
+```tsx
+<MusicPlayer track={null} />

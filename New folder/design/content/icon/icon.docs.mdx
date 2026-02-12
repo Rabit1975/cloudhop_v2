@@ -1,0 +1,35 @@
+---
+description: A generic icon component for composing consistent icon components.
+labels: ['icon', 'ui', 'svg']
+---
+
+### Basic Usage
+
+Renders a simple icon, providing the SVG path as children.
+
+```tsx
+<Icon>
+  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+</Icon>
+```
+### Customizing Size and Color
+Adjusts the icon visual properties using the size and color props.
+```tsx
+<Icon size={32} color="purple">
+  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+</Icon>
+<Icon size={48} color="green">
+  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+</Icon>
+```
+### Handling Click Events
+Shows how to attach an event handler to the icon for interactive behaviors.
+```tsx
+<Icon 
+  size={32} 
+  color="blue" 
+  onClick={() => alert('Icon was clicked')}
+  style={{ cursor: 'pointer' }}
+>
+  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+</Icon>

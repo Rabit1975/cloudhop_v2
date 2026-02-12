@@ -1,0 +1,85 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: var(--spacing-medium);
+  box-sizing: border-box;
+  background-color: var(--colors-surface-background);
+  // Fallback if nebula effect is not applied globally, though usually handled by theme
+  position: relative;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--spacing-xl);
+  background-color: var(--colors-surface-primary);
+  border-radius: var(--borders-radius-large);
+  box-shadow: var(--effects-shadows-medium);
+  border: 1px solid var(--colors-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+  position: relative;
+  z-index: var(--interactions-z-index-base);
+}
+
+.header {
+  text-align: center;
+}
+
+.title {
+  margin-bottom: var(--spacing-xs);
+  color: var(--colors-text-primary);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--colors-text-secondary);
+  font-size: var(--typography-sizes-body-default);
+  line-height: var(--typography-line-height-base);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.errorMessage {
+  color: var(--colors-status-negative-default);
+  font-size: var(--typography-sizes-caption-medium);
+  text-align: center;
+  background-color: var(--colors-status-negative-subtle);
+  padding: var(--spacing-small);
+  border-radius: var(--borders-radius-medium);
+}
+
+.submitButton {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--spacing-small);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--colors-border-subtle);
+}
+
+.footerText {
+  color: var(--colors-text-secondary);
+  font-size: var(--typography-sizes-caption-default);
+}
+
+.signupButton {
+  padding: 0 var(--spacing-small);
+  height: auto;
+  min-height: auto;
+  font-size: var(--typography-sizes-caption-default);
+}

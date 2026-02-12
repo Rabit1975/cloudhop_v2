@@ -1,0 +1,85 @@
+---
+description: A card component to display a music studio project.
+labels: ['music', 'studio', 'project', 'card', 'ui']
+---
+
+A `MusicStudioProjectCard` displays key information about a music studio project, such as its name, the last edited date, and the number of layers. It provides an edit button and is clickable to navigate to the project editor.
+
+### Basic Music Studio Project Card
+
+This example demonstrates a basic music studio project card displaying project name, last edited date, and an edit button.
+
+```tsx
+const mockProjectData = {
+  id: 'project-alpha-1',
+  name: 'Chillwave Anthem',
+  lastEditedAt: new Date(Date.now() - 86400000 * 2).toISOString(), // 2 days ago
+  layers: ['synth pad', 'drum loop', 'bassline']
+};
+// Simulate the MusicStudioProject entity structure for the docs example.
+const project = {
+  toObject: () => mockProjectData
+};
+<div style={{ maxWidth: '300px', margin: '24px', border: '1px solid #ccc', borderRadius: '8px', padding: '16px' }}>
+  <MusicStudioProjectCard project={project} />
+</div>
+```
+
+### Interactive Project Card with Navigation
+This example shows the card in an interactive context where clicking it navigates to the project editor. The edit button provides a direct link to the project editor.
+
+```tsx
+const mockProjectData = {
+  id: 'project-beta-2',
+  name: 'Future Funk Jam',
+  lastEditedAt: new Date(Date.now() - 86400000 * 5).toISOString(), // 5 days ago
+  layers: ['electric piano', 'funk guitar', 'percussion']
+};
+// Simulate the MusicStudioProject entity structure for the docs example.
+const project = {
+  toObject: () => mockProjectData
+};
+// Note: In a real application, you would wrap this in a Router component
+// (e.g., BrowserRouter or MemoryRouter) for navigation to function.
+// For this documentation, we illustrate the component's structure.
+<div style={{ maxWidth: '300px', margin: '24px', border: '1px solid #ccc', borderRadius: '8px', padding: '16px' }}>
+  <MusicStudioProjectCard project={project} />
+</div>
+```
+
+### Multiple Project Cards in a Grid
+This example illustrates how multiple music studio project cards can be displayed in a grid layout for a project dashboard.
+
+```tsx
+const project1Data = {
+  id: 'project-gamma-3',
+  name: 'Dreamy Ambient',
+  lastEditedAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+  layers: ['atmospheric pad', 'field recording', 'slow arpeggio']
+};
+const project1 = { toObject: () => project1Data };
+const project2Data = {
+  id: 'project-delta-4',
+  name: 'Upbeat Lo-Fi',
+  lastEditedAt: new Date(Date.now() - 86400000 * 10).toISOString(), // 10 days ago
+  layers: ['jazzy chords', 'hip hop beat', 'vinyl crackle']
+};
+const project2 = { toObject: () => project2Data };
+const project3Data = {
+  id: 'project-epsilon-5',
+  name: 'Epic Orchestration',
+  lastEditedAt: new Date(Date.now() - 86400000 * 3).toISOString(), // 3 days ago
+  layers: ['strings', 'brass', 'percussion', 'choir']
+};
+const project3 = { toObject: () => project3Data };
+<div style={{ 
+  display: 'grid', 
+  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+  gap: '24px', 
+  padding: '24px',
+  backgroundColor: 'var(--colors-surface-background)'
+}}>
+  <MusicStudioProjectCard project={project1} />
+  <MusicStudioProjectCard project={project2} />
+  <MusicStudioProjectCard project={project3} />
+</div>

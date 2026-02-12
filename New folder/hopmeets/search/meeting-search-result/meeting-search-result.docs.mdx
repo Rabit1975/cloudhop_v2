@@ -1,0 +1,52 @@
+---
+description: A component to display an individual meeting search result.
+labels: ['meeting', 'search', 'result', 'hopmeets']
+---
+
+A `MeetingSearchResult` component displays an individual meeting entry retrieved from a search operation. It visually represents a Meeting entity, including its title, description and scheduled times. The entire card is clickable, allowing users to navigate to meeting details or join directly.
+
+### Scheduled meeting result
+
+This shows a typical search result for a scheduled meeting with its title, description and time.
+
+```tsx
+const mockMeetingData = {
+  id: 'meet-123',
+  topic: 'Weekly Design Sync',
+  description: 'Discussing the new nebula design system updates and component migration.',
+  startTime: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+  endTime: new Date(Date.now() + 86400000 + 3600000).toISOString(), // Tomorrow + 1hr
+  hostId: 'user-1',
+  participants: [],
+  status: 'scheduled',
+  joinUrl: '/hopmeets/join/meet-123',
+  createdAt: new Date().toISOString(),
+};
+const mockResult = {
+  id: 'search-1',
+  relevanceScore: 0.95,
+  content: mockMeetingData,
+};
+<MeetingSearchResult result={mockResult} />
+```
+### Live meeting result
+This example displays a meeting that is currently in progress, indicating its live status.
+```tsx
+const mockMeetingData = {
+  id: 'meet-456',
+  topic: 'Town Hall - Q3 Goals',
+  description: 'All hands meeting to review quarterly goals and achievements.',
+  startTime: new Date().toISOString(),
+  endTime: new Date(Date.now() + 3600000).toISOString(),
+  hostId: 'user-1',
+  participants: [],
+  status: 'live',
+  joinUrl: '/hopmeets/join/meet-456',
+  createdAt: new Date().toISOString(),
+};
+const mockResult = {
+  id: 'search-2',
+  relevanceScore: 0.99,
+  content: mockMeetingData,
+};
+<MeetingSearchResult result={mockResult} />

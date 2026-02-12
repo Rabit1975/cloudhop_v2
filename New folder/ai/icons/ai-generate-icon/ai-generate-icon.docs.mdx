@@ -1,0 +1,37 @@
+---
+description: An icon that signifies content generation or creation by AI.
+labels: ['icon', 'ai', 'generate']
+---
+
+### Basic AI Generate Icon
+Renders the default AI generate icon.
+
+```js
+<AiGenerateIcon />
+```
+### Icon with Custom Sizes
+Demonstrates how to adjust the size of the AI generate icon.
+```js
+<div style={{ display: 'flex', gap: '16px' }}>
+  <AiGenerateIcon size={16} />
+  <AiGenerateIcon size={24} />
+  <AiGenerateIcon size={32} />
+  <AiGenerateIcon size={48} />
+</div>
+```
+### Icon with Custom Colors
+Shows how to apply different colors to the AI generate icon.
+```js
+<div style={{ display: 'flex', gap: '16px' }}>
+  <AiGenerateIcon color="purple" />
+  <AiGenerateIcon color="teal" />
+  <AiGenerateIcon color="orange" />
+</div>
+```
+### AI Generate Button
+An example of using the AI generate icon within a button.
+```js
+<button style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', backgroundColor: '#6200EE', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+  <AiGenerateIcon color="white" />
+  <span>Generate with AI</span>
+</button>

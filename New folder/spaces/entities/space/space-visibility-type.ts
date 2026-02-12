@@ -1,0 +1,1 @@
+export type SpaceVisibility = 'public' | 'private' | 'unlisted';

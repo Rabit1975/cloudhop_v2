@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   Users, 
@@ -12,10 +12,16 @@ import {
   TrendingUp,
   Activity,
   Clock,
-  Star
+  Star,
+  Zap
 } from 'lucide-react';
 
-const Home: React.FC = () => {
+interface HomeProps {
+  onNavigate?: (tab: 'hophub' | 'music' | 'gamehub' | 'spaces') => void;
+  onSectionChange?: (section: 'home' | 'hophub' | 'meetings' | 'settings') => void;
+}
+
+const Home: React.FC<HomeProps> = ({ onNavigate, onSectionChange }) => {
   const stats = [
     { label: 'System Health', value: '99.9%', icon: Activity, trend: 'Stable' }
   ];
@@ -34,10 +40,42 @@ const Home: React.FC = () => {
       icon: Calendar,
       color: 'from-purple-400 to-pink-500',
       action: 'meetings' as const
+    },
+    { 
+      title: 'Music Hub', 
+      description: 'Listen to music',
+      icon: Music,
+      color: 'from-green-400 to-blue-500',
+      action: 'music' as const
+    },
+    { 
+      title: 'Game Center', 
+      description: 'Play games',
+      icon: Gamepad2,
+      color: 'from-orange-400 to-red-500',
+      action: 'gamehub' as const
     }
   ];
 
   const recentActivity: any[] = [];
+
+  const handleQuickAction = (action: string) => {
+    console.log(`Navigating to: ${action}`);
+    
+    // Use the navigation props if available
+    if (action === 'hophub' && onNavigate) {
+      onNavigate('hophub');
+    } else if (action === 'meetings' && onSectionChange) {
+      onSectionChange('meetings');
+    } else if (action === 'music' && onNavigate) {
+      onNavigate('music');
+    } else if (action === 'gamehub' && onNavigate) {
+      onNavigate('gamehub');
+    } else {
+      // Fallback to hash navigation
+      window.location.hash = `#${action}`;
+    }
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4 lg:p-6 space-y-4 lg:space-y-6 overflow-y-auto h-full">
@@ -72,16 +110,13 @@ const Home: React.FC = () => {
         <h2 className="text-xl lg:text-2xl font-bold text-white mb-3 lg:mb-4">Quick Actions</h2>
         <div className="flex flex-col sm:flex-row gap-2 lg:gap-3">
           {quickActions.map((action, index) => (
-            <Card key={index} className="glass-panel hover:scale-105 transition-transform cursor-pointer flex-1 max-w-[200px]">
-              <CardContent className="p-3 lg:p-4">
-                <div className={`w-6 h-6 lg:w-8 lg:h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2`}>
-                  <action.icon className="w-3 h-3 lg:w-4 lg:h-4 text-white" />
+            <Card key={index} className="glass-panel hover:scale-105 transition-transform cursor-pointer flex-1 max-w-[150px]">
+              <CardContent className="p-2 lg:p-3">
+                <div className={`w-4 h-4 lg:w-6 lg:h-6 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2`}>
+                  <action.icon className="w-2 h-2 lg:w-3 lg:h-3 text-white" />
                 </div>
                 <h3 className="text-xs lg:text-sm font-semibold text-white mb-1">{action.title}</h3>
-                <p className="text-xs text-gray-300 mb-2">{action.description}</p>
-                <Button className="w-full glow-cyan text-xs py-1">
-                  Get Started
-                </Button>
+                <p className="text-xs text-gray-300">{action.description}</p>
               </CardContent>
             </Card>
           ))}

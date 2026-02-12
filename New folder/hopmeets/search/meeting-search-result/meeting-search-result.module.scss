@@ -1,0 +1,17 @@
+.meetingSearchResult {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card {
+  height: 100%;
+  
+  // Example of using tokens to ensure consistency
+  border-radius: var(--borders-radius-medium);
+  transition: transform var(--interactions-transitions-duration-fast) var(--interactions-transitions-easing-default);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}

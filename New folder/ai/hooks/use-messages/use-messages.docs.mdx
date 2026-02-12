@@ -1,0 +1,99 @@
+---
+description: A React Hook to manage messages data via GraphQL operations
+labels: ['hook', 'react', 'graphql', 'messages']
+---
+
+A React Hook that provides functionalities to fetch and create messages for communication sessions using GraphQL.
+
+### Listing messages
+
+This example shows how to fetch and display a list of messages for a given session ID.
+
+```tsx
+import React from 'react';
+import { useMessages } from './use-messages.js';
+const MessageList = ({ sessionId }: { sessionId: string }) => {
+  const { messages, loading, error, refetch } = useMessages({ sessionId });
+  if (loading) {
+    return <div>Loading messages...</div>;
+  }
+  if (error) {
+    return <div>Error loading messages: {error.message}</div>;
+  }
+  return (
+    <div>
+      <h2>Messages for Session: {sessionId}</h2>
+      <button onClick={() => refetch()}>Refresh Messages</button>
+      {messages.length === 0 ? (
+        <p>No messages in this session.</p>
+      ) : (
+        <ul>
+          {messages.map((message) => (
+            <li key={message.id}>
+              <strong>{message.role}:</strong> {message.text}
+              <small> ({new Date(message.createdAt).toLocaleTimeString()})</small>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+```
+### Creating a message
+This example demonstrates how to create a new message within a session using the createMessage function.
+```tsx
+import React, { useState } from 'react';
+import { useCreateMessage } from './use-create-message.js';
+const MessageComposer = ({ sessionId }: { sessionId: string }) => {
+  const [messageText, setMessageText] = useState('');
+  const { createMessage, loading, error, data: createdMessage } = useCreateMessage();
+  const handleSendMessage = async () => {
+    if (!messageText.trim()) return;
+    try {
+      await createMessage({ sessionId, prompt: messageText });
+      setMessageText('');
+      alert('Message sent successfully!');
+    } catch (err) {
+      console.error('Failed to send message:', err);
+      alert(`Error sending message: ${error?.message || 'Unknown error'}`);
+    }
+  };
+  return (
+    <div>
+      <h3>Compose New Message</h3>
+      <input
+        type="text"
+        value={messageText}
+        onChange={(e) => setMessageText(e.target.value)}
+        placeholder="Type your message here..."
+        disabled={loading}
+      />
+      <button onClick={handleSendMessage} disabled={loading}>
+        {loading ? 'Sending...' : 'Send Message'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {createdMessage && <p>Last sent: {createdMessage.text}</p>}
+    </div>
+  );
+};
+```
+### Handling loading and errors for messages
+This example illustrates how to manage loading states and error handling when fetching messages.
+```tsx
+import React from 'react';
+import { useMessages } from './use-messages.js';
+const MessageStatus = ({ sessionId }: { sessionId: string }) => {
+  const { loading, error, messages } = useMessages({ sessionId });
+  if (loading) {
+    return <p>Messages are currently loading, please wait...</p>;
+  }
+  if (error) {
+    return <p style={{ color: 'red' }}>Failed to load messages. Error: {error.message}</p>;
+  }
+  return (
+    <p>
+      Messages loaded successfully. Found {messages.length} messages for session {sessionId}.
+    </p>
+  );
+};

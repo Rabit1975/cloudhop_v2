@@ -1,0 +1,103 @@
+.userCardLink {
+  display: block;
+  text-decoration: none;
+  width: 100%;
+  color: inherit;
+  box-sizing: border-box; // Ensure padding/border doesn't cause overflow on width: 100%
+  
+  &:focus-visible {
+    outline: none;
+    
+    .card {
+      border-color: var(--colors-primary-default);
+      box-shadow: var(--effects-shadows-medium);
+    }
+  }
+}
+
+.card {
+  height: 100%;
+  transition: all var(--interactions-transitions-duration-fast) var(--interactions-transitions-easing-default);
+  
+  // Center content within the card body
+  :global(.card_body__3fbd2), // Fallback or if hashing matches
+  & > div:nth-child(2) { // Assuming body is the second child if image is not present, or checking structure
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  gap: var(--spacing-medium);
+}
+
+.avatarContainer {
+  position: relative;
+  display: inline-flex;
+}
+
+.presenceWrapper {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  border-radius: 50%;
+  padding: 3px;
+  background-color: var(--colors-surface-primary); // Default background cutout
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  z-index: 1;
+}
+
+.info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.name {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--colors-text-primary);
+  margin: 0;
+}
+
+.statusMessage {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+// Variant specific styles for the cutout background
+.elevated {
+  .presenceWrapper {
+    background-color: var(--colors-surface-secondary);
+  }
+}
+
+.outlined {
+  .presenceWrapper {
+    background-color: var(--colors-surface-background);
+  }
+}
+
+.glow {
+  .presenceWrapper {
+    background-color: rgba(30, 41, 59, 1); // Approximate dark theme background
+  }
+}

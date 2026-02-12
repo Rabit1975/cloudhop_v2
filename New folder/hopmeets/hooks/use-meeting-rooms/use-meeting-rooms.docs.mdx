@@ -1,0 +1,166 @@
+---
+description: A React Hook for managing meeting room data including fetching, listing, creating, updating, and deleting meeting rooms.
+labels: ['hook', 'react', 'meeting', 'graphql']
+---
+
+A React Hook for managing meeting room data. It provides independent hooks for fetching a single meeting room, listing meeting rooms, creating new meeting rooms, updating existing meeting rooms, and deleting meeting rooms using GraphQL mutations. It also handles loading and error states.
+
+### Listing Meeting Rooms
+
+This example demonstrates how to use the `useMeetingRooms` hook to fetch and display a list of meeting rooms.
+
+```tsx
+import { useMeetingRooms } from './use-meeting-rooms.js';
+
+const MeetingRoomList = () => {
+  // For documentation examples, we use the mockData prop to simulate fetched data.
+  // In a real application, data would be fetched from a GraphQL endpoint.
+  const mockMeetingRoomsData = [
+    { id: '1', name: 'Conference Room Alpha', capacity: 10, isPrivate: false, ownerId: 'user1' },
+    { id: '2', name: 'Meeting Pod Beta', capacity: 4, isPrivate: true, ownerId: 'user2' },
+  ];
+  const { meetingRooms, loading, error, refetch } = useMeetingRooms({ mockData: mockMeetingRoomsData });
+
+  if (loading) return <p>Loading meeting rooms...</p>;
+  if (error) return <p>Error loading meeting rooms: {error.message}</p>;
+
+  return (
+    <div>
+      <h1>Available Meeting Rooms</h1>
+      {meetingRooms.length === 0 ? (
+        <p>No meeting rooms found.</p>
+      ) : (
+        <ul>
+          {meetingRooms.map((room) => (
+            <li key={room.id}>
+              {room.name} (Capacity: {room.capacity}, {room.isPrivate ? 'Private' : 'Public'})
+            </li>
+          ))}
+        </ul>
+      )}
+      <button onClick={() => refetch()}>Refresh Rooms</button>
+    </div>
+  );
+};
+```
+
+### Fetching a Single Meeting Room
+
+This example demonstrates how to use the `useMeetingRoom` hook to fetch and display details for a specific meeting room by its ID.
+
+```tsx
+import { useMeetingRoom } from './use-meeting-room.js';
+
+const SingleMeetingRoomDetail = ({ roomId }: { roomId: string }) => {
+  // For documentation examples, we use the mockData prop to simulate fetched data.
+  // In a real application, data would be fetched from a GraphQL endpoint.
+  const mockMeetingRoomData = { id: roomId, name: 'Executive Boardroom', capacity: 15, isPrivate: false, ownerId: 'user3' };
+  const { meetingRoom, loading, error, refetch } = useMeetingRoom(roomId, { mockData: mockMeetingRoomData });
+
+  if (loading) return <p>Loading meeting room details...</p>;
+  if (error) return <p>Error loading meeting room: {error.message}</p>;
+  if (!meetingRoom) return <p>Meeting room not found.</p>;
+
+  return (
+    <div>
+      <h2>{meetingRoom.name}</h2>
+      <p>ID: {meetingRoom.id}</p>
+      <p>Capacity: {meetingRoom.capacity}</p>
+      <p>Private: {meetingRoom.isPrivate ? 'Yes' : 'No'}</p>
+      <button onClick={() => refetch()}>Refresh Details</button>
+    </div>
+  );
+};
+
+// Example usage of the component with a specific room ID
+const MeetingRoomPage = () => {
+  return <SingleMeetingRoomDetail roomId="some-room-id-123" />;
+};
+```
+
+### Creating a New Meeting Room
+
+This example shows how to use the `useCreateMeetingRoom` hook to create a new meeting room. It includes handling loading and error states after the mutation is triggered.
+
+```tsx
+import { useState } from 'react'; // Added React import for JSX
+import { useCreateMeetingRoom } from './use-create-meeting-room.js';
+
+const CreateMeetingRoomForm = () => {
+  const [roomName, setRoomName] = useState('');
+  const [roomDescription, setRoomDescription] = useState('');
+  const [isPrivate, setIsPrivate] = useState(false);
+  const { createMeetingRoom, loading, error, data: createdRoom } = useCreateMeetingRoom();
+
+  const handleSubmit = async (event: React.FormEvent) => { // Added event type
+    event.preventDefault();
+    try {
+      // In a real application, the GraphQL mutation would be triggered.
+      // For this example, we simulate the call and its state changes.
+      // The `capacity` is added to satisfy the `CreateMeetingRoomOptions` type,
+      // but it might not be directly used by the GraphQL mutation for room creation.
+      const newRoom = await createMeetingRoom({
+        name: roomName,
+        description: roomDescription,
+        isPrivate: isPrivate,
+        capacity: 10,
+      });
+      if (newRoom) {
+        alert(`Successfully created room: ${newRoom.name}`);
+        setRoomName('');
+        setRoomDescription('');
+        setIsPrivate(false);
+      }
+    } catch (err) {
+      // Error is also captured by the hook's error state,
+      // but this catch block allows for additional client-side logic.
+      console.error('Failed to create meeting room:', err);
+    }
+  };
+
+  return (
+    <div>
+      <h3>Create New Meeting Room</h3>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Room Name:
+          <input
+            type="text"
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+            disabled={loading}
+            required
+          />
+        </label>
+        <br/><br/>
+
+        <label>
+          Description:
+          <textarea
+            value={roomDescription}
+            onChange={(e) => setRoomDescription(e.target.value)}
+            disabled={loading}
+          />
+        </label>
+        <br/><br/>
+
+        <label>
+          Private Room:
+          <input
+            type="checkbox"
+            checked={isPrivate}
+            onChange={(e) => setIsPrivate(e.target.checked)}
+            disabled={loading}
+          />
+        </label>
+        <br/><br/>
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Creating...' : 'Create Room'}
+        </button>
+      </form>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {createdRoom && <p>Last created room: {createdRoom.name} (ID: {createdRoom.id})</p>}
+    </div>
+  );
+};

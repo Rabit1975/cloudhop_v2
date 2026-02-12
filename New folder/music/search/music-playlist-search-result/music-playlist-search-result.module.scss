@@ -1,0 +1,44 @@
+.musicPlaylistSearchResult {
+  display: block;
+  text-decoration: none;
+  height: 100%;
+  box-sizing: border-box; // Ensures padding and border don't cause overflow
+}
+
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.footerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.typeLabel {
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-primary-default);
+  font-weight: var(--typography-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--typography-letter-spacing-wide);
+}
+
+.trackCount {
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+}
+
+.description {
+  margin: 0;
+  color: var(--colors-text-secondary);
+  font-size: var(--typography-sizes-body-small);
+  line-height: var(--typography-line-height-base);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

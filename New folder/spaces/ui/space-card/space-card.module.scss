@@ -1,0 +1,99 @@
+.spaceCardWrapper {
+  display: block;
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  &:focus-visible {
+    outline: var(--borders-focus-width) var(--borders-focus-style) var(--borders-focus-color);
+    outline-offset: var(--borders-focus-offset);
+    border-radius: var(--borders-radius-large);
+  }
+}
+
+.spaceCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  height: 100%;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-small);
+}
+
+.title {
+  margin: 0;
+  color: var(--colors-text-primary);
+  /* Truncate title after 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.description {
+  color: var(--colors-text-secondary);
+  /* Truncate description after 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.badge {
+  font-size: var(--typography-sizes-caption-default);
+  font-weight: var(--typography-font-weight-bold);
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: var(--borders-radius-small);
+  letter-spacing: var(--typography-letter-spacing-wide);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.public {
+  background-color: var(--colors-surface-tertiary);
+  color: var(--colors-status-positive-default);
+  border: 1px solid var(--colors-border-subtle);
+}
+
+.private {
+  background-color: var(--colors-surface-tertiary);
+  color: var(--colors-text-secondary);
+  border: 1px solid var(--colors-border-default);
+}
+
+.unlisted {
+  background-color: var(--colors-surface-tertiary);
+  color: var(--colors-status-warning-default);
+  border: 1px solid var(--colors-border-subtle);
+}
+
+.meta {
+  margin-top: auto;
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--colors-border-subtle);
+  display: flex;
+  align-items: center;
+}
+
+.memberCount {
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+  font-weight: var(--typography-font-weight-medium);
+}

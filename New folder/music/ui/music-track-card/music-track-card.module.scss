@@ -1,0 +1,49 @@
+.musicTrackCard {
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+  box-sizing: border-box; /* Added to prevent layout overflow */
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-xs);
+}
+
+.artist {
+  color: var(--colors-text-secondary);
+  font-weight: var(--typography-font-weight-medium);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  margin-right: var(--spacing-small);
+}
+
+.duration {
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+  font-family: var(--typography-font-family);
+  white-space: nowrap;
+}
+
+.footer {
+  display: flex;
+  gap: var(--spacing-small);
+  width: 100%;
+  
+  button {
+    flex: 1;
+  }
+}
+
+.playButton {
+  flex: 1;
+}
+
+.addButton {
+  flex: 1;
+}

@@ -1,0 +1,77 @@
+---
+description: A modal for creating new channels or direct messages.
+labels: ['modal', 'conversation', 'messaging', 'ui']
+---
+
+A versatile modal component that allows users to initiate new conversations, either by creating a public or private channel or by starting a direct message with one or more users.
+
+### Basic Conversation Creation
+
+This example demonstrates the standard use case of the modal, allowing users to choose between creating a new channel or starting a direct message.
+
+```jsx
+() => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <MockProvider>
+      <div style={{ padding: '20px', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Button appearance="primary" onClick={() => setIsOpen(true)}>
+          Start New Conversation
+        </Button>
+        <CreateConversationModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
+      </div>
+    </MockProvider>
+  );
+}
+```
+
+### Direct Message Preselection
+
+This example shows how to open the modal with the direct message option preselected and an initial user ID prefilled, useful for initiating a chat from a user profile.
+
+```jsx
+() => {
+  const [isOpen, setIsOpen] = useState(true);
+  return (
+    <MockProvider>
+      <div style={{ padding: '20px', minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Button appearance="secondary" onClick={() => setIsOpen(true)}>
+          Message User @nebula_walker
+        </Button>
+        <CreateConversationModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          initialUserId="nebula_walker"
+        />
+      </div>
+    </MockProvider>
+  );
+}
+```
+
+### Dark Theme Presentation
+
+This example illustrates the modal presentation when a dark theme is active, ensuring visual consistency across different user interface preferences.
+
+```jsx
+() => {
+  const [isOpen, setIsOpen] = useState(true);
+  return (
+    <MockProvider noTheme>
+      <CloudrabbitTheme initialTheme="dark">
+        <div style={{ padding: '20px', minHeight: '300px', backgroundColor: 'var(--colors-surface-background)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Button appearance="primary" onClick={() => setIsOpen(true)}>
+            Open Dark Modal
+          </Button>
+          <CreateConversationModal
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+          />
+        </div>
+      </CloudrabbitTheme>
+    </MockProvider>
+  );
+}

@@ -1,0 +1,121 @@
+---
+description: A React Hook for managing space data, including fetching, listing, creating, updating, and deleting spaces.
+labels: ['hook', 'react', 'space', 'graphql']
+---
+
+This set of React Hooks provides a comprehensive way to interact with space data through GraphQL operations. It includes hooks for fetching a single space, listing multiple spaces with filters, and performing mutations like creating, updating, and deleting spaces. Each hook handles loading and error states automatically.
+
+
+## Usage
+
+### Fetch a single space
+
+This example shows how to fetch details for a specific space using its ID.
+
+```tsx
+import { useSpace } from './use-space.js';
+import { Space } from '@cloudrabbit/spaces.entities.space';
+const SpaceDetail = ({ spaceId }: { spaceId: string }) => {
+  const { space, loading, error } = useSpace(spaceId);
+  if (loading) return <p>Loading space details...</p>;
+  if (error) return <p>Error loading space: {error.message}</p>;
+  if (!space) return <p>No space found.</p>;
+  return (
+    <div>
+      <h3>{space.name}</h3>
+      <p>ID: {space.id}</p>
+      <p>Description: {space.description || 'No description'}</p>
+      <p>Owner: {space.ownerId}</p>
+      <p>Visibility: {space.visibility}</p>
+    </div>
+  );
+};
+```
+
+### List spaces with filters
+
+This example shows how to list multiple spaces and apply filters such as ownerId.
+
+```tsx
+import { useListSpaces } from './use-list-spaces.js';
+import { Space } from '@cloudrabbit/spaces.entities.space';
+const SpaceList = () => {
+  const { spaces, loading, error, refetch } = useListSpaces({ ownerId: 'user123' });
+  if (loading) return <p>Loading spaces...</p>;
+  if (error) return <p>Error loading spaces: {error.message}</p>;
+  return (
+    <div>
+      <h3>My Spaces</h3>
+      <button onClick={() => refetch()}>Refresh Spaces</button>
+      {spaces.length === 0 && <p>No spaces found for this owner.</p>}
+      <ul>
+        {spaces.map((space: Space) => (
+          <li key={space.id}>
+            {space.name} ({space.visibility})
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+### Create and delete a space
+
+This example demonstrates creating a new space and then deleting it.
+
+```tsx
+import { useCreateSpace } from './use-create-space.js';
+import { useDeleteSpace } from './use-delete-space.js';
+import { useState } from 'react';
+const SpaceManagement = () => {
+  const { createSpace, loading: createLoading, error: createError } = useCreateSpace();
+  const { deleteSpace, loading: deleteLoading, error: deleteError } = useDeleteSpace();
+  const [createdSpaceId, setCreatedSpaceId] = useState<string | null>(null);
+  const handleCreateSpace = async () => {
+    try {
+      const newSpace = await createSpace({
+        name: 'My New Space',
+        description: 'A space created from the example.',
+        visibility: 'private', // Changed from SpaceVisibility.private to 'private'
+      });
+      setCreatedSpaceId(newSpace.id);
+      alert(`Space created: ${newSpace.name} (ID: ${newSpace.id})`);
+    } catch (e: any) {
+      alert(`Error creating space: ${e.message}`);
+    }
+  };
+  const handleDeleteSpace = async () => {
+    if (!createdSpaceId) {
+      alert('No space to delete.');
+      return;
+    }
+    try {
+      const success = await deleteSpace(createdSpaceId);
+      if (success) {
+        alert(`Space ${createdSpaceId} deleted successfully.`);
+        setCreatedSpaceId(null);
+      } else {
+        alert(`Failed to delete space ${createdSpaceId}.`);
+      }
+    } catch (e: any) {
+      alert(`Error deleting space: ${e.message}`);
+    }
+  };
+  return (
+    <div>
+      <h3>Space Operations</h3>
+      <button onClick={handleCreateSpace} disabled={createLoading}>
+        {createLoading ? 'Creating...' : 'Create New Space'}
+      </button>
+      {createError && <p style={{ color: 'red' }}>Error: {createError.message}</p>}
+      {createdSpaceId && (
+        <button onClick={handleDeleteSpace} disabled={deleteLoading} style={{ marginLeft: '10px' }}>
+          {deleteLoading ? 'Deleting...' : `Delete Space ${createdSpaceId}`}
+        </button>
+      )}
+      {deleteError && <p style={{ color: 'red' }}>Error: {deleteError.message}</p>}
+      {createdSpaceId && <p>Currently managed space ID: {createdSpaceId}</p>}
+    </div>
+  );
+};

@@ -1,0 +1,54 @@
+---
+description: A data entity for an Asset within a space, including properties like id, spaceId, name, type, url, and uploadDate.
+labels: ['asset', 'entity', 'data']
+---
+
+A component for an Asset entity, supports serialization and de-serialization of Asset objects and can be used from
+both backend and frontend.
+
+### Creating an Asset instance
+
+This example demonstrates how to create an Asset instance from a plain JavaScript object.
+
+```ts
+import { Asset } from './asset.js';
+const plainAssetData = {
+  id: 'asset-001',
+  spaceId: 'space-abc',
+  name: 'document.pdf',
+  type: 'application/pdf',
+  url: 'https://example.com/files/document.pdf',
+  size: 102400,
+  uploadDate: '2023-01-15T10:00:00Z',
+  uploadedById: 'user-xyz'
+};
+const asset = Asset.from(plainAssetData);
+console.log(asset.name);
+```
+### Serializing an Asset to a plain object
+This example shows how to convert an existing Asset instance back into a plain JavaScript object.
+```ts
+import { Asset } from './asset.js';
+const assetInstance = new Asset(
+  'asset-002',
+  'space-def',
+  'image.png',
+  'image/png',
+  'https://example.com/images/image.png',
+  51200,
+  '2023-01-16T11:30:00Z',
+  'user-qwe',
+  undefined,
+  'https://example.com/images/image_thumb.png'
+);
+const plainObject = assetInstance.toObject();
+console.log(plainObject.url);
+```
+### Generating mock assets
+This example demonstrates how to generate mock Asset data for development and testing purposes.
+```ts
+import { mockAsset, mockAssets } from './asset.mock.js';
+const singleMockAsset = mockAsset({ name: 'test-document.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+console.log(singleMockAsset.name);
+const listOfMockAssets = mockAssets(2, { spaceId: 'test-space-id' });
+console.log(listOfMockAssets.length);

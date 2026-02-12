@@ -1,0 +1,29 @@
+---
+description: An icon component signifying settings or configuration for AI features.
+labels: ['icon', 'settings', 'ai', 'ui']
+---
+
+## Basic AI Settings Icon
+
+Renders the AI settings icon with its default size and color.
+
+```tsx
+<AiSettingsIcon />
+```
+## AI Settings Icon with custom size
+Demonstrates how to change the size of the AI settings icon.
+```tsx
+<AiSettingsIcon size={32} />
+```
+## AI Settings Icon with custom color
+Demonstrates how to apply a custom color to the AI settings icon.
+```tsx
+<AiSettingsIcon color="blue" />
+```
+## AI Settings Icon in a menu item
+Illustrates the AI settings icon used within a simulated menu item.
+```tsx
+<div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--colors-text-primary)' }}>
+  <AiSettingsIcon size={20} color="var(--colors-text-secondary)" />
+  <span>AI Configuration</span>
+</div>

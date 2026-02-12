@@ -1,0 +1,100 @@
+---
+description: Displays an individual space search result.
+labels: ['space', 'search', 'ui']
+---
+
+A SpaceSearchResult component displays information about a space found through a search operation. It includes the space name, description, visibility status, and an icon, all within a clickable card that navigates to the space URL.
+
+### Public Space Result
+A SpaceSearchResult component displaying a public space.
+
+```jsx
+const publicSpaceResult = {
+  id: 'space-1',
+  content: {
+    id: 'space-1',
+    name: 'CloudHop Community',
+    description: 'The official community space for CloudHop users to share ideas and feedback.',
+    visibility: 'public',
+  },
+  score: 1,
+};
+<div style={{ maxWidth: '340px', padding: '24px' }}>
+  <SpaceSearchResult result={publicSpaceResult} />
+</div>
+```
+### Private Space Result
+A SpaceSearchResult component displaying a private space.
+```jsx
+const privateSpaceResult = {
+  id: 'space-2',
+  content: {
+    id: 'space-2',
+    name: 'Top Secret Project',
+    description: 'Confidential workspace for the new product launch team. Authorized personnel only.',
+    visibility: 'private',
+  },
+  score: 1,
+};
+<div style={{ maxWidth: '340px', padding: '24px' }}>
+  <SpaceSearchResult result={privateSpaceResult} />
+</div>
+```
+### Multiple Space Results in a Grid
+Showcases multiple SpaceSearchResult components arranged in a grid layout.
+```jsx
+const results = [
+  {
+    id: 's1',
+    content: {
+      id: 's1',
+      name: 'Design System',
+      description: 'Central hub for design tokens and assets.',
+      visibility: 'public',
+    },
+    score: 1,
+  },
+  {
+    id: 's2',
+    content: {
+      id: 's2',
+      name: 'Marketing Q1',
+      description: 'Campaign planning for Q1.',
+      visibility: 'private',
+    },
+    score: 1,
+  },
+  {
+    id: 's3',
+    content: {
+      id: 's3',
+      name: 'Engineering',
+      description: 'Engineering team announcements and docs.',
+      visibility: 'public',
+    },
+    score: 1,
+  },
+  {
+    id: 's4',
+    content: {
+      id: 's4',
+      name: 'Random',
+      description: 'Fun stuff and memes.',
+      visibility: 'unlisted',
+    },
+    score: 1,
+  },
+];
+<div 
+  style={{ 
+    display: 'grid', 
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+    gap: '24px', 
+    padding: '24px',
+    backgroundColor: 'var(--colors-surface-background)'
+  }}
+>
+  {results.map((result) => (
+    <SpaceSearchResult key={result.id} result={result} />
+  ))}
+</div>

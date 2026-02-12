@@ -1,0 +1,58 @@
+.messageInput {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-small);
+  padding: var(--spacing-medium);
+  background-color: var(--colors-surface-secondary);
+  border-top: 1px solid var(--colors-border-subtle);
+  width: 100%;
+  box-sizing: border-box;
+  transition: background-color var(--interactions-transitions-duration-fast) var(--interactions-transitions-easing-default);
+
+  &:focus-within {
+    background-color: var(--colors-surface-primary);
+  }
+}
+
+.inputWrapper {
+  flex: 1;
+  min-width: 0;
+
+  // Target the internal container of TextInput to align correctly
+  :global(.container) {
+    width: 100%;
+  }
+}
+
+.actionButton {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0 !important;
+  border-radius: var(--borders-radius-full) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--colors-text-secondary);
+
+  &:hover {
+    color: var(--colors-primary-default);
+    background-color: var(--colors-surface-tertiary);
+  }
+}
+
+.sendButton {
+  composes: actionButton;
+  background-color: var(--colors-primary-default);
+  color: var(--colors-primary-contrast) !important;
+
+  &:hover {
+    background-color: var(--colors-primary-hover) !important;
+  }
+
+  &.disabled {
+    background-color: var(--colors-surface-tertiary);
+    color: var(--colors-text-secondary) !important;
+    cursor: var(--interactions-cursor-disabled);
+  }
+}

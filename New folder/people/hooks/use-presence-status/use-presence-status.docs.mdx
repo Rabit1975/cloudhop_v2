@@ -1,0 +1,106 @@
+---
+description: A React Hook for managing user presence status.
+labels: ['hook', 'react', 'presence', 'graphql']
+---
+
+A React Hook for managing user presence status. It provides functionality to fetch a user's current status and to update the current user's status via GraphQL mutations.
+
+## Usage
+
+### Fetching a user's presence status
+
+This example demonstrates how to fetch a specific user's online or offline presence status using their user ID. It also shows how to handle loading states and potential errors.
+
+```tsx
+function UserStatusDisplay({ targetUserId }) {
+  // This example assumes usePresenceStatus is available in scope.
+  // In a real application, you would import it:
+  // import { usePresenceStatus } from '@cloudhop/people.use-presence-status';
+  const { presence, loading, error, refetch } = usePresenceStatus(targetUserId);
+  if (loading) {
+    return <p>Loading presence status...</p>;
+  }
+  if (error) {
+    return <p style={{ color: 'red' }}>Error fetching presence status: {error.message}</p>;
+  }
+  return (
+    <div>
+      <h4>User ID: {targetUserId}</h4>
+      <p>Status: {presence?.status || 'Unknown'}</p>
+      <p>Last seen: {presence?.lastSeenAt ? new Date(presence.lastSeenAt).toLocaleString() : 'N/A'}</p>
+      <button onClick={() => refetch()}>Refresh Status</button>
+    </div>
+  );
+}
+// Example usage of UserStatusDisplay:
+// <UserStatusDisplay targetUserId="user123" />
+```
+### Updating the current user presence status
+This example shows how to update the current user's presence status, for example setting it to online or away. It also handles the loading and error states during the update process.
+```tsx
+function StatusUpdater() {
+  // This example assumes useUpdatePresenceStatus is available in scope.
+  // In a real application, you would import it:
+  // import { useUpdatePresenceStatus } from '@cloudhop/people.use-presence-status';
+  const { updateStatus, loading, error } = useUpdatePresenceStatus();
+  const handleUpdate = async (newStatus) => {
+    try {
+      const updated = await updateStatus(newStatus);
+      if (updated) {
+        console.log('Status updated to:', updated.status);
+        alert(`Your status is now: ${updated.status}`);
+      }
+    } catch (err) {
+      console.error('Failed to update status:', err);
+      alert('Failed to update status: ' + err.message);
+    }
+  };
+  return (
+    <div>
+      <h3>Update your presence:</h3>
+      <button onClick={() => handleUpdate('online')} disabled={loading}>
+        {loading ? 'Updating...' : 'Set Online'}
+      </button>
+      <button onClick={() => handleUpdate('away')} disabled={loading}>
+        {loading ? 'Updating...' : 'Set Away'}
+      </button>
+      <button onClick={() => handleUpdate('offline')} disabled={loading}>
+        {loading ? 'Updating...' : 'Set Offline'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error updating: {error.message}</p>}
+    </div>
+  );
+}
+```
+### Fetching with mock data for preview
+This example illustrates how to provide mock data to the `usePresenceStatus` hook. This is useful for testing, storybook previews, or when you want to bypass the actual GraphQL query for a predictable state.
+```tsx
+function PreviewUserStatus() {
+  // This example assumes usePresenceStatus is available in scope.
+  // In a real application, you would import it:
+  // import { usePresenceStatus } from '@cloudhop/people.use-presence-status';
+  // Create a mock presence object that mimics the expected structure.
+  // In a real scenario, this might be an instance of a PresenceStatus class.
+  const mockPresence = {
+    userId: 'mockUser456',
+    status: 'away',
+    lastSeenAt: '2023-10-27T10:30:00.000Z',
+  };
+  // When mockData is provided, the actual GraphQL query is skipped.
+  const { presence, loading, error } = usePresenceStatus('mockUser456', { mockData: mockPresence });
+  if (loading) {
+    return <p>Loading presence status...</p>;
+  }
+  if (error) {
+    return <p style={{ color: 'red' }}>Error fetching presence status: {error.message}</p>;
+  }
+  return (
+    <div style={{ border: '1px dashed #ccc', padding: '10px' }}>
+      <h4>Preview Mode: Mock User Status</h4>
+      <p>User ID: {presence?.userId}</p>
+      <p>Status: {presence?.status || 'Unknown'}</p>
+      <p>Last seen: {presence?.lastSeenAt ? new Date(presence.lastSeenAt).toLocaleString() : 'N/A'}</p>
+      <p>This data is from a mock object, not a live query.</p>
+    </div>
+  );
+}

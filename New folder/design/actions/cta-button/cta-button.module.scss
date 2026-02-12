@@ -1,0 +1,47 @@
+.ctaButton {
+  box-sizing: border-box; /* Added for layout robustness */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--spacing-medium) var(--spacing-xxl);
+  font-family: var(--typography-font-family);
+  font-size: var(--typography-sizes-body-large);
+  font-weight: var(--typography-font-weight-bold);
+  letter-spacing: var(--typography-letter-spacing-wide);
+  text-transform: uppercase;
+  transition: transform var(--interactions-transitions-duration-fast) var(--interactions-transitions-easing-out),
+              box-shadow var(--interactions-transitions-duration-fast) var(--interactions-transitions-easing-out);
+  
+  &:hover {
+    transform: translateY(-2px);
+    z-index: var(--interactions-z-index-base);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.primary {
+  background-image: var(--effects-gradients-primary);
+  background-color: transparent;
+  color: var(--colors-primary-contrast) !important;
+  border: none;
+  box-shadow: var(--effects-shadows-medium);
+
+  &:hover {
+    box-shadow: var(--effects-shadows-large);
+  }
+}
+
+.secondary {
+  border-width: 2px;
+  border-color: var(--colors-border-strong);
+}
+
+.tertiary {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

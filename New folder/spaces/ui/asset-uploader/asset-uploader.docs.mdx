@@ -1,0 +1,23 @@
+---
+description: A component for uploading and managing assets.
+labels: ['asset', 'upload', 'file', 'management', 'ui']
+---
+
+A dedicated component for uploading and managing assets within a given space or content context. It provides a user-friendly drag and drop interface or a file input button. Uploaded assets are displayed using `asset-preview` components, and the system shows upload progress with loading spinners. It integrates with `useAssets` hooks for comprehensive asset handling including uploads and deletions.
+
+### Basic Asset Uploader
+
+A basic implementation of the AssetUploader component for a given space ID. This example demonstrates the core functionality for file uploads.
+
+```tsx
+<BasicUploader />
+```
+### Asset Uploader with Preloaded Assets
+Display the AssetUploader with a set of existing assets and associate them with a specific content ID. This shows how to manage assets already linked to a piece of content.
+```tsx
+<WithPreloadedAssets />
+```
+### Nebula Themed Asset Uploader
+Integrate the AssetUploader into a Nebula themed environment demonstrating custom styling for a cohesive user experience within CloudHop.
+```tsx
+<NebulaThemedUploader />

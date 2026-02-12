@@ -1,0 +1,196 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+  width: 100%;
+  max-width: 500px;
+  font-family: var(--typography-font-family);
+  box-sizing: border-box;
+}
+
+.dropZone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  border: 2px dashed var(--colors-border-default);
+  border-radius: var(--borders-radius-medium);
+  background-color: var(--colors-surface-secondary);
+  transition: all var(--interactions-transitions-duration-fast) var(--interactions-transitions-easing-default);
+  cursor: pointer;
+  text-align: center;
+  min-height: 160px;
+  gap: var(--spacing-medium);
+
+  &:hover:not(.disabled) {
+    border-color: var(--colors-primary-default);
+    background-color: var(--colors-surface-tertiary);
+  }
+
+  &.active {
+    border-color: var(--colors-primary-default);
+    background-color: var(--colors-surface-tertiary);
+    box-shadow: 0 0 0 4px var(--colors-primary-subtle);
+  }
+
+  &.disabled {
+    cursor: var(--interactions-cursor-disabled);
+    opacity: var(--effects-opacity-disabled);
+  }
+}
+
+.dropInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: var(--interactions-cursor-disabled);
+  }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--colors-surface-primary);
+  color: var(--colors-primary-default);
+  margin-bottom: var(--spacing-small);
+}
+
+.dropText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.primaryText {
+  font-size: var(--typography-sizes-body-large);
+  font-weight: var(--typography-font-weight-medium);
+  color: var(--colors-text-primary);
+}
+
+.secondaryText {
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+}
+
+.filePreview {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background-color: var(--colors-surface-secondary);
+  border: 1px solid var(--colors-border-default);
+  border-radius: var(--borders-radius-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.fileIcon {
+  color: var(--colors-primary-default);
+  flex-shrink: 0;
+}
+
+.fileDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fileName {
+  font-size: var(--typography-sizes-body-default);
+  font-weight: var(--typography-font-weight-medium);
+  color: var(--colors-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fileSize {
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  cursor: pointer;
+  color: var(--colors-text-secondary);
+  border-radius: var(--borders-radius-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background-color 0.2s;
+
+  &:hover {
+    color: var(--colors-status-negative-default);
+    background-color: var(--colors-status-negative-subtle);
+  }
+
+  &:disabled {
+    cursor: var(--interactions-cursor-disabled);
+    opacity: 0.5;
+  }
+}
+
+.metadataForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.progressContainer {
+  width: 100%;
+  margin-top: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.progressBarTrack {
+  width: 100%;
+  height: 6px;
+  background-color: var(--colors-surface-tertiary);
+  border-radius: var(--borders-radius-full);
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: var(--colors-primary-default);
+  transition: width 0.3s ease-out;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+}
+
+.errorMessage {
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--colors-status-negative-subtle);
+  color: var(--colors-status-negative-default);
+  border-radius: var(--borders-radius-small);
+  font-size: var(--typography-sizes-caption-default);
+  border: 1px solid var(--colors-status-negative-default);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-medium);
+}

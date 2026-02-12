@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudHop Platform Preview</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .preview-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        .preview-header h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .preview-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 10px 0 0 0;
+        }
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .component-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        .component-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        .component-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .tech-stack {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .tech-stack h3 {
+            margin: 0 0 15px 0;
+        }
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .tech-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('overview');
+
+            const components = [
+                {
+                    name: 'AI Chat Interface',
+                    description: 'Complete chat system with message bubbles, avatars, and AI integration. Supports both light and dark themes with smooth animations.',
+                    status: 'Production Ready',
+                    path: 'ai/ui/chat-message'
+                },
+                {
+                    name: 'Game Hub System',
+                    description: 'Gaming platform with achievements, leaderboards, and game activity tracking. Supports HTML5, Unity, and streaming games.',
+                    status: 'Production Ready',
+                    path: 'gamehub'
+                },
+                {
+                    name: 'HopHub Communication',
+                    description: 'Real-time messaging system with channels, conversations, and direct messages. Features rich media attachments.',
+                    status: 'Production Ready',
+                    path: 'hophub'
+                },
+                {
+                    name: 'Design System',
+                    description: 'Comprehensive theming system with light/dark modes, design tokens, and nebula effects. Fully customizable.',
+                    status: 'Production Ready',
+                    path: 'design/cloudrabbit-theme'
+                },
+                {
+                    name: 'Music Studio',
+                    description: 'Music creation and playlist management system with audio upload, track editing, and studio project management.',
+                    status: 'Beta',
+                    path: 'music'
+                },
+                {
+                    name: 'HopMeets Video',
+                    description: 'Video conferencing and meeting system with calendar integration, meeting rooms, and scheduling.',
+                    status: 'Beta',
+                    path: 'hopmeets'
+                }
+            ];
+
+            const techStack = [
+                'React 18', 'TypeScript', 'SCSS Modules', 'Bit.dev Architecture',
+                'Design Tokens', 'Component Library', 'Modular Architecture'
+            ];
+
+            return (
+                <div className="preview-container">
+                    <div className="preview-header">
+                        <h1>🚀 CloudHop Platform</h1>
+                        <p>Modular Operating System for Next-Gen Communication</p>
+                    </div>
+
+                    <div className="tech-stack">
+                        <h3>🛠️ Technology Stack</h3>
+                        <div className="tech-list">
+                            {techStack.map(tech => (
+                                <span key={tech} className="tech-item">{tech}</span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="component-grid">
+                        {components.map((component, index) => (
+                            <div key={index} className="component-card">
+                                <div className="status-badge">{component.status}</div>
+                                <h2 className="component-title">{component.name}</h2>
+                                <p className="component-description">{component.description}</p>
+                                <div style={{
+                                    background: '#f3f4f6',
+                                    padding: '8px 12px',
+                                    borderRadius: '6px',
+                                    fontFamily: 'monospace',
+                                    fontSize: '0.85rem',
+                                    color: '#666'
+                                }}>
+                                    📁 {component.path}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{
+                        textAlign: 'center',
+                        marginTop: '40px',
+                        color: 'white',
+                        padding: '20px'
+                    }}>
+                        <h3>🎯 Ready for Development</h3>
+                        <p>All components are fully functional and ready for integration.</p>
+                        <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
+                            Each module can be developed and tested independently using Bit.dev workspaces.
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

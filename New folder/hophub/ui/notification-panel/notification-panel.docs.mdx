@@ -1,0 +1,144 @@
+---
+description: A panel to display user notifications with options to mark them as read or navigate to a linked resource.
+labels: ['notification', 'panel', 'ui', 'communication']
+---
+
+A `NotificationPanel` component provides a centralized and organized way to display user notifications. Each notification within the panel shows its message, type, and allows users to mark it as read or navigate to a specific resource related to the notification. The panel automatically handles loading, empty states, and errors.
+
+### Basic notification panel
+
+A standard notification panel displaying a list of notifications.
+
+```tsx
+const mockNotificationsData = [
+  {
+    id: '1',
+    type: 'new_message',
+    message: 'John Doe sent you a new message.',
+    timestamp: Date.now() - 3600000,
+    read: false,
+    link: '/app/messages/123',
+  },
+  {
+    id: '2',
+    type: 'system_alert',
+    message: 'System update available. Please restart your application.',
+    timestamp: Date.now() - 7200000,
+    read: true,
+  },
+  {
+    id: '3',
+    type: 'mention',
+    message: '@Jane tagged you in a comment.',
+    timestamp: Date.now() - 10800000,
+    read: false,
+    link: '/app/comments/456',
+  },
+];
+<MockProvider>
+  <CloudrabbitTheme>
+    <div style={{ padding: '40px', display: 'flex', justifyContent: 'center', backgroundColor: 'var(--colors-surface-background)' }}>
+      <NotificationPanel mockData={mockNotificationsData} />
+    </div>
+  </CloudrabbitTheme>
+</MockProvider>
+```
+
+### Panel with no notifications
+
+A notification panel showing its empty state when no notifications are available.
+
+```tsx
+<MockProvider>
+  <CloudrabbitTheme>
+    <div style={{ padding: '40px', display: 'flex', justifyContent: 'center', backgroundColor: 'var(--colors-surface-background)' }}>
+      <NotificationPanel mockData={[]} />
+    </div>
+  </CloudrabbitTheme>
+</MockProvider>
+```
+
+### Custom title and dark theme
+
+Customize the panel title and display it within a dark themed environment.
+
+```tsx
+const mockNotificationsData = [
+  {
+    id: '10',
+    type: 'channel_invite',
+    message: 'You have been invited to the #design channel.',
+    timestamp: Date.now() - 1200000,
+    read: false,
+    link: '/app/channels/design',
+  },
+  {
+    id: '11',
+    type: 'new_message',
+    message: 'You received a new message from Support.',
+    timestamp: Date.now() - 2400000,
+    read: false,
+    link: '/app/messages/support',
+  },
+];
+<MockProvider>
+  <CloudrabbitTheme initialTheme="dark">
+    <div style={{
+      padding: '40px',
+      display: 'flex',
+      justifyContent: 'center',
+      backgroundColor: 'var(--colors-surface-background)',
+      minHeight: '600px',
+      backgroundImage: 'var(--effects-gradients-nebula)',
+      backgroundSize: 'cover'
+    }}>
+      <NotificationPanel
+        title="Activity Stream"
+        mockData={mockNotificationsData}
+        style={{ height: 'fit-content' }}
+      />
+    </div>
+  </CloudrabbitTheme>
+</MockProvider>
+```
+
+### Notifications with navigation
+
+An example demonstrating notifications that include clickable links, requiring a router for navigation.
+
+```tsx
+const mockNotificationsData = [
+  {
+    id: '20',
+    type: 'new_message',
+    message: 'Alice mentioned you in a new chat.',
+    timestamp: Date.now() - 600000,
+    read: false,
+    link: '/app/chats/alice-conversation',
+  },
+  {
+    id: '21',
+    type: 'system_alert',
+    message: 'Your subscription is expiring soon. Renew now!',
+    timestamp: Date.now() - 86400000,
+    read: false,
+    link: '/app/settings/billing',
+  },
+  {
+    id: '22',
+    type: 'mention',
+    message: 'Bob replied to your comment on the latest post.',
+    timestamp: Date.now() - 3600000,
+    read: true,
+    link: '/app/posts/latest#comment-reply',
+  },
+];
+<MemoryRouter>
+  <MockProvider>
+    <CloudrabbitTheme>
+      <div style={{ padding: '40px', display: 'flex', justifyContent: 'center', backgroundColor: 'var(--colors-surface-background)' }}>
+        <NotificationPanel mockData={mockNotificationsData} />
+      </div>
+    </CloudrabbitTheme>
+  </MockProvider>
+</MemoryRouter>

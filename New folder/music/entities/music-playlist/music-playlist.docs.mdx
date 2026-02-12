@@ -1,0 +1,84 @@
+---
+description: A data entity for a music playlist.
+labels: ['music-playlist', 'entity', 'music']
+---
+
+A component for a MusicPlaylist entity, supports serialization and de-serialization of MusicPlaylist objects and can be used from
+both backend and frontend.
+
+## Get started
+
+Install and use the component in your code:
+
+```ts
+const playlist = MusicPlaylist.from({
+  id: 'playlist-example-1',
+  name: 'My Awesome Playlist',
+  ownerId: 'user-123',
+  isPublic: true,
+  tracks: [],
+  createdAt: new Date().toISOString(),
+});
+```
+
+### Creating a MusicPlaylist entity
+
+This example shows how to create a MusicPlaylist object from a plain data object.
+
+```ts
+const playlistData = {
+  id: 'playlist-001',
+  name: 'Morning Jams',
+  description: 'Relaxing tunes to start your day',
+  ownerId: 'user-abc',
+  isPublic: true,
+  tracks: [
+    {
+      id: 'track-001',
+      title: 'Sunrise Serenade',
+      artist: 'Ambient Explorer',
+      duration: 240,
+      genre: 'Ambient',
+      isPublic: true,
+      url: 'http://example.com/sunrise.mp3',
+      thumbnailUrl: 'http://example.com/sunrise-thumb.jpg',
+      createdAt: '2023-01-01T10:00:00Z',
+    },
+  ],
+  createdAt: '2023-01-10T08:00:00Z',
+};
+const playlist = MusicPlaylist.from(playlistData);
+console.log(playlist.name);
+// Expected output: Morning Jams
+```
+
+### Serializing a MusicPlaylist entity
+
+This example shows how to convert a MusicPlaylist object back into a plain JavaScript object.
+
+```ts
+const playlistData = {
+  id: 'playlist-002',
+  name: 'Workout Mix',
+  description: 'High energy tracks for your workout',
+  ownerId: 'user-xyz',
+  isPublic: false,
+  tracks: [],
+  createdAt: '2023-02-15T12:00:00Z',
+};
+const playlist = MusicPlaylist.from(playlistData);
+const plainObject = playlist.toObject();
+console.log(plainObject.isPublic);
+// Expected output: false
+```
+
+### Using mock data
+
+This example demonstrates how to use the provided mock data for MusicPlaylist entities.
+
+```ts
+const playlists = mockMusicPlaylists();
+console.log(playlists.length);
+// Expected output: 3 (or more, depending on mock implementation)
+console.log(playlists[0].name);
+// Expected output: Chill Vibes (or similar, from mock data)

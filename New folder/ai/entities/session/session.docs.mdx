@@ -1,0 +1,68 @@
+---
+description: An entity for an AI session, including properties like sessionId, name, startTime, endTime, and the associated AI model.
+labels: ['session', 'entity', 'AI']
+---
+
+A component representing an AI session, supporting serialization and deserialization of session objects. This can be used from both backend and frontend applications.
+
+## Get started
+
+Install and use the component in your code:
+
+```ts
+import { Session } from './session.js';
+const newSession = Session.from({
+  id: 'session-123',
+  name: 'Initial Chat with User',
+  createdAt: new Date().toISOString(),
+  provider: 'openai',
+  model: 'gpt-3.5-turbo',
+  userId: 'user-abc',
+});
+console.log(newSession.name);
+```
+
+### Creating an AI session
+This example demonstrates how to create a new AI session instance by providing its essential details.
+```ts
+import { Session } from './session.js';
+const sessionData = {
+  id: 'session-456',
+  name: 'Creative Writing Assistant',
+  createdAt: '2023-10-27T10:00:00Z',
+  provider: 'anthropic',
+  model: 'claude-2',
+  userId: 'user-xyz',
+  updatedAt: '2023-10-27T10:30:00Z',
+};
+const aiSession = Session.from(sessionData);
+console.log(`Session Name: ${aiSession.name}`);
+console.log(`AI Model Used: ${aiSession.model}`);
+```
+
+### Serializing an AI session to a plain object
+This example shows how to convert a Session instance back into a plain JavaScript object, useful for data transfer or storage.
+```ts
+import { Session } from './session.js';
+const existingSession = new Session(
+  'session-789',
+  'Code Debugging Helper',
+  '2023-10-26T14:00:00Z',
+  'openai',
+  'gpt-4',
+  'user-dev',
+  '2023-10-26T15:00:00Z'
+);
+const plainObjectSession = existingSession.toObject();
+console.log(plainObjectSession);
+// Expected output: { id: 'session-789', name: 'Code Debugging Helper', createdAt: '...', provider: 'openai', model: 'gpt-4', userId: 'user-dev', updatedAt: '...' }
+```
+
+### Using mock session data
+You can use mock data for development and testing purposes with the `mockSession` and `mockSessions` APIs.
+```ts
+import { mockSession, mockSessions } from './session.mock.js';
+const singleMockSession = mockSession({ name: 'Testing Mock Session' });
+console.log(singleMockSession.name);
+const multipleMockSessions = mockSessions();
+console.log(`Number of mock sessions: ${multipleMockSessions.length}`);

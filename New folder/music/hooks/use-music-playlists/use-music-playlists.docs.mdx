@@ -1,0 +1,163 @@
+---
+description: A React Hook for managing music playlists.
+labels: ['hook', 'react', 'music', 'playlist', 'graphql']
+---
+
+A React Hook for managing music playlists. It provides functionality to fetch, create, update, and manage tracks within playlists using GraphQL mutations.
+
+### Listing User Playlists
+
+This example demonstrates how to fetch and display a list of music playlists. It simulates data for demonstration purposes, showing how to handle loading states and render the playlist names.
+
+```tsx
+const mockPlaylists = [
+  {
+    id: '1',
+    name: 'Morning Acoustic',
+    description: 'Soft tunes to start the day',
+    ownerId: 'user1',
+    isPublic: true,
+    trackIds: ['t1', 't2'],
+    createdAt: '2023-01-01T10:00:00Z',
+    updatedAt: '2023-01-01T10:00:00Z',
+  },
+  {
+    id: '2',
+    name: 'Focus Beats',
+    description: 'Instrumental music for deep work',
+    ownerId: 'user1',
+    isPublic: false,
+    trackIds: ['t3', 't4', 't5'],
+    createdAt: '2023-01-05T11:00:00Z',
+    updatedAt: '2023-01-05T11:00:00Z',
+  },
+];
+const PlaylistLister = () => {
+  const [playlists, { loading, error }] = useListMusicPlaylists({
+    mockData: mockPlaylists,
+  });
+  if (loading) return <p>Loading playlists...</p>;
+  if (error) return <p>Error loading playlists: {error.message}</p>;
+  return (
+    <div>
+      <h3>My Playlists</h3>
+      {playlists && playlists.length > 0 ? (
+        <ul>
+          {playlists.map((playlist) => (
+            <li key={playlist.id}>
+              {playlist.name} ({playlist.isPublic ? 'Public' : 'Private'})
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No playlists found.</p>
+      )}
+    </div>
+  );
+};
+```
+
+### Creating and Updating a Music Playlist
+This example shows how to create a new music playlist and then update its details like name or public status. It illustrates the mutation calls and how to respond to their loading and error states.
+```tsx
+const PlaylistManager = () => {
+  const [playlistName, setPlaylistName] = useState('');
+  const [createdPlaylistId, setCreatedPlaylistId] = useState('');
+  const [createPlaylist, { loading: createLoading, error: createError }] = useCreateMusicPlaylist();
+  const [updatePlaylist, { loading: updateLoading, error: updateError }] = useUpdateMusicPlaylist();
+  const handleCreatePlaylist = async () => {
+    try {
+      const newPlaylist = await createPlaylist({ name: playlistName, description: 'A new playlist' });
+      if (newPlaylist) {
+        setCreatedPlaylistId(newPlaylist.id);
+        alert(`Playlist '${newPlaylist.name}' created with ID: ${newPlaylist.id}`);
+      }
+    } catch (err) {
+      console.error('Failed to create playlist:', err);
+    }
+  };
+  const handleUpdatePlaylist = async () => {
+    if (!createdPlaylistId) {
+      alert('Please create a playlist first.');
+      return;
+    }
+    try {
+      const updated = await updatePlaylist({ playlistId: createdPlaylistId, name: 'Updated Name', isPublic: true });
+      if (updated) {
+        alert(`Playlist '${updated.name}' updated successfully.`);
+      }
+    } catch (err) {
+      console.error('Failed to update playlist:', err);
+    }
+  };
+  return (
+    <div>
+      <h3>Create New Playlist</h3>
+      <input
+        type="text"
+        placeholder="Playlist Name"
+        value={playlistName}
+        onChange={(e) => setPlaylistName(e.target.value)}
+      />
+      <button onClick={handleCreatePlaylist} disabled={createLoading}>
+        {createLoading ? 'Creating...' : 'Create Playlist'}
+      </button>
+      {createError && <p>Error creating playlist: {createError.message}</p>}
+      {createdPlaylistId && (
+        <>
+          <h3>Update Playlist ({createdPlaylistId})</h3>
+          <button onClick={handleUpdatePlaylist} disabled={updateLoading}>
+            {updateLoading ? 'Updating...' : 'Update Playlist to Public'}
+          </button>
+          {updateError && <p>Error updating playlist: {updateError.message}</p>}
+        </>
+      )}
+    </div>
+  );
+};
+```
+
+### Adding and Removing Tracks
+This example illustrates how to add a track to an existing playlist and then remove it. It focuses on the mutations for track management within a playlist. For simplicity, it assumes a playlist already exists.
+```tsx
+const TrackManager = () => {
+  const playlistId = 'someExistingPlaylistId'; // Assume this playlist exists
+  const trackIdToAdd = 'newTrack123';
+  const trackIdToRemove = 't2'; // Assume this track is in the playlist
+  const [addTrack, { loading: addLoading, error: addError }] = useAddTrackToMusicPlaylist();
+  const [removeTrack, { loading: removeLoading, error: removeError }] = useRemoveTrackFromMusicPlaylist();
+  const handleAddTrack = async () => {
+    try {
+      const updatedPlaylist = await addTrack({ playlistId, trackId: trackIdToAdd });
+      if (updatedPlaylist) {
+        alert(`Track '${trackIdToAdd}' added to playlist '${updatedPlaylist.name}'.`);
+      }
+    } catch (err) {
+      console.error('Failed to add track:', err);
+    }
+  };
+  const handleRemoveTrack = async () => {
+    try {
+      const updatedPlaylist = await removeTrack({ playlistId, trackId: trackIdToRemove });
+      if (updatedPlaylist) {
+        alert(`Track '${trackIdToRemove}' removed from playlist '${updatedPlaylist.name}'.`);
+      }
+    } catch (err) {
+      console.error('Failed to remove track:', err);
+    }
+  };
+  return (
+    <div>
+      <h3>Manage Tracks in Playlist ({playlistId})</h3>
+      <button onClick={handleAddTrack} disabled={addLoading}>
+        {addLoading ? 'Adding...' : `Add Track '${trackIdToAdd}'`}
+      </button>
+      {addError && <p>Error adding track: {addError.message}</p>}
+      <div style={{ margin: '10px 0' }} />
+      <button onClick={handleRemoveTrack} disabled={removeLoading}>
+        {removeLoading ? 'Removing...' : `Remove Track '${trackIdToRemove}'`}
+      </button>
+      {removeError && <p>Error removing track: {removeError.message}</p>}
+    </div>
+  );
+};

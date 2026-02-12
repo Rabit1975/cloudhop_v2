@@ -1,0 +1,75 @@
+---
+description: A provider for integrating Google Gemini AI models, enabling text generation with unary and streaming capabilities.
+labels: ['ai', 'provider', 'gemini', 'google-ai', 'nlp']
+---
+
+### Basic Text Generation
+
+This example demonstrates how to initialize the GeminiProvider and perform a simple text generation request.
+
+```typescript
+// Assuming GeminiProvider is imported or available in the scope
+const geminiProvider = new GeminiProvider({
+  apiKey: 'YOUR_GEMINI_API_KEY',
+  defaultModel: 'gemini-pro',
+});
+async function generateText() {
+  try {
+    const response = await geminiProvider.request({
+      prompt: 'Write a short poem about a sunny day.',
+    });
+    console.log('Generated Text:', response.text);
+  } catch (error) {
+    console.error('Error generating text:', error);
+  }
+}
+generateText();
+```
+### Streaming Text Generation
+This example shows how to use the GeminiProvider for streaming text responses, processing each chunk as it arrives.
+```typescript
+// Assuming GeminiProvider is imported or available in the scope
+const geminiProvider = new GeminiProvider({
+  apiKey: 'YOUR_GEMINI_API_KEY',
+});
+async function streamText() {
+  let fullResponse = '';
+  try {
+    const response = await geminiProvider.request({
+      prompt: 'Tell me a story about an astronaut discovering a new planet. Be descriptive.',
+      stream: (chunk) => {
+        fullResponse += chunk;
+        console.log('Received chunk:', chunk);
+      },
+    });
+    console.log('Full streamed response:', fullResponse);
+  } catch (error) {
+    console.error('Error streaming text:', error);
+  }
+}
+streamText();
+```
+### Custom Model and Options
+This example illustrates how to specify a different Gemini model and fine-tune generation parameters like temperature and max tokens.
+```typescript
+// Assuming GeminiProvider is imported or available in the scope
+const geminiProvider = new GeminiProvider({
+  apiKey: 'YOUR_GEMINI_API_KEY',
+});
+async function generateWithCustomOptions() {
+  try {
+    const response = await geminiProvider.request({
+      model: 'gemini-1.5-pro', // Specify a different model
+      prompt: 'Describe the benefits of modular software design in a concise way.',
+      options: {
+        temperature: 0.7,      // Control randomness
+        maxTokens: 100,        // Limit output length
+        topP: 0.9,             // Sample from top P probability mass
+      },
+    });
+    console.log('Custom Generated Text:', response.text);
+  } catch (error) {
+    console.error('Error with custom options:', error);
+  }
+}
+generateWithCustomOptions();

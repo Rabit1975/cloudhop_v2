@@ -1,0 +1,58 @@
+---
+description: A data entity for a game achievement.
+labels: ['achievement', 'entity', 'game']
+---
+
+A component for a game achievement entity, supporting serialization and de-serialization of Achievement objects. It can be used from both backend and frontend applications.
+
+## Get started
+
+### Creating an Achievement
+
+This example demonstrates how to create an Achievement object from raw data.
+
+```typescript
+// In your application code, you would typically import Achievement like:
+// import { Achievement } from '@cloudhop/gamehub.achievements.achievement';
+const achievementData = {
+  id: 'ach_001',
+  gameId: 'game_abc',
+  name: 'First Blood',
+  description: 'Achieve your first kill in the game.',
+  iconUrl: 'https://cdn.cloudhop.com/achievements/first_blood.png',
+  points: 10,
+  createdAt: new Date().toISOString(),
+};
+const newAchievement = Achievement.from(achievementData);
+// The 'newAchievement' is now an instance of the Achievement class.
+// console.log(newAchievement.name); // Output: First Blood
+```
+### Serializing an Achievement
+This example shows how to convert an Achievement object back into a plain JavaScript object for storage or transfer.
+```typescript
+// Assume Achievement class is available in scope.
+const existingAchievement = new Achievement(
+  'ach_002',
+  'game_def',
+  'Victory Royale',
+  'Win a match in battle royale mode.',
+  'https://cdn.cloudhop.com/achievements/victory_royale.png',
+  100,
+  new Date().toISOString()
+);
+const plainObject = existingAchievement.toObject();
+// 'plainObject' is a simple JavaScript object that can be easily serialized.
+// console.log(plainObject.points); // Output: 100
+```
+## Mock data
+### Using Achievement Mock Data
+This example illustrates how to generate mock achievement data for development and testing purposes.
+```typescript
+// In your application code, you would typically import mockAchievements like:
+// import { mockAchievements } from '@cloudhop/gamehub.achievements.achievement.mock';
+const achievements = mockAchievements();
+// 'achievements' is an array of Achievement instances generated with mock data.
+// console.log(achievements.length); // Output: 3
+// You can also provide overrides to customize the mock data:
+const customMock = mockAchievements({ gameId: 'my_custom_game', points: 5 });
+// console.log(customMock[0].gameId); // Output: my_custom_game

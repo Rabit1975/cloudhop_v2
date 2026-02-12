@@ -1,0 +1,117 @@
+---
+description: A UI component for editing audio projects including a timeline view for arranging audio clips, controls for mixing and basic effects.
+labels: ['music', 'editor', 'audio', 'studio', 'ui']
+---
+
+The `MusicStudioEditor` provides a comprehensive visual interface for creating and modifying audio projects. It features a timeline for arranging audio clips, controls for track mixing, and basic effects management. Users can import audio, trim, loop, and arrange tracks to build their compositions.
+
+### A basic empty music studio editor
+
+This example shows the music studio editor component initialized without any project data providing a clean canvas for users to start new audio compositions.
+
+```tsx
+import { MusicStudioEditor } from './music-studio-editor.js';
+import { MemoryRouter } from 'react-router-dom';
+import { CloudrabbitTheme } from '@cloudrabbit/design.cloudrabbit-theme';
+
+() => {
+  return (
+    <MemoryRouter>
+      <CloudrabbitTheme initialTheme="dark">
+        <div style={{ height: '700px', width: '100%' }}>
+          <MusicStudioEditor />
+        </div>
+      </CloudrabbitTheme>
+    </MemoryRouter>
+  );
+};
+```
+### Music studio editor with a pre loaded project
+This example demonstrates how to load an existing audio project into the music studio editor. It includes tracks and clips allowing immediate interaction and editing of a predefined composition.
+```tsx
+import { MusicStudioEditor } from './music-studio-editor.js';
+import { MemoryRouter } from 'react-router-dom';
+import { CloudrabbitTheme } from '@cloudrabbit/design.cloudrabbit-theme';
+
+// Simplified mock data structure for demonstration
+// In a real application, MusicStudioProject and MusicTrack would be instantiated classes.
+const mockTrackOne = {
+  id: 'track-1',
+  title: 'Synth Lead',
+  duration: 45,
+  sourceType: 'upload',
+  sourceUrl: 'source-track-1',
+  isLooped: true,
+  createdAt: new Date().toISOString()
+};
+const mockTrackTwo = {
+  id: 'track-2',
+  title: 'Bass Line',
+  duration: 60,
+  sourceType: 'upload',
+  sourceUrl: 'source-track-2',
+  isLooped: false,
+  createdAt: new Date().toISOString()
+};
+const mockProjectData = {
+  id: 'project-1',
+  name: 'Neon Nights Remix',
+  ownerId: 'user-1',
+  createdAt: new Date().toISOString(),
+  layers: [mockTrackOne, mockTrackTwo]
+};
+() => {
+  const handleSave = (project) => console.log('Saving project:', project.name);
+  const handlePublish = (project) => console.log('Publishing project:', project.name);
+  return (
+    <MemoryRouter>
+      <CloudrabbitTheme initialTheme="dark">
+        <div style={{ height: '700px', width: '100%' }}>
+          <MusicStudioEditor 
+            project={mockProjectData}
+            onSave={handleSave}
+            onPublish={handlePublish}
+          />
+        </div>
+      </CloudrabbitTheme>
+    </MemoryRouter>
+  );
+};
+```
+### Music studio editor with a light theme
+This example illustrates the music studio editor component rendered with a light theme. The visual styling adapts to the provided theme for a different aesthetic experience.
+```tsx
+import { MusicStudioEditor } from './music-studio-editor.js';
+import { MemoryRouter } from 'react-router-dom';
+import { CloudrabbitTheme } from '@cloudrabbit/design.cloudrabbit-theme';
+
+// Simplified mock data structure for demonstration
+const mockTrack = {
+  id: 'track-1',
+  title: 'Uplifting Chords',
+  duration: 30,
+  sourceType: 'upload',
+  sourceUrl: 'source-track-1',
+  isLooped: true,
+  createdAt: new Date().toISOString()
+};
+const mockProjectData = {
+  id: 'project-2',
+  name: 'Daydream Melody',
+  ownerId: 'user-2',
+  createdAt: new Date().toISOString(),
+  layers: [mockTrack]
+};
+() => {
+  return (
+    <MemoryRouter>
+      <CloudrabbitTheme initialTheme="light">
+        <div style={{ height: '700px', width: '100%' }}>
+          <MusicStudioEditor 
+            project={mockProjectData}
+          />
+        </div>
+      </CloudrabbitTheme>
+    </MemoryRouter>
+  );
+};

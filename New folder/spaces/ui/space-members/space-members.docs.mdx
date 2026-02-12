@@ -1,0 +1,110 @@
+---
+description: A component to display members of a space, including avatars, names, and detailed tooltips on hover.
+labels: ['space', 'members', 'community', 'profile']
+---
+
+This component displays a list of space members, showing their avatars and names. When a user hovers over a member's avatar, a tooltip appears with more detailed information about that member. It uses `useUserProfile` to fetch member details and supports displaying a limited number of members with a counter for the rest.
+
+### Basic space members display
+
+Displays a list of space members with their avatars and names. Hover over an avatar to see more details.
+
+```tsx
+import { SpaceMembers } from '@cloudrabbit/spaces.ui.space-members';
+// @ts-ignore The mock data here might not cover all properties required by the external UserProfile type.
+const mockUsers = {
+  'user-1': {
+    id: 'user-1',
+    username: 'alice_wonder',
+    displayName: 'Alice Wonderland',
+    bio: 'Digital artist and space explorer. Loving the nebula vibes!',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_vibrant__diverse_group_of_yo_0_1770834035481.png',
+  },
+  'user-2': {
+    id: 'user-2',
+    username: 'bob_builder',
+    displayName: 'Bob The Builder',
+    bio: 'Constructing digital realities one block at a time.',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_vibrant__diverse_group_of_yo_0_1770834035481.png',
+  },
+  'user-3': {
+    id: 'user-3',
+    username: 'charlie_chap',
+    displayName: 'Charlie Chaplin',
+    bio: 'Silent but expressive.',
+  },
+};
+const memberIds = ['user-1', 'user-2', 'user-3'];
+  <SpaceMembers members={memberIds} mockProfiles={mockUsers} />
+```
+### Limited display of members with a counter
+Shows a subset of members and indicates the number of additional members with a counter. This is useful for large groups where you might not want to display every single member.
+```tsx
+import { SpaceMembers } from '@cloudrabbit/spaces.ui.space-members';
+// @ts-ignore The mock data here might not cover all properties required by the external UserProfile type.
+const mockUsers = {
+  'user-1': {
+    id: 'user-1',
+    username: 'alice_wonder',
+    displayName: 'Alice Wonderland',
+    bio: 'Digital artist and space explorer. Loving the nebula vibes!',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_vibrant__diverse_group_of_yo_0_1770834035481.png',
+  },
+  'user-2': {
+    id: 'user-2',
+    username: 'bob_builder',
+    displayName: 'Bob The Builder',
+    bio: 'Constructing digital realities one block at a time.',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_vibrant__diverse_group_of_yo_0_1770834035481.png',
+  },
+  'user-3': {
+    id: 'user-3',
+    username: 'charlie_chap',
+    displayName: 'Charlie Chaplin',
+    bio: 'Silent but expressive.',
+  },
+  'user-4': {
+    id: 'user-4',
+    username: 'dora_explorer',
+    displayName: 'Dora Explorer',
+    bio: 'Exploring new spaces every day.',
+  },
+  'user-5': {
+    id: 'user-5',
+    username: 'eve_online',
+    displayName: 'Eve Online',
+    bio: 'Spaceship commander.',
+  },
+};
+const memberIds = ['user-1', 'user-2', 'user-3', 'user-4', 'user-5'];
+  <SpaceMembers members={memberIds} maxDisplay={3} mockProfiles={mockUsers} />
+```
+### Display members with large avatars
+Adjusts the size of the member avatars using the `avatarSize` prop. This allows for customization based on the design context.
+```tsx
+import { SpaceMembers } from '@cloudrabbit/spaces.ui.space-members';
+// @ts-ignore The mock data here might not cover all properties required by the external UserProfile type.
+const mockUsers = {
+  'user-1': {
+    id: 'user-1',
+    username: 'alice_wonder',
+    displayName: 'Alice Wonderland',
+    bio: 'Digital artist and space explorer. Loving the nebula vibes!',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_vibrant__diverse_group_of_yo_0_1770834035481.png',
+  },
+  'user-2': {
+    id: 'user-2',
+    username: 'bob_builder',
+    displayName: 'Bob The Builder',
+    bio: 'Constructing digital realities one block at a time.',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_vibrant__diverse_group_of_yo_0_1770834035481.png',
+  },
+  'user-3': {
+    id: 'user-3',
+    username: 'charlie_chap',
+    displayName: 'Charlie Chaplin',
+    bio: 'Silent but expressive.',
+  },
+};
+const memberIds = ['user-1', 'user-2', 'user-3'];
+  <SpaceMembers members={memberIds} avatarSize="lg" mockProfiles={mockUsers} />

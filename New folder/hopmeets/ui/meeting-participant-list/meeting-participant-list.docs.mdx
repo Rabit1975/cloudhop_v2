@@ -1,0 +1,33 @@
+---
+description: A UI component to display a list of meeting participants.
+labels: ['meeting', 'participants', 'list', 'ui']
+---
+
+### Basic list of participants
+
+This example shows a simple list of participants with their avatars and display names.
+
+```jsx
+const participants = [
+  { id: '1', displayName: 'Alice Chen', username: 'achen', imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_professional_and_friendly_head_0_1770835141268.png' },
+  { id: '2', displayName: 'Bob Smith', username: 'bsmith', imageUrl: 'https://res.cloudinary.com/ddnr1ptva/image/upload/f_auto,q_auto/ai-images/get/gf53a9e6a9f610dcd4d29999a5ab71e1a285e4dd37c8ab5378d4d685ea073f4d1434392330e1f1c14c7d079883e099c9f3d4842c8b325de8ac1b63171d61e7594_1280.jpg' },
+  { id: '3', displayName: 'Charlie Davis', username: 'cdavis' }, // No image, will use initials
+];
+<MeetingParticipantList participants={participants} />
+```
+### Custom title and an empty list
+You can provide a custom title for the participant section and display an appropriate message when there are no participants.
+```jsx
+<MeetingParticipantList participants={[]} title="No participants found" />
+```
+### Displaying participants in dark mode
+The component adapts to different themes. This example demonstrates how it looks in dark mode.
+```jsx
+<CloudrabbitTheme initialTheme="dark">
+  <div style={{ padding: '24px', backgroundColor: 'var(--colors-surface-background)', minHeight: '200px' }}>
+    <MeetingParticipantList participants={[
+      { id: '101', displayName: 'Olivia Green', username: 'ogreen', imageUrl: 'https://res.cloudinary.com/ddnr1ptva/image/upload/f_auto,q_auto/ai-images/get/g0195ccfa4ca095e5fadf19439aa88b041e63c3cea36ecdbe01539f8e115eb324c55773fdce54b9b6828931a530df0c34c4b5994feb63e0c04b1bc90d6b6f4e0e_1280.jpg' },
+      { id: '102', displayName: 'Noah White', username: 'nwhite' },
+    ]} title="Meeting Attendees in Dark Mode" />
+  </div>
+</CloudrabbitTheme>

@@ -1,0 +1,125 @@
+---
+description: A React Hook for performing global searches.
+labels: ['hook', 'react', 'search', 'graphql']
+---
+
+A React Hook for performing global searches. It provides methods for fetching search results, along with loading and error states.
+
+## Usage
+
+### Basic Search
+
+This example demonstrates how to use the useSearch hook to perform a basic search and display the results. The search function is called with a query string.
+
+```tsx
+// For demonstration purposes, assuming SearchResult has an 'id' and a 'content' property
+// which holds the actual displayable data, with title, description, and url.
+interface SearchResult {
+  id: string;
+  content: {
+    title: string;
+    description: string;
+    url: string;
+  };
+}
+const SearchComponent = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const { results, isLoading, error, search } = useSearch();
+  const handleSearch = () => {
+    if (searchTerm) {
+      search(searchTerm);
+    }
+  };
+  return (
+    <div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Enter search query"
+      />
+      <button onClick={handleSearch} disabled={isLoading}>
+        {isLoading ? 'Searching...' : 'Search'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {results.length > 0 && (
+        <div>
+          <h3>Search Results</h3>
+          <ul>
+            {results.map((result: SearchResult) => (
+              <li key={result.id}>
+                <a href={result.content.url} target="_blank" rel="noopener noreferrer">
+                  {result.content.title}
+                </a>
+                <p>{result.content.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {!isLoading && !error && results.length === 0 && searchTerm && (
+        <p>No results found for "{searchTerm}".</p>
+      )}
+    </div>
+  );
+};
+```
+
+### Searching with Filters
+
+This example shows how to use the search function with additional filters to narrow down the results. Filters are provided as an object of key value pairs.
+
+```tsx
+// For demonstration purposes, assuming SearchResult has an 'id' and a 'content' property
+// which holds the actual displayable data, with title, description, and url.
+interface SearchResult {
+  id: string;
+  content: {
+    title: string;
+    description: string;
+    url: string;
+  };
+}
+const FilteredSearchComponent = () => {
+  const [searchTerm, setSearchTerm] = useState('cloudhop');
+  const [typeFilter, setTypeFilter] = useState('music');
+  const { results, isLoading, error, search } = useSearch();
+  const handleFilteredSearch = () => {
+    search(searchTerm, { type: typeFilter, category: 'hiphop' });
+  };
+  return (
+    <div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Enter search query"
+      />
+      <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+        <option value="music">Music</option>
+        <option value="video">Video</option>
+        <option value="user">User</option>
+        <option value="space">Space</option>
+      </select>
+      <button onClick={handleFilteredSearch} disabled={isLoading}>
+        {isLoading ? 'Searching...' : 'Search with Filters'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {results.length > 0 && (
+        <div>
+          <h3>Filtered Search Results</h3>
+          <ul>
+            {results.map((result: SearchResult) => (
+              <li key={result.id}>
+                <a href={result.content.url} target="_blank" rel="noopener noreferrer">
+                  {result.content.title}
+                </a>
+                <p>{result.content.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};

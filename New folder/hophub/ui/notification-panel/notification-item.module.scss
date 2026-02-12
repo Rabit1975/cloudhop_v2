@@ -1,0 +1,128 @@
+.notificationItem {
+  display: flex;
+  padding: var(--spacing-medium);
+  border-bottom: 1px solid var(--colors-border-subtle);
+  background-color: var(--colors-surface-primary);
+  transition: background-color var(--interactions-transitions-duration-fast) var(--interactions-transitions-easing-default);
+  gap: var(--spacing-medium);
+  position: relative;
+  text-decoration: none;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: var(--colors-surface-secondary);
+
+    .actions {
+      opacity: 1;
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.unread {
+  background-color: var(--colors-surface-nebula);
+  
+  &:hover {
+    background-color: var(--colors-surface-tertiary);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--colors-primary-default);
+  }
+}
+
+.iconContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--borders-radius-medium);
+  background-color: var(--colors-surface-tertiary);
+  color: var(--colors-text-secondary);
+  padding: 8px;
+  box-sizing: border-box;
+
+  &.message {
+    color: var(--colors-primary-default);
+    background-color: var(--colors-surface-secondary);
+  }
+
+  &.alert {
+    color: var(--colors-status-warning-default);
+    background-color: var(--colors-status-warning-subtle);
+  }
+
+  &.mention {
+    color: var(--colors-secondary-default);
+    background-color: var(--colors-surface-secondary);
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.message {
+  font-size: var(--typography-sizes-body-small);
+  color: var(--colors-text-primary);
+  margin: 0;
+  line-height: var(--typography-line-height-base);
+  
+  &.unreadText {
+    font-weight: var(--typography-font-weight-medium);
+    color: var(--colors-text-default);
+  }
+}
+
+.timestamp {
+  font-size: var(--typography-sizes-caption-default);
+  color: var(--colors-text-secondary);
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: flex-start;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+.markReadBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--colors-primary-default);
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: var(--borders-radius-small);
+  
+  &:hover {
+    background-color: var(--colors-surface-tertiary);
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}

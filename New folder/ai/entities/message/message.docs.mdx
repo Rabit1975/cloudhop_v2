@@ -1,0 +1,47 @@
+---
+description: A data entity representing a message in a chatbot conversation.
+labels: ['message', 'entity', 'chatbot']
+---
+
+A component that defines a message entity for chatbot conversations, supporting serialization and deserialization.
+It includes properties like role, session ID, content, and timestamp.
+
+### Create a new message
+
+This example shows how to create a new Message entity using its static from method.
+
+```typescript
+const newMessage = Message.from({
+  id: 'unique-msg-id-1',
+  sessionId: 'chat-session-123',
+  text: 'Hello, how can I help you?',
+  role: 'ai',
+  createdAt: new Date().toISOString(),
+});
+console.log(newMessage);
+```
+
+### Convert message to a plain object
+
+This example demonstrates how to convert a Message entity instance into a plain JavaScript object. This is useful for sending data over a network or storing it.
+
+```typescript
+const messageInstance = Message.from({
+  id: 'msg-abc-456',
+  sessionId: 'session-xyz',
+  text: 'User query about CloudHop features.',
+  role: 'user',
+  createdAt: new Date().toISOString(),
+  userId: 'user-001',
+});
+const plainObject = messageInstance.toObject();
+console.log(plainObject);
+```
+
+### Generate mock messages for development
+
+This example shows how to use the provided mockMessages utility to get an array of Message entities, useful for testing and development.
+
+```typescript
+const messages = mockMessages();
+console.log(messages[0].text);

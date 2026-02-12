@@ -1,0 +1,89 @@
+---
+description: A search result item for direct messages
+labels: ['search', 'direct message', 'hophub', 'ui']
+---
+
+This component displays a direct message conversation as a search result. It visually represents a `SearchResult` entity with specific data for direct messages, allowing users to easily navigate to the conversation.
+
+### Basic Direct Message Search Result
+
+A basic display of a direct message search result item
+
+```tsx
+<DirectMessageSearchResultItem
+  result={{
+    id: 'dm-123',
+    title: 'Alice, Bob',
+    description: 'Alice: Hey, did you see the new design specs?',
+    type: 'DM',
+    link: '/hophub?conversationId=dm-123',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_user_avatar_icon_for__0_1770835141208.png',
+    data: {
+      participantIds: ['user-1', 'user-2'],
+      lastMessageAt: '2023-10-27T10:00:00Z',
+    },
+  }}
+/>
+```
+### Direct Message Search Result Without an Image
+Display a direct message search result item when no image is provided
+```tsx
+<DirectMessageSearchResultItem
+  result={{
+    id: 'dm-456',
+    title: 'Charlie',
+    description: 'You: Sounds good, see you then!',
+    type: 'DM',
+    link: '/hophub?conversationId=dm-456',
+    data: {
+      participantIds: ['user-3'],
+    },
+  }}
+/>
+```
+### Direct Message Search Results in a Grid
+Show multiple direct message search results arranged in a grid layout
+```tsx
+const results = [
+  {
+    id: 'dm-123',
+    title: 'Alice, Bob',
+    description: 'Alice: Hey, did you see the new design specs?',
+    type: 'DM',
+    link: '/hophub?conversationId=dm-123',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_user_avatar_icon_for__0_1770835141208.png',
+    data: {
+      participantIds: ['user-1', 'user-2'],
+      lastMessageAt: '2023-10-27T10:00:00Z',
+    },
+  },
+  {
+    id: 'dm-456',
+    title: 'Charlie',
+    description: 'You: Sounds good, see you then!',
+    type: 'DM',
+    link: '/hophub?conversationId=dm-456',
+    data: {
+      participantIds: ['user-3'],
+    },
+  },
+  {
+    id: 'dm-789',
+    title: 'Design Team Sync',
+    description: 'Sarah: Meeting started.',
+    type: 'Group',
+    link: '/hophub?conversationId=dm-789',
+    imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_user_avatar_icon_for__0_1770835141208.png',
+  }
+];
+<div style={{
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+  gap: '24px',
+  padding: '24px',
+  backgroundColor: 'var(--colors-surface-background)'
+}}>
+  {results.map(result => (
+    <DirectMessageSearchResultItem key={result.id} result={result} />
+  ))}
+</div>

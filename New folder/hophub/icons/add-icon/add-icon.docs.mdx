@@ -1,0 +1,31 @@
+---
+description: An icon component displaying a plus sign used for add actions.
+labels: ['icon', 'add', 'ui', 'content']
+---
+
+## Basic Add Icon usage
+
+This example demonstrates the default rendering of the AddIcon component.
+
+```tsx
+<AddIcon />
+```
+## Customizing icon size
+This example shows how to change the size of the AddIcon using the size prop.
+```tsx
+<div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+  <AddIcon size={16} />
+  <AddIcon size={24} />
+  <AddIcon size={32} />
+  <AddIcon size={48} />
+</div>
+```
+## Applying different colors
+This example illustrates how to set the color of the AddIcon using the color prop.
+```tsx
+<div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+  <AddIcon color="var(--colors-primary-default)" />
+  <AddIcon color="var(--colors-secondary-default)" />
+  <AddIcon color="var(--colors-status-positive-default)" />
+  <AddIcon color="var(--colors-text-secondary)" />
+</div>

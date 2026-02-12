@@ -1,0 +1,65 @@
+---
+description: An interactive filter bar for games with genre, platform, and developer search capabilities.
+labels: ['gamehub', 'filter', 'ui', 'search']
+---
+
+### Basic Filter Bar Implementation
+
+This example demonstrates a basic integration of the game filter bar with genre options and a callback to display the active filters.
+
+```tsx
+import React from 'react';
+import { GameFilterBar } from './game-filter-bar.js';
+
+function GameFilterBarExample() {
+  const [activeFilters, setActiveFilters] = React.useState({});
+  const mockGenres = [
+    { value: 'action', label: 'Action' },
+    { value: 'adventure', label: 'Adventure' },
+    { value: 'rpg', label: 'RPG' },
+  ];
+  return (
+    <div style={{ padding: '20px', backgroundColor: 'var(--colors-surface-background)', borderRadius: 'var(--borders-radius-medium)' }}>
+      <GameFilterBar
+        genreOptions={mockGenres}
+        onFilterChange={setActiveFilters}
+      />
+      <div style={{ marginTop: '20px', padding: '15px', backgroundColor: 'var(--colors-surface-secondary)', borderRadius: 'var(--borders-radius-small)' }}>
+        <h4 style={{ margin: '0 0 10px', color: 'var(--colors-text-primary)' }}>Active Filters:</h4>
+        <pre style={{ margin: 0, fontSize: '12px', color: 'var(--colors-text-secondary)', fontFamily: 'monospace' }}>
+          {JSON.stringify(activeFilters, null, 2)}
+        </pre>
+      </div>
+    </div>
+  );
+}
+```
+### Comprehensive Filtering Experience
+This example shows how to use all available filter options, including genre, platform, and developer search, along with the clear filters button.
+```tsx
+import React from 'react';
+import { GameFilterBar } from './game-filter-bar.js';
+
+function ComprehensiveFilterBarExample() {
+  const [currentFilters, setCurrentFilters] = React.useState({});
+  const allGenres = [
+    { value: 'action', label: 'Action' },
+    { value: 'adventure', label: 'Adventure' },
+    { value: 'strategy', label: 'Strategy' },
+    { value: 'rpg', label: 'RPG' },
+  ];
+  return (
+    <div style={{ padding: '20px', backgroundColor: 'var(--colors-surface-background)', borderRadius: 'var(--borders-radius-medium)' }}>
+      <GameFilterBar
+        genreOptions={allGenres}
+        onFilterChange={setCurrentFilters}
+      />
+      <div style={{ marginTop: '20px', padding: '15px', backgroundColor: 'var(--colors-surface-secondary)', borderRadius: 'var(--borders-radius-small)' }}>
+        <h4 style={{ margin: '0 0 10px', color: 'var(--colors-text-primary)' }}>Current Filters:</h4>
+        <pre style={{ margin: 0, fontSize: '12px', color: 'var(--colors-text-secondary)', fontFamily: 'monospace' }}>
+          {JSON.stringify(currentFilters, null, 2)}
+        </pre>
+      </div>
+    </div>
+  );
+}

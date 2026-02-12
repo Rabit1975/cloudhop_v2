@@ -1,0 +1,53 @@
+---
+description: A visually engaging card component displaying meeting details.
+labels: ['meeting', 'card', 'video', 'schedule']
+---
+
+A `MeetingCard` component displays essential information about a meeting, including its title, time, and an optional description. It provides clear actions like joining a meeting or viewing its full details.
+
+### A scheduled meeting card
+
+Displays a meeting scheduled for a future time with all details.
+
+```tsx
+import { MeetingCard } from './meeting-card.js';
+import { mockMeeting } from '@cloudrabbit/hopmeets.entities.meeting';
+
+const scheduledMeeting = mockMeeting({
+  topic: 'Weekly Team Sync',
+  description: 'Discussing project progress and upcoming tasks for the week. Please come prepared with updates.',
+  startTime: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+  endTime: new Date(Date.now() + 90000000).toISOString(),
+  status: 'scheduled'
+}).toObject();
+  <MeetingCard meeting={scheduledMeeting} />
+```
+### A live meeting card
+Highlights a meeting that is currently in progress with a glowing effect and live indicator.
+```tsx
+import { MeetingCard } from './meeting-card.js';
+import { mockMeeting } from '@cloudrabbit/hopmeets.entities.meeting';
+
+const liveMeeting = mockMeeting({
+  topic: 'CloudHop Town Hall',
+  description: 'An all-hands meeting to discuss the Q4 roadmap and introduce new features.',
+  startTime: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // Started 15 minutes ago
+  endTime: new Date(Date.now() + 45 * 60 * 1000).toISOString(), // Ends in 45 minutes
+  status: 'live'
+}).toObject();
+  <MeetingCard meeting={liveMeeting} />
+```
+### An ended meeting card
+Shows a meeting that has concluded with the join button disabled.
+```tsx
+import { MeetingCard } from './meeting-card.js';
+import { mockMeeting } from '@cloudrabbit/hopmeets.entities.meeting';
+
+const endedMeeting = mockMeeting({
+  topic: 'Project Retrospective',
+  description: 'A review of the recently completed project, identifying successes and areas for improvement.',
+  startTime: new Date(Date.now() - 2 * 86400000).toISOString(), // 2 days ago
+  endTime: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+  status: 'ended'
+}).toObject();
+  <MeetingCard meeting={endedMeeting} />

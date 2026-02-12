@@ -1,0 +1,1 @@
+export type DropdownPosition = 'left' | 'right' | 'center';

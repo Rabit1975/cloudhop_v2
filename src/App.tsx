@@ -18,9 +18,15 @@ function App() {
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
-    // Reset section to default when switching tabs
+    // Update section based on tab
     if (tab === "hophub") {
-      setActiveSection("home");
+      setActiveSection("hophub");
+    } else if (tab === "music") {
+      setActiveSection("home"); // Music integration shown in home context
+    } else if (tab === "gamehub") {
+      setActiveSection("home"); // GameHub shown in home context
+    } else if (tab === "spaces") {
+      setActiveSection("home"); // Spaces shown in home context
     }
   };
 
@@ -34,9 +40,19 @@ function App() {
 
   const renderContent = () => {
     // Handle main navigation sections (Home, HopHub, HopMeetings, Settings)
+    // But also handle secondary tabs when they override the main content
+    if (activeTab === "music") {
+      return <YouTubeMusicIntegration />;
+    } else if (activeTab === "gamehub") {
+      return <GameHub />;
+    } else if (activeTab === "spaces") {
+      return <SpacesWithChat />;
+    }
+    
+    // Default to section-based content
     switch (activeSection) {
       case "home":
-        return <Home />;
+        return <Home onNavigate={handleTabChange} onSectionChange={handleSectionChange} />;
       case "hophub":
         return <Chat />;
       case "meetings":
@@ -44,7 +60,7 @@ function App() {
       case "settings":
         return <Settings />;
       default:
-        return <Home />;
+        return <Home onNavigate={handleTabChange} onSectionChange={handleSectionChange} />;
     }
   };
 

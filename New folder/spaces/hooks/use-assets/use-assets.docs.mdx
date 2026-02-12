@@ -1,0 +1,190 @@
+---
+description: A React Hook for managing asset data including listing, fetching, uploading, and deleting assets.
+labels: ['hook', 'react', 'assets', 'graphql']
+---
+
+A React Hook for managing asset data. It provides independent hooks for fetching a single asset, listing assets within a space or content item, uploading new assets, and deleting assets using GraphQL mutations. It also handles loading and error states.
+
+### Listing Assets in a Space
+
+This example demonstrates how to fetch and display a list of assets within a specific space.
+
+```tsx
+import React from 'react';
+import { useAssets } from './use-assets.js';
+import { Asset } from '@cloudrabbit/spaces.entities.asset';
+// Mock data for demonstration purposes. In a real app, this would come from a server.
+const mockAsset1 = Asset.from({
+  id: 'asset-1',
+  spaceId: 'space-abc',
+  name: 'document.pdf',
+  type: 'application/pdf',
+  url: 'https://example.com/assets/asset-1.pdf',
+  size: 1024,
+  uploadDate: new Date(),
+  uploadedById: 'user-1',
+  metadata: {},
+});
+const mockAsset2 = Asset.from({
+  id: 'asset-2',
+  spaceId: 'space-abc',
+  name: 'image.jpg',
+  type: 'image/jpeg',
+  url: 'https://example.com/assets/asset-2.jpg',
+  size: 2048,
+  uploadDate: new Date(),
+  uploadedById: 'user-2',
+  metadata: {},
+});
+const AssetList = () => {
+  const { assets, loading, error } = useAssets({
+    spaceId: 'space-abc',
+    mockData: [mockAsset1, mockAsset2], // Use mockData for local example
+  });
+  if (loading) return <p>Loading assets...</p>;
+  if (error) return <p>Error loading assets: {error.message}</p>;
+  return (
+    <div>
+      <h2>Space Assets</h2>
+      <ul>
+        {assets.map((asset) => (
+          <li key={asset.id}>
+            <a href={asset.url} target="_blank" rel="noopener noreferrer">
+              {asset.name} ({asset.type})
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default AssetList;
+```
+
+### Fetching a Single Asset
+
+This example shows how to retrieve details for a single asset by its ID within a space.
+
+```tsx
+import React from 'react';
+import { useAsset } from './use-asset.js';
+import { Asset } from '@cloudrabbit/spaces.entities.asset';
+// Mock data for demonstration purposes.
+const mockSingleAsset = Asset.from({
+  id: 'asset-detail-123',
+  spaceId: 'space-xyz',
+  name: 'detailed-report.docx',
+  type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  url: 'https://example.com/assets/detailed-report.docx',
+  size: 5120,
+  uploadDate: new Date(),
+  uploadedById: 'user-3',
+  metadata: { project: 'Alpha' },
+});
+const AssetDetail = () => {
+  const { asset, loading, error } = useAsset({
+    spaceId: 'space-xyz',
+    assetId: 'asset-detail-123',
+    mockData: mockSingleAsset, // Use mockData for local example
+  });
+  if (loading) return <p>Loading asset details...</p>;
+  if (error) return <p>Error loading asset: {error.message}</p>;
+  if (!asset) return <p>Asset not found.</p>;
+  return (
+    <div>
+      <h2>Asset Details</h2>
+      <p>Name: {asset.name}</p>
+      <p>Type: {asset.type}</p>
+      <p>Size: {asset.size} bytes</p>
+      <p>URL: <a href={asset.url} target="_blank" rel="noopener noreferrer">{asset.url}</a></p>
+      <p>Uploaded By: {asset.uploadedById}</p>
+      <p>Upload Date: {asset.uploadDate.toLocaleDateString()}</p>
+      <p>Metadata: {JSON.stringify(asset.metadata)}</p>
+    </div>
+  );
+};
+
+export default AssetDetail;
+```
+
+### Uploading a New Asset
+
+This example illustrates how to upload a new asset to a specified space.
+
+```tsx
+import React, { useState } from 'react';
+import { useUploadAsset } from './use-upload-asset.js';
+const AssetUploader = () => {
+  const { uploadAsset, loading, error } = useUploadAsset();
+  const [fileName, setFileName] = useState('');
+  const [fileContent, setFileContent] = useState('');
+  const [mimeType, setMimeType] = useState('');
+  const [uploadedAsset, setUploadedAsset] = useState(null);
+  const handleUpload = async () => {
+    try {
+      // In a real application, fileData would come from a file input.
+      // For this example, we use a simple string.
+      const newAsset = await uploadAsset({
+        spaceId: 'space-upload-123',
+        filename: fileName,
+        fileData: btoa(fileContent), // Base64 encode for example
+        mimeType: mimeType,
+        metadata: { source: 'web-upload' },
+      });
+      setUploadedAsset(newAsset);
+      alert('Asset uploaded successfully!');
+    } catch (err) {
+      console.error('Upload failed:', err);
+      alert(`Upload failed: ${err.message}`);
+    }
+  };
+  return (
+    <div>
+      <h2>Upload New Asset</h2>
+      <div>
+        <label>
+          File Name:
+          <input
+            type="text"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Mime Type (e.g., text/plain):
+          <input
+            type="text"
+            value={mimeType}
+            onChange={(e) => setMimeType(e.target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          File Content (for example purposes):
+          <textarea
+            value={fileContent}
+            onChange={(e) => setFileContent(e.target.value)}
+          />
+        </label>
+      </div>
+      <button onClick={handleUpload} disabled={loading}>
+        {loading ? 'Uploading...' : 'Upload Asset'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {uploadedAsset && (
+        <div>
+          <h3>Uploaded Asset Info</h3>
+          <p>ID: {uploadedAsset.id}</p>
+          <p>Name: {uploadedAsset.name}</p>
+          <p>URL: <a href={uploadedAsset.url} target="_blank" rel="noopener noreferrer">{uploadedAsset.url}</a></p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AssetUploader;

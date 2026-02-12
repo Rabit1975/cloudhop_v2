@@ -1,0 +1,125 @@
+---
+description: A React Hook for fetching and managing AI session data.
+labels: ['hook', 'react', 'session', 'ai', 'data']
+---
+
+A React Hook for fetching and managing AI session data. It provides methods to retrieve a single session or a list of sessions.
+
+
+## Fetching a single AI session
+
+This example demonstrates how to use the useSession hook to retrieve a specific AI session using its unique identifier.
+
+```tsx
+const SessionViewer = ({ sessionId }) => {
+  const { session, loading, error } = useSession({ sessionId });
+  if (loading) return <p>Loading session...</p>;
+  if (error) return <p>Error loading session: {error.message}</p>;
+  if (!session) return <p>Session not found.</p>;
+  return (
+    <div>
+      <h3>Session Details</h3>
+      <p>ID: {session.id}</p>
+      <p>Name: {session.name}</p>
+      <p>Provider: {session.provider}</p>
+      <p>Model: {session.model}</p>
+      <p>User ID: {session.userId}</p>
+    </div>
+  );
+};
+```
+
+## Listing multiple AI sessions
+
+This example shows how to use the useListSessions hook to fetch and display a list of available AI sessions.
+
+```tsx
+const SessionList = () => {
+  const { sessions, loading, error } = useListSessions();
+  if (loading) return <p>Loading sessions...</p>;
+  if (error) return <p>Error loading sessions: {error.message}</p>;
+  if (sessions.length === 0) return <p>No sessions found.</p>;
+  return (
+    <div>
+      <h3>Available Sessions</h3>
+      <ul>
+        {sessions.map((session) => (
+          <li key={session.id}>
+            {session.name} (ID: {session.id}) - Provider: {session.provider}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+## Creating a new AI session
+
+This example illustrates how to use a mock function to simulate the creation of a new AI session, useful for testing or prototyping.
+
+```tsx
+const mockCreateSession = async (sessionData) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const newSession = Session.from({
+        ...sessionData,
+        id: `mock-session-${Math.random().toString(36).substring(7)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+      resolve(newSession);
+    }, 500);
+  });
+};
+const CreateSessionForm = () => {
+  const [sessionName, setSessionName] = useState('');
+  const [createdSession, setCreatedSession] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    setCreatedSession(null);
+    try {
+      const newSession = await mockCreateSession({
+        name: sessionName,
+        provider: 'MockProvider',
+        model: 'MockModel',
+        userId: 'mock-user-123',
+      });
+      setCreatedSession(newSession);
+      setSessionName('');
+    } catch (e) {
+      setError(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <div>
+      <h3>Create New Session</h3>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={sessionName}
+          onChange={(e) => setSessionName(e.target.value)}
+          placeholder="Session Name"
+          required
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Creating...' : 'Create Session'}
+        </button>
+      </form>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+      {createdSession && (
+        <div>
+          <p>Session Created Successfully!</p>
+          <p>ID: {createdSession.id}</p>
+          <p>Name: {createdSession.name}</p>
+        </div>
+      )}
+    </div>
+  );
+};

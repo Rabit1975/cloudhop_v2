@@ -1,0 +1,57 @@
+---
+description: An icon representing a creative space or collaboration.
+labels: ['icon', 'space', 'ui', 'content']
+---
+
+## Basic Space Icon
+
+Render the default space icon.
+
+```tsx
+<SpaceIcon />
+```
+## Icon with Custom Sizes
+Demonstrate how to render the space icon with various custom sizes.
+```tsx
+<div>
+  <SpaceIcon size={16} />
+  <SpaceIcon size={24} />
+  <SpaceIcon size={32} />
+  <SpaceIcon size={48} />
+</div>
+```
+## Icon with Custom Colors
+Show the space icon rendered with different custom colors.
+```tsx
+<div style={{ display: 'flex', gap: '24px' }}>
+  <SpaceIcon color="var(--colors-primary-default)" />
+  <SpaceIcon color="var(--colors-secondary-default)" />
+  <SpaceIcon color="var(--colors-status-info-default)" />
+  <SpaceIcon color="var(--colors-text-secondary)" />
+</div>
+```
+## Space Icon in a Sidebar Menu
+An example of using the space icon as part of a sidebar menu item.
+```tsx
+<div style={{
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  padding: '10px 16px',
+  backgroundColor: 'var(--colors-surface-primary)',
+  borderRadius: 'var(--borders-radius-medium)',
+  border: '1px solid var(--colors-border-subtle)',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+  boxShadow: 'var(--effects-shadows-small)',
+  width: '280px'
+}}>
+  <SpaceIcon size={20} color="var(--colors-primary-default)" />
+  <span style={{
+    fontSize: 'var(--typography-sizes-body-small)',
+    fontWeight: 'var(--typography-font-weight-medium)',
+    color: 'var(--colors-text-primary)'
+  }}>
+    Creative Spaces
+  </span>
+</div>

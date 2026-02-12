@@ -1,0 +1,53 @@
+---
+description: A user bar component for authentication and user actions.
+labels: ['user', 'auth', 'navigation', 'header']
+---
+
+A component providing user authentication status and actions within the application header. It dynamically displays login and signup options or a user profile with a dropdown menu based on the user authentication state.
+
+### Displays authentication buttons when logged out
+
+The User Bar automatically shows login and signup options when no user session is active.
+
+```jsx
+<UserBar />
+```
+
+### Displays user avatar and dropdown for logged in users
+
+When a user is logged in, the component shows their avatar, username, and email, and provides a dropdown menu for common user actions, including a sign out option.
+
+```jsx
+const mockUser = {
+  id: 'u1',
+  userId: 'user-01',
+  username: 'NebulaWalker',
+  displayName: 'Nebula Walker',
+  email: 'nebula@cloudhop.com',
+  roles: [],
+  imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_modern_and_minimalist_user_a_0_1770835130247.png'
+};
+<UserBar mockUser={mockUser} />
+```
+
+### Custom menu items in the dropdown
+
+Customize the dropdown menu with additional navigation links or action buttons tailored to application specific needs.
+
+```jsx
+const mockUser = {
+  id: 'u1',
+  userId: 'user-01',
+  username: 'NebulaWalker',
+  displayName: 'Nebula Walker',
+  email: 'nebula@cloudhop.com',
+  roles: [],
+  imageUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_a_modern_and_minimalist_user_a_0_1770835130247.png'
+};
+const menuItems = [
+  { label: 'Profile', href: '/profile', icon: <span>👤</span> },
+  { label: 'Settings', href: '/settings', icon: <span>⚙️</span> },
+  { label: 'Help', onClick: () => alert('Help clicked'), icon: <span>❓</span> },
+  { label: 'Delete Account', destructive: true, onClick: () => alert('Account will be deleted'), icon: <span>🗑️</span> },
+];
+<UserBar mockUser={mockUser} menuItems={menuItems} />

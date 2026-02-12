@@ -1,0 +1,98 @@
+---
+description: A UI component that displays informative text when a user hovers over or focuses on an element.
+labels: ['tooltip', 'ui', 'feedback']
+---
+
+A tooltip component displays supplementary information when a user hovers over or focuses on an interactive element. It provides contextual details without cluttering the main interface.
+
+### Basic Tooltip Usage
+
+This example demonstrates a basic tooltip showing a simple text message on hover over a button.
+
+```tsx
+<Tooltip content="Add to favorites">
+  <button style={{
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px'
+  }}>
+    Hover Me
+  </button>
+</Tooltip>
+```
+### Tooltip Position Variations
+This example showcases the tooltip in various positions around the target element including top, bottom, left, and right.
+```tsx
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '40px', padding: '50px', justifyContentItems: 'center' }}>
+  <Tooltip content="Top Tooltip" position="top">
+    <div style={{ padding: '20px', backgroundColor: '#f0f0f0', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', textAlign: 'center', width: '100px' }}>Top</div>
+  </Tooltip>
+  
+  <Tooltip content="Right Tooltip" position="right">
+    <div style={{ padding: '20px', backgroundColor: '#f0f0f0', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', textAlign: 'center', width: '100px' }}>Right</div>
+  </Tooltip>
+  <Tooltip content="Bottom Tooltip" position="bottom">
+    <div style={{ padding: '20px', backgroundColor: '#f0f0f0', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', textAlign: 'center', width: '100px' }}>Bottom</div>
+  </Tooltip>
+  <Tooltip content="Left Tooltip" position="left">
+    <div style={{ padding: '20px', backgroundColor: '#f0f0f0', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', textAlign: 'center', width: '100px' }}>Left</div>
+  </Tooltip>
+</div>
+```
+### HopMeets Control Buttons
+This example integrates tooltips with control buttons in a meeting interface to provide contextual labels for each action.
+```tsx
+const ControlButton = ({ icon, label }) => (
+  <Tooltip content={label} position="top">
+    <button style={{
+      width: '48px',
+      height: '48px',
+      borderRadius: '50%',
+      backgroundColor: '#333',
+      border: '1px solid #555',
+      color: '#eee',
+      fontSize: '20px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'background-color 0.2s'
+    }}>
+      {icon}
+    </button>
+  </Tooltip>
+);
+<div style={{
+  display: 'flex',
+  gap: '16px',
+  padding: '16px 24px',
+  backgroundColor: '#282828',
+  borderRadius: '999px',
+  boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+  alignItems: 'center'
+}}>
+  <ControlButton icon="🎤" label="Mute Microphone" />
+  <ControlButton icon="📷" label="Turn Off Camera" />
+  <ControlButton icon="✋" label="Raise Hand" />
+  
+  <div style={{ width: '1px', height: '24px', backgroundColor: '#555', margin: '0 8px' }} />
+  
+  <Tooltip content="Leave Meeting" position="top">
+    <button style={{
+      padding: '0 24px',
+      height: '48px',
+      borderRadius: '999px',
+      backgroundColor: '#dc3545',
+      color: '#fff',
+      border: 'none',
+      fontWeight: '500',
+      cursor: 'pointer'
+    }}>
+      Leave
+    </button>
+  </Tooltip>
+</div>

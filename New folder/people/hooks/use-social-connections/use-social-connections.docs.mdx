@@ -1,0 +1,136 @@
+---
+description: A React Hook for managing social connections, providing functionality to fetch a user's friends, send friend requests, and remove friends.
+labels: ['hook', 'react', 'social', 'connections']
+---
+
+A React Hook for managing social connections, providing functionality to fetch a user's friends, send friend requests, and remove friends. This component exposes independent hooks for these operations, handling loading and error states for each.
+
+## Usage
+
+### Fetching a User's Friends
+
+This example demonstrates how to use the `useFriends` hook to display a list of a user's connections. It shows how to access the friends data, loading state, and error information from a mock data source.
+
+```tsx
+import { useFriends } from './use-friends.js';
+
+const FriendList = () => {
+  const { friends, loading, error } = useFriends({
+    mockData: [
+      {
+        userId: 'user1',
+        username: 'alice',
+        email: 'alice@example.com',
+        displayName: 'Alice Wonderland',
+        createdAt: '2023-01-01T00:00:00Z',
+      },
+      {
+        userId: 'user2',
+        username: 'bob',
+        email: 'bob@example.com',
+        displayName: 'Bob The Builder',
+        createdAt: '2023-01-02T00:00:00Z',
+      },
+    ],
+  });
+  if (loading) return <p>Loading friends...</p>;
+  if (error) return <p>Error loading friends: {error.message}</p>;
+  return (
+    <div>
+      <h3>My Friends</h3>
+      {friends.length === 0 ? (
+        <p>No friends found.</p>
+      ) : (
+        <ul>
+          {friends.map((friend) => (
+            <li key={friend.userId}>
+              {friend.displayName} ({friend.username})
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+```
+### Sending a Friend Request
+This example shows how to use the `useAddFriend` hook to send a new friend request to another user. It includes basic UI to trigger the action and displays the current status and feedback.
+```tsx
+import { useState } from 'react';
+import { useAddFriend } from './use-add-friend.js';
+
+const AddFriendComponent = () => {
+  const { addFriend, loading, error } = useAddFriend();
+  const [targetUserId, setTargetUserId] = useState('');
+  const [message, setMessage] = useState('');
+  const handleAddFriend = async () => {
+    setMessage('');
+    try {
+      const connection = await addFriend(targetUserId);
+      if (connection) {
+        setMessage(`Friend request sent to ${targetUserId}. Status: ${connection.status}`);
+      } else {
+        setMessage('Failed to send friend request.');
+      }
+    } catch (err) {
+      setMessage(`Error: ${err.message}`);
+    }
+  };
+  return (
+    <div>
+      <h3>Add New Friend</h3>
+      <input
+        type="text"
+        placeholder="Enter User ID"
+        value={targetUserId}
+        onChange={(e) => setTargetUserId(e.target.value)}
+      />
+      <button onClick={handleAddFriend} disabled={loading}>
+        {loading ? 'Sending...' : 'Send Friend Request'}
+      </button>
+      {message && <p>{message}</p>}
+      {error && <p>Error: {error.message}</p>}
+    </div>
+  );
+};
+```
+### Removing a Friend
+This example illustrates how to use the `useRemoveFriend` hook to remove an existing friend connection. It provides a simple interface to specify which friend to remove and shows feedback on the operation.
+```tsx
+import { useState } from 'react';
+import { useRemoveFriend } from './use-remove-friend.js';
+
+const RemoveFriendComponent = () => {
+  const { removeFriend, loading, error } = useRemoveFriend();
+  const [friendToRemoveId, setFriendToRemoveId] = useState('');
+  const [message, setMessage] = useState('');
+  const handleRemoveFriend = async () => {
+    setMessage('');
+    try {
+      const removed = await removeFriend(friendToRemoveId);
+      if (removed) {
+        setMessage(`Successfully removed friend ${friendToRemoveId}.`);
+      } else {
+        setMessage('Failed to remove friend. Friend not found or already removed.');
+      }
+    } catch (err) {
+      setMessage(`Error: ${err.message}`);
+    }
+  };
+  return (
+    <div>
+      <h3>Remove Friend</h3>
+      <input
+        type="text"
+        placeholder="Enter Friend User ID"
+        value={friendToRemoveId}
+        onChange={(e) => setFriendToRemoveId(e.target.value)}
+      />
+      <button onClick={handleRemoveFriend} disabled={loading}>
+        {loading ? 'Removing...' : 'Remove Friend'}
+      </button>
+      {message && <p>{message}</p>}
+      {error && <p>Error: {error.message}</p>}
+    </div>
+  );
+};
