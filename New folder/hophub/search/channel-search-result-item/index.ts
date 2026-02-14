@@ -1,2 +1,0 @@
-export { ChannelSearchResultItem, ChannelSearchableContent } from './channel-search-result-item.js';
-export type { ChannelSearchResultItemProps, ISearchableContent } from './channel-search-result-item.js';

@@ -1,1 +1,0 @@
-export type SendMessageHandler = (text: string) => void;

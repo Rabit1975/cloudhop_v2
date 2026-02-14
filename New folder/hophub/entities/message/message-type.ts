@@ -1,1 +1,0 @@
-export type MessageType = 'TEXT' | 'MEDIA' | 'SYSTEM';

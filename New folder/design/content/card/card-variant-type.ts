@@ -1,1 +1,0 @@
-export type CardVariant = 'default' | 'glow' | 'outlined' | 'elevated';
