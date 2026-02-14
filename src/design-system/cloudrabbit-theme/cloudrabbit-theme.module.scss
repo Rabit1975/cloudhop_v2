@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+.cloudrabbitTheme {
+  box-sizing: border-box; // Ensure box-sizing is applied to prevent layout overflow
+
+  // use a font family here to apply a default font
+  // on theme childs.
+  font-family: var(--typography-font-family);
+
+  // use the theme background color to apply for all
+  // components in your tree.
+  background-color: var(--colors-surface-background);
+  color: var(--colors-text-default); // Corrected to use --colors-text-default
+  
+  // Apply nebula background effect if present in variables, otherwise fallback to background-color
+  background-image: var(--effects-gradients-nebula);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  
+  // Ensure the theme container takes full height if needed or behaves like a root
+  min-height: 100vh;
+}
+
+:root {
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--typography-font-family);
+    background-color: var(--colors-surface-background);
+    color: var(--colors-text-default);
+  }
+}

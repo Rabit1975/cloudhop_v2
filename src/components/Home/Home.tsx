@@ -1,6 +1,8 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { GameHubDashboardPanel } from '../GameHub/GameHubDashboardPanel';
 import { 
   Users, 
   MessageSquare, 
@@ -13,15 +15,19 @@ import {
   Activity,
   Clock,
   Star,
-  Zap
+  Zap,
+  BarChart3,
+  Play,
+  Eye
 } from 'lucide-react';
 
 interface HomeProps {
   onNavigate?: (tab: 'hophub' | 'music' | 'gamehub' | 'spaces') => void;
   onSectionChange?: (section: 'home' | 'hophub' | 'meetings' | 'settings') => void;
+  user?: { name: string; role?: 'admin' | 'user' };
 }
 
-const Home: React.FC<HomeProps> = ({ onNavigate, onSectionChange }) => {
+const Home: React.FC<HomeProps> = ({ onNavigate, onSectionChange, user }) => {
   const stats = [
     { label: 'System Health', value: '99.9%', icon: Activity, trend: 'Stable' }
   ];
@@ -78,12 +84,13 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onSectionChange }) => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 lg:p-6 space-y-4 lg:space-y-6 overflow-y-auto h-full">
-      {/* Header */}
-      <div className="mb-4 lg:mb-8">
-        <h1 className="text-2xl lg:text-4xl font-bold text-white mb-1 lg:mb-2">Welcome to CloudHop</h1>
-        <p className="text-sm lg:text-lg text-gray-300">Your digital workspace for communication and collaboration</p>
-      </div>
+    <div className="w-full h-full overflow-y-auto">
+      <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-4 lg:space-y-6">
+        {/* Header */}
+        <div className="mb-4 lg:mb-8">
+          <h1 className="text-2xl lg:text-4xl font-bold text-white mb-1 lg:mb-2">Welcome to CloudHop</h1>
+          <p className="text-sm lg:text-lg text-gray-300">Your digital workspace for communication and collaboration</p>
+        </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-4 lg:mb-8">
@@ -110,7 +117,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onSectionChange }) => {
         <h2 className="text-xl lg:text-2xl font-bold text-white mb-3 lg:mb-4">Quick Actions</h2>
         <div className="flex flex-col sm:flex-row gap-2 lg:gap-3">
           {quickActions.map((action, index) => (
-            <Card key={index} className="glass-panel hover:scale-105 transition-transform cursor-pointer flex-1 max-w-[150px]">
+            <Card key={index} className="glass-panel hover:scale-105 transition-transform cursor-pointer flex-1 max-w-[150px]" onClick={() => handleQuickAction(action.action)}>
               <CardContent className="p-2 lg:p-3">
                 <div className={`w-4 h-4 lg:w-6 lg:h-6 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2`}>
                   <action.icon className="w-2 h-2 lg:w-3 lg:h-3 text-white" />
@@ -160,26 +167,64 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onSectionChange }) => {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400" />
-              Platform Insights
-            </CardTitle>
-            <CardDescription>Usage analytics and trends</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3 lg:space-y-4">
-              <div className="flex items-center justify-between p-2 lg:p-3 rounded-lg bg-white/5">
-                <div className="flex items-center gap-2">
-                  <Activity className="w-3 h-3 lg:w-4 lg:h-4 text-blue-400" />
-                  <span className="text-xs lg:text-sm text-white">System Health</span>
+        {/* GameHub Dashboard Panel */}
+        <GameHubDashboardPanel limit={3} />
+
+        {/* Platform Insights - Admin Only */}
+        {user?.role === 'admin' && (
+          <Card className="glass-panel">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400" />
+                Platform Insights
+              </CardTitle>
+              <CardDescription>Usage analytics and trends</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 lg:space-y-4">
+                <div className="flex items-center justify-between p-2 lg:p-3 rounded-lg bg-white/5">
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-3 h-3 lg:w-4 lg:h-4 text-blue-400" />
+                    <span className="text-xs lg:text-sm text-white">System Health</span>
+                  </div>
+                  <span className="text-xs lg:text-sm text-green-400 font-medium">Operational</span>
                 </div>
-                <span className="text-xs lg:text-sm text-green-400 font-medium">Operational</span>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Default replacement for non-admin users */}
+        {user?.role !== 'admin' && (
+          <Card className="glass-panel">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="w-4 h-4 lg:w-5 lg:h-5 text-cyan-400" />
+                Featured Content
+              </CardTitle>
+              <CardDescription>Recommended for you</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 lg:space-y-4">
+                <div className="flex items-center justify-between p-2 lg:p-3 rounded-lg bg-white/5">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-3 h-3 lg:w-4 lg:h-4 text-yellow-400" />
+                    <span className="text-xs lg:text-sm text-white">Try GameHub</span>
+                  </div>
+                  <span className="text-xs lg:text-sm text-cyan-400 font-medium">69+ Games</span>
+                </div>
+                <div className="flex items-center justify-between p-2 lg:p-3 rounded-lg bg-white/5">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-3 h-3 lg:w-4 lg:h-4 text-purple-400" />
+                    <span className="text-xs lg:text-sm text-white">Join Spaces</span>
+                  </div>
+                  <span className="text-xs lg:text-sm text-purple-400 font-medium">Connect</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
       </div>
     </div>
   );

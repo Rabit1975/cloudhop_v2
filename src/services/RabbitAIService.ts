@@ -1,147 +1,95 @@
-// Rabbit AI Service
-// Uses Rabbit AI for advanced features
+// RabbitAI Service
+// Mock service for RabbitAI functionality
 
-import { RabbitAIClient } from '../core/ai/AIClient';
-import { tools } from '../core/ai/tools';
-
-export interface RabbitAIOptions {
-  model?: string;
-  temperature?: number;
-  max_tokens?: number;
-  stream?: boolean;
-  useTools?: boolean;
+export interface RabbitAIMessage {
+  id: string;
+  content: string;
+  timestamp: Date;
+  isFromUser: boolean;
+  type: 'text' | 'image' | 'file' | 'audio';
+  metadata?: any;
 }
 
-export class RabbitAIService {
-  private rabbitClient: RabbitAIClient;
+export interface RabbitAIResponse {
+  message: RabbitAIMessage;
+  isTyping: boolean;
+  suggestions?: string[];
+}
+
+class RabbitAIService {
+  private baseUrl = 'https://api.openai.com/v1/chat/completions';
 
   constructor() {
-    this.rabbitClient = new RabbitAIClient();
+    // In production, this would use real OpenAI API
+    // For demo, we'll use mock responses
   }
 
-  /**
-   * Generate text using Rabbit AI
-   */
-  async generateText(prompt: string, options: RabbitAIOptions = {}): Promise<string> {
-    try {
-      const messages = [{ role: 'user', content: prompt }];
-      return await this.rabbitClient.chat(messages);
-    } catch (error) {
-      console.error('Rabbit AI request failed:', error);
-      throw new Error('AI services unavailable');
-    }
-  }
+  async sendMessage(content: string, context?: string): Promise<RabbitAIResponse> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-  /**
-   * Generate images (Placeholder as Rabbit AI image gen might differ)
-   */
-  async generateImage(prompt: string, options: any = {}): Promise<HTMLImageElement | null> {
-      console.warn("Image generation not yet implemented in Rabbit AI Service");
-      return null;
-  }
+    // Mock responses based on content
+    const responses = [
+      "That's an interesting question! Let me help you with that.",
+      "I can help you with creative projects and technical tasks.",
+      "Great idea! Have you considered trying it with a different approach?",
+      "I understand what you're looking for. Here's how we can approach this.",
+      "That sounds like a plan! What would you like to work on first?",
+    ];
 
-  /**
-   * Stream text using Rabbit AI
-   */
-  async streamText(
-    prompt: string,
-    onChunk: (chunk: string) => void,
-    options: RabbitAIOptions = {}
-  ): Promise<void> {
-     const messages = [{ role: 'user', content: prompt }];
-     return await this.rabbitClient.stream(messages, onChunk);
-  }
+    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
 
-  /**
-   * Execute Rabbit AI tools
-   */
-  async executeTool(toolName: string, ...args: any[]): Promise<any> {
-    // Implement tool execution logic if needed, or pass to client
-    throw new Error('Tool execution not fully implemented');
-  }
-
-  /**
-   * Get available AI capabilities
-   */
-  getCapabilities(): {
-    rabbitAI: boolean;
-    puter: boolean;
-    models: string[];
-    tools: string[];
-  } {
     return {
-      rabbitAI: true,
-      puter: false,
-      models: ['rabbit-v1'],
-      tools: tools.map(t => t.name),
+      message: {
+        id: Date.now().toString(),
+        content: randomResponse,
+        timestamp: new Date(),
+        isFromUser: false,
+        type: 'text',
+      },
+      isTyping: false,
+      suggestions: [
+        "Tell me more about your project",
+        "What kind of creative work do you enjoy?",
+        "How can I assist you today?",
+      ]
     };
   }
 
-  /**
-   * Context-aware AI response based on current view
-   */
-  async getContextualResponse(view: string, action: string): Promise<string> {
-    const contextPrompt = `You are Rabbit AI in CloudHop. Current view: ${view}. User wants to: ${action}. Provide a helpful, concise response.`;
-    return await this.generateText(contextPrompt);
-  }
+  async generateImage(prompt: string): Promise<{ url: string; description: string }> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-  /**
-   * Generate playlist
-   */
-  async generatePlaylist(mood: string, activity: string): Promise<string[]> {
-    const prompt = `Generate a 5-song playlist for ${activity} with ${mood} mood. Return as numbered list only.`;
-
-    try {
-      const response = await this.generateText(prompt);
-
-      // Parse response into playlist
-      return response
-        .split('\n')
-        .filter((line: string) => line.trim() && /^\d+\./.test(line.trim()))
-        .map((line: string) => line.replace(/^\d+\.\s*/, '').trim())
-        .filter((song: string) => song.length > 0)
-        .slice(0, 5);
-    } catch (error) {
-      // Fallback playlist
-      return [
-        'Cosmic Journey - Electronic Dreams',
-        'Neon Nights - Synthwave Collection',
-        'Digital Horizon - Future Bass',
-        'Quantum Beats - Experimental Electronic',
-        'CloudHop Theme - Ambient Mix',
-      ];
-    }
-  }
-
-  /**
-   * Transcribe audio
-   */
-  async transcribeAudio(audioBlob: Blob): Promise<string> {
-     // TODO: Implement actual transcription endpoint call
-    return 'Audio transcription would be processed here.';
-  }
-
-  /**
-   * Check service availability
-   */
-  isServiceAvailable(): { rabbit: boolean; puter: boolean } {
+    // Mock image generation
     return {
-      rabbit: true,
-      puter: false,
+      url: `https://picsum.photos/seed/${Math.random()}/800/600?random=${prompt}`,
+      description: `AI generated image for: ${prompt}`,
     };
   }
 
-  private async blobToBase64(blob: Blob): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        resolve(result.split(',')[1]); // Remove data URL prefix
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+  async analyzeCode(code: string): Promise<{ analysis: string; suggestions: string[] }> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Mock code analysis
+    const analyses = [
+      "This code looks well structured and follows React best practices.",
+      "I notice you're using TypeScript effectively here.",
+      "Consider adding more comments to explain complex logic.",
+      "The variable naming is clear and descriptive.",
+    ];
+
+    const randomAnalysis = analyses[Math.floor(Math.random() * analyses.length)];
+
+    return {
+      analysis: randomAnalysis,
+      suggestions: [
+        "Add JSDoc comments for better documentation",
+        "Consider using React hooks for state management",
+        "Review the code for potential optimizations",
+      ],
+    };
   }
 }
 
-export const rabbitAIService = new RabbitAIService();
+export default new RabbitAIService();

@@ -1,0 +1,400 @@
+---
+description: A list component for displaying game achievements.
+labels: ['game', 'achievement', 'list', 'ui']
+---
+
+A component to display a collection of game achievements, indicating whether each has been unlocked by the user. It accepts an array of achievement objects, showing their icon, title, description, and points.
+
+
+### Basic Achievement List
+
+A standard list displaying achievements, with some locked and some unlocked. The unlocked achievements are visually distinct.
+
+```tsx
+// This example defines a simplified Achievement type and AchievementList component for demonstration purposes.
+// In a real application, you would import the actual Achievement type and AchievementList component.
+type Achievement = {
+  id: string;
+  gameId: string;
+  name: string;
+  description: string;
+  iconUrl?: string;
+  points: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+const AchievementList = ({ achievements, unlockedAchievementIds }) => {
+  if (!achievements || achievements.length === 0) return null;
+  return (
+    <div style={{ maxWidth: '600px', border: '1px solid #e0e0e0', borderRadius: '8px', overflow: 'hidden' }}>
+      {achievements.map((achievement) => {
+        const isUnlocked = unlockedAchievementIds.includes(achievement.id);
+        const itemStyle = {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '12px',
+          borderBottom: '1px solid #eee',
+          backgroundColor: isUnlocked ? '#e6ffe6' : '#f8f8f8',
+          opacity: isUnlocked ? 1 : 0.7,
+        };
+        const iconStyle = {
+          width: '40px',
+          height: '40px',
+          borderRadius: '4px',
+          objectFit: 'cover',
+          backgroundColor: '#ccc',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+        };
+        const titleStyle = {
+          fontWeight: 'bold',
+          color: isUnlocked ? '#333' : '#666',
+          margin: 0,
+        };
+        const descriptionStyle = {
+          fontSize: '0.9em',
+          color: '#555',
+          margin: '4px 0 0',
+          maxHeight: '3em',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          lineClamp: 2,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+        };
+        const pointsStyle = {
+          fontSize: '0.8em',
+          backgroundColor: '#e0e0f0',
+          padding: '2px 8px',
+          borderRadius: '4px',
+          color: '#444',
+          whiteSpace: 'nowrap',
+        };
+        const statusBadgeStyle = {
+          width: '16px',
+          height: '16px',
+          borderRadius: '50%',
+          backgroundColor: isUnlocked ? 'green' : 'red',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '0.8em',
+          marginLeft: 'auto',
+          flexShrink: 0,
+        };
+        return (
+          <div key={achievement.id} style={itemStyle}>
+            <div style={{ position: 'relative' }}>
+              {achievement.iconUrl ? (
+                <img src={achievement.iconUrl} alt={achievement.name} style={iconStyle} />
+              ) : (
+                <div style={{ ...iconStyle, backgroundColor: '#bbbbbb', color: '#666' }}>🏆</div>
+              )}
+            </div>
+            <div style={{ flexGrow: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4 style={titleStyle}>{achievement.name}</h4>
+                {achievement.points && <span style={pointsStyle}>{achievement.points} pts</span>}
+              </div>
+              <p style={descriptionStyle}>{achievement.description}</p>
+            </div>
+            <div style={statusBadgeStyle}>
+              {isUnlocked ? '✓' : '✗'}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+const achievementsData: Achievement[] = [
+  {
+    id: 'ach-1',
+    gameId: 'g1',
+    name: 'First Blood',
+    description: 'Achieve your first kill in the game. The journey of a thousand miles begins with a single step.',
+    iconUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_futuristic_digital_game_achiev_0_1770833864729.png',
+    points: 50,
+  },
+  {
+    id: 'ach-2',
+    gameId: 'g1',
+    name: 'Level Up',
+    description: 'Reach player level 10. You are becoming stronger with every challenge you overcome.',
+    iconUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_futuristic_digital_game_achiev_0_1770833864729.png',
+    points: 100,
+  },
+  {
+    id: 'ach-3',
+    gameId: 'g1',
+    name: 'Treasure Hunter',
+    description: 'Open 5 hidden chests. Fortune favors the bold and the observant.',
+    iconUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_futuristic_digital_game_achiev_0_1770833864729.png',
+    points: 75,
+  },
+];
+const unlockedIds = ['ach-1', 'ach-3'];
+<AchievementList achievements={achievementsData} unlockedAchievementIds={unlockedIds} />
+```
+
+
+### All Achievements Locked
+
+This example demonstrates the appearance of an achievement list where none of the achievements have been unlocked by the user.
+
+```tsx
+// This example defines a simplified Achievement type and AchievementList component for demonstration purposes.
+// In a real application, you would import the actual Achievement type and AchievementList component.
+type Achievement = {
+  id: string;
+  gameId: string;
+  name: string;
+  description: string;
+  iconUrl?: string;
+  points: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+const AchievementList = ({ achievements, unlockedAchievementIds }) => {
+  if (!achievements || achievements.length === 0) return null;
+  return (
+    <div style={{ maxWidth: '600px', border: '1px solid #e0e0e0', borderRadius: '8px', overflow: 'hidden' }}>
+      {achievements.map((achievement) => {
+        const isUnlocked = unlockedAchievementIds.includes(achievement.id);
+        const itemStyle = {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '12px',
+          borderBottom: '1px solid #eee',
+          backgroundColor: isUnlocked ? '#e6ffe6' : '#f8f8f8',
+          opacity: isUnlocked ? 1 : 0.7,
+        };
+        const iconStyle = {
+          width: '40px',
+          height: '40px',
+          borderRadius: '4px',
+          objectFit: 'cover',
+          backgroundColor: '#ccc',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+        };
+        const titleStyle = {
+          fontWeight: 'bold',
+          color: isUnlocked ? '#333' : '#666',
+          margin: 0,
+        };
+        const descriptionStyle = {
+          fontSize: '0.9em',
+          color: '#555',
+          margin: '4px 0 0',
+          maxHeight: '3em',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          lineClamp: 2,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+        };
+        const pointsStyle = {
+          fontSize: '0.8em',
+          backgroundColor: '#e0e0f0',
+          padding: '2px 8px',
+          borderRadius: '4px',
+          color: '#444',
+          whiteSpace: 'nowrap',
+        };
+        const statusBadgeStyle = {
+          width: '16px',
+          height: '16px',
+          borderRadius: '50%',
+          backgroundColor: isUnlocked ? 'green' : 'red',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '0.8em',
+          marginLeft: 'auto',
+          flexShrink: 0,
+        };
+        return (
+          <div key={achievement.id} style={itemStyle}>
+            <div style={{ position: 'relative' }}>
+              {achievement.iconUrl ? (
+                <img src={achievement.iconUrl} alt={achievement.name} style={iconStyle} />
+              ) : (
+                <div style={{ ...iconStyle, backgroundColor: '#bbbbbb', color: '#666' }}>🏆</div>
+              )}
+            </div>
+            <div style={{ flexGrow: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4 style={titleStyle}>{achievement.name}</h4>
+                {achievement.points && <span style={pointsStyle}>{achievement.points} pts</span>}
+              </div>
+              <p style={descriptionStyle}>{achievement.description}</p>
+            </div>
+            <div style={statusBadgeStyle}>
+              {isUnlocked ? '✓' : '✗'}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+const achievementsData: Achievement[] = [
+  {
+    id: 'ach-1',
+    gameId: 'g1',
+    name: 'First Blood',
+    description: 'Achieve your first kill in the game. The journey of a thousand miles begins with a single step.',
+    iconUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_futuristic_digital_game_achiev_0_1770833864729.png',
+    points: 50,
+  },
+  {
+    id: 'ach-2',
+    gameId: 'g1',
+    name: 'Level Up',
+    description: 'Reach player level 10. You are becoming stronger with every challenge you overcome.',
+    iconUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_futuristic_digital_game_achiev_0_1770833864729.png',
+    points: 100,
+  },
+];
+const unlockedIds: string[] = []; // No achievements are unlocked
+<AchievementList achievements={achievementsData} unlockedAchievementIds={unlockedIds} />
+```
+
+
+### Achievements Without Custom Icons
+
+Achievements can be displayed even if they do not have a custom icon URL. A default trophy icon is used in such cases.
+
+```tsx
+// This example defines a simplified Achievement type and AchievementList component for demonstration purposes.
+// In a real application, you would import the actual Achievement type and AchievementList component.
+type Achievement = {
+  id: string;
+  gameId: string;
+  name: string;
+  description: string;
+  iconUrl?: string;
+  points: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+const AchievementList = ({ achievements, unlockedAchievementIds }) => {
+  if (!achievements || achievements.length === 0) return null;
+  return (
+    <div style={{ maxWidth: '600px', border: '1px solid #e0e0e0', borderRadius: '8px', overflow: 'hidden' }}>
+      {achievements.map((achievement) => {
+        const isUnlocked = unlockedAchievementIds.includes(achievement.id);
+        const itemStyle = {
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          padding: '12px',
+          borderBottom: '1px solid #eee',
+          backgroundColor: isUnlocked ? '#e6ffe6' : '#f8f8f8',
+          opacity: isUnlocked ? 1 : 0.7,
+        };
+        const iconStyle = {
+          width: '40px',
+          height: '40px',
+          borderRadius: '4px',
+          objectFit: 'cover',
+          backgroundColor: '#ccc',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '24px',
+        };
+        const titleStyle = {
+          fontWeight: 'bold',
+          color: isUnlocked ? '#333' : '#666',
+          margin: 0,
+        };
+        const descriptionStyle = {
+          fontSize: '0.9em',
+          color: '#555',
+          margin: '4px 0 0',
+          maxHeight: '3em',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          lineClamp: 2,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+        };
+        const pointsStyle = {
+          fontSize: '0.8em',
+          backgroundColor: '#e0e0f0',
+          padding: '2px 8px',
+          borderRadius: '4px',
+          color: '#444',
+          whiteSpace: 'nowrap',
+        };
+        const statusBadgeStyle = {
+          width: '16px',
+          height: '16px',
+          borderRadius: '50%',
+          backgroundColor: isUnlocked ? 'green' : 'red',
+          color: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '0.8em',
+          marginLeft: 'auto',
+          flexShrink: 0,
+        };
+        return (
+          <div key={achievement.id} style={itemStyle}>
+            <div style={{ position: 'relative' }}>
+              {achievement.iconUrl ? (
+                <img src={achievement.iconUrl} alt={achievement.name} style={iconStyle} />
+              ) : (
+                <div style={{ ...iconStyle, backgroundColor: '#bbbbbb', color: '#666' }}>🏆</div>
+              )}
+            </div>
+            <div style={{ flexGrow: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4 style={titleStyle}>{achievement.name}</h4>
+                {achievement.points && <span style={pointsStyle}>{achievement.points} pts</span>}
+              </div>
+              <p style={descriptionStyle}>{achievement.description}</p>
+            </div>
+            <div style={statusBadgeStyle}>
+              {isUnlocked ? '✓' : '✗'}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+const achievementsData: Achievement[] = [
+  {
+    id: 'ach-4',
+    gameId: 'g2',
+    name: 'Pacifist',
+    description: 'Complete a level without harming any enemies. A truly gentle soul.',
+    iconUrl: undefined, // No custom icon
+    points: 120,
+  },
+  {
+    id: 'ach-5',
+    gameId: 'g2',
+    name: 'Social Butterfly',
+    description: 'Make friends with 5 different NPCs. Your charisma knows no bounds.',
+    iconUrl: undefined, // No custom icon
+    points: 80,
+  },
+];
+const unlockedIds = ['ach-4']; // 'Pacifist' is unlocked
+<AchievementList achievements={achievementsData} unlockedAchievementIds={unlockedIds} />

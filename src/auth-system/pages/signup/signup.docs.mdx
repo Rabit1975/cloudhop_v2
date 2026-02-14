@@ -1,0 +1,31 @@
+---
+description: A signup page component for user registration.
+labels: ['signup', 'authentication', 'form', 'cloudhop']
+---
+
+The Signup component provides a user interface for new users to register an account on the CloudHop platform. It includes fields for display name, email, and password, handles form submission, and redirects authenticated users.
+
+### Basic Signup Form
+
+Displays the core signup form with fields for display name, email, and password.
+
+```tsx
+<MockProvider>
+  <Signup />
+</MockProvider>
+```
+### Signup with Custom Styling
+Applies a custom CSS class to the main container for additional styling.
+```tsx
+<MockProvider>
+  <Signup className="my-custom-signup-class" />
+</MockProvider>
+```
+### Signup in Dark Mode
+Renders the signup component within a dark theme context to demonstrate its appearance.
+```tsx
+<MockProvider noTheme>
+  <CloudrabbitTheme initialTheme="dark">
+    <Signup />
+  </CloudrabbitTheme>
+</MockProvider>

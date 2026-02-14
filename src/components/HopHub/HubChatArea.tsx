@@ -166,6 +166,71 @@ export const HubChatArea: React.FC<HubChatAreaProps> = ({ chatId, chatName, type
             >
                 <Icons.Send className="w-5 h-5" />
             </button>
+            
+            {/* AI Assistant Button */}
+            <button 
+                onClick={() => {
+                    const aiMessage = {
+                        id: Date.now().toString(),
+                        sender: 'Mr. Rabbit AI',
+                        content: '🐰 Hello! I\'m Mr. Rabbit, your AI assistant. How can I help you today?',
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        isMe: false,
+                        avatar: '🤖'
+                    };
+                    setMessages(prev => [...prev, aiMessage]);
+                }}
+                className="p-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:scale-105 transition-all duration-300 transform shadow-[0_0_15px_rgba(168,85,247,0.3)]"
+                title="Chat with Mr. Rabbit AI"
+            >
+                🤖
+            </button>
+            
+            {/* Video Call Button */}
+            <button 
+                onClick={() => {
+                    const callMessage = {
+                        id: Date.now().toString(),
+                        sender: 'System',
+                        content: '📞 Starting video call... Join the meeting room: https://cloudhop.call/' + chatId,
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        isMe: false,
+                        avatar: '📹'
+                    };
+                    setMessages(prev => [...prev, callMessage]);
+                    // Open video call in new window
+                    window.open(`https://cloudhop.call/${chatId}`, '_blank');
+                }}
+                className="p-3 rounded-2xl bg-gradient-to-r from-green-500 to-teal-500 text-white hover:scale-105 transition-all duration-300 transform shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                title="Start Video Call"
+            >
+                📞
+            </button>
+            
+            {/* Screen Share Button */}
+            <button 
+                onClick={() => {
+                    const shareMessage = {
+                        id: Date.now().toString(),
+                        sender: 'System',
+                        content: '🖥️ Screen sharing started for ' + chatName,
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        isMe: false,
+                        avatar: '🖥️'
+                    };
+                    setMessages(prev => [...prev, shareMessage]);
+                    // Start screen sharing
+                    navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
+                        .then(stream => {
+                            console.log('Screen sharing started:', stream);
+                        })
+                        .catch(err => console.error('Screen sharing error:', err));
+                }}
+                className="p-3 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:scale-105 transition-all duration-300 transform shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                title="Share Screen"
+            >
+                🖥️
+            </button>
         </div>
         <div className="text-center mt-2">
              <p className="text-[10px] text-white/20 uppercase tracking-widest">StrikeCore Secure Messaging</p>

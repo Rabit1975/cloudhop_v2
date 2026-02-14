@@ -1,0 +1,9 @@
+.image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--borders-radius-medium);
+  object-fit: cover;
+  background-color: var(--colors-surface-secondary);
+  box-sizing: border-box;
+}

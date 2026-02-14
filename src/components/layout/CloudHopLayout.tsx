@@ -1,18 +1,22 @@
 import React, { useState, ReactNode } from 'react';
 import { Menu, X, LogOut, Search, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
 import { cn } from '../../lib/utils';
 import YouTubeMusicIntegration from '../YouTubeMusicIntegration';
 import GameHub from '../GameHub/GameHub';
 import SpacesWithChat from '../HopHub/SpacesWithChat';
 import RabbitAI from '../RabbitAI/RabbitAI';
+import { motion, AnimatePresence } from 'framer-motion';
+import MusicSystemSelector from '../Music/MusicSystemSelector';
 
 interface CloudHopLayoutProps {
-  children: ReactNode;
-  activeTab: 'hophub' | 'music' | 'gamehub' | 'spaces';
-  onTabChange: (tab: 'hophub' | 'music' | 'gamehub' | 'spaces') => void;
-  activeSection?: 'home' | 'hophub' | 'meetings' | 'settings';
-  onSectionChange?: (section: 'home' | 'hophub' | 'meetings' | 'settings') => void;
+  children: React.ReactNode;
+  activeTab?: 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified';
+  onTabChange?: (tab: 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified') => void;
+  activeSection?: 'home' | 'hophub' | 'meetings' | 'settings' | 'twitch';
+  onSectionChange?: (section: 'home' | 'hophub' | 'meetings' | 'settings' | 'twitch') => void;
+  onLogout?: () => void;
 }
 
 export default function CloudHopLayout({
@@ -21,6 +25,7 @@ export default function CloudHopLayout({
   onTabChange,
   activeSection = 'home',
   onSectionChange,
+  onLogout,
 }: CloudHopLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -43,17 +48,15 @@ export default function CloudHopLayout({
       )}
     >
       {/* Top Navigation - Fixed Bar */}
-      <nav className="glass-panel flex items-center justify-between px-6 py-4 border-b border-white/10 relative z-10">
+      <nav 
+        className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/40 backdrop-blur-sm relative"
+      >
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <img src="/hopglow.png" alt="CloudHop" className="w-8 h-8 rounded object-contain" />
-            <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-300">
-              CloudHop
-            </span>
-          </div>
-
-          {/* Main Navigation - Always visible */}
-          <div className="hidden sm:flex items-center gap-1 ml-8">
+          <Logo size={32} />
+        </div>
+        
+        {/* Main Navigation - Vertical Layout */}
+        <div className="flex flex-col sm:flex-row items-center gap-2 ml-8">
             {[
               { id: 'home' as const, label: 'Home', section: 'home' as const },
               { id: 'hophub' as const, label: 'HopHub', section: 'hophub' as const },
@@ -64,19 +67,23 @@ export default function CloudHopLayout({
                 key={item.id}
                 onClick={() => onSectionChange?.(item.section)}
                 className={cn(
-                  'px-4 py-2 rounded text-sm font-medium transition-all',
-                  activeTab === 'hophub' && activeSection === item.section
+                  'px-4 py-2 rounded text-sm font-medium transition-all w-full sm:w-auto relative',
+                  activeSection === item.section
                     ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/30'
                     : 'text-gray-300 hover:text-white hover:bg-white/5'
                 )}
               >
                 {item.label}
+                {/* HopHub Dropdown Indicator */}
+                {item.id === 'hophub' && (
+                  <svg className="absolute -bottom-1 -right-1 w-2 h-2 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7" />
+                  </svg>
+                )}
               </button>
             ))}
           </div>
         </div>
-
-        <div className="flex items-center gap-4">
           <div className="hidden lg:flex items-center bg-white/5 rounded-lg px-3 py-2 border border-white/10">
             <Search className="w-4 h-4 text-gray-400" />
             <input
@@ -92,7 +99,10 @@ export default function CloudHopLayout({
 
           <RabbitAI size="sm" />
 
-          <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold text-sm hover:opacity-90 transition-all active:scale-95">
+          <button 
+            onClick={onLogout}
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-semibold text-sm hover:opacity-90 transition-all active:scale-95"
+          >
             Logout
           </button>
 
@@ -105,78 +115,7 @@ export default function CloudHopLayout({
         </div>
       </nav>
 
-      {/* Secondary Navigation - Only visible when in HopHub section */}
-      {activeSection === 'hophub' && (
-        <div className="glass-panel flex items-center gap-2 px-6 py-3 border-b border-white/10 overflow-x-auto relative z-10">
-          {/* Search Box */}
-          <div className="flex-1 max-w-md">
-            <input
-              type="text"
-              placeholder="Search chats, channels, groups..."
-              className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 text-sm"
-            />
-          </div>
-          
-          {/* Tab Buttons with Dropdowns */}
-          {hophubTabs.map(tab => (
-            <div key={tab.id} className="relative">
-              <button
-                onClick={() => {
-                  // For hophub tabs, just change the activeTab (stays in hophub section)
-                  // For other tabs, just change the activeTab
-                  onTabChange(tab.id);
-                  setMobileMenuOpen(false);
-                }}
-                className={cn(
-                  'px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all flex items-center gap-2',
-                  activeTab === tab.id
-                    ? 'bg-cyan-500/30 border border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-400/20'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5'
-                )}
-              >
-                <span>{tab.icon}</span>
-                {tab.label}
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {/* Dropdown Menu */}
-              {activeTab === tab.id && (
-                <div className="absolute top-full mt-1 bg-black/90 backdrop-blur-md border border-white/20 rounded-lg shadow-xl z-50">
-                  {tab.id === 'hophub' && (
-                    <>
-                      <button className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 text-sm">
-                        💬 Group Chat
-                      </button>
-                      <button className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 text-sm">
-                        📢 Channels
-                      </button>
-                      <button className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 text-sm">
-                        👥 Direct Messages
-                      </button>
-                    </>
-                  )}
-                  {tab.id === 'spaces' && (
-                    <>
-                      <button className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 text-sm">
-                        🎨 Fluid Art
-                      </button>
-                      <button className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 text-sm">
-                        🌌 Creative Spaces
-                      </button>
-                      <button className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 text-sm">
-                        🎭 Role Play
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
+      {/* MAIN CONTENT AREA */}
       <main className="flex-1 overflow-hidden relative">
         {/* Show content based on active tab */}
         {activeTab === 'hophub' ? (
@@ -188,7 +127,7 @@ export default function CloudHopLayout({
           </div>
         ) : activeTab === 'music' ? (
           <div className="w-full h-full">
-            <YouTubeMusicIntegration />
+            <MusicSystemSelector />
           </div>
         ) : activeTab === 'gamehub' ? (
           <div className="w-full h-full">

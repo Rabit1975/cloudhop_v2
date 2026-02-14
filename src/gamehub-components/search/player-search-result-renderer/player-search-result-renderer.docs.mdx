@@ -1,0 +1,131 @@
+---
+description: A component to display individual player search results.
+labels: ['player', 'search', 'ui']
+---
+
+This component displays a single player search result, showing the player's avatar, display name, username, and status message. The entire card is clickable and navigates to the player's profile page.
+
+### Basic Player Result
+
+This example shows a basic player search result with a display name, username, avatar, and status message.
+
+```tsx
+<PlayerSearchResultRenderer
+  result={{
+    id: 'res-1',
+    relevanceScore: 0.95,
+    content: {
+      id: 'player-u-1',
+      type: 'player',
+      title: 'Cosmic Traveler',
+      url: '/profile?userId=u-1',
+      userId: 'u-1',
+      username: 'cosmic_traveler',
+      displayName: 'Cosmic Traveler',
+      avatarUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_digital_avatar_for_a__0_1770833865266.png',
+      statusMessage: 'Drifting through the nebula...',
+      presenceStatus: 'online',
+    },
+  }}
+/>
+```
+### Player Status Variations
+This example demonstrates how different player presence statuses are rendered.
+```tsx
+<>
+  <PlayerSearchResultRenderer
+    result={{
+      id: 'res-online',
+      relevanceScore: 1,
+      content: {
+        id: 'player-u-2',
+        type: 'player',
+        title: 'Star Pilot',
+        url: '/profile?userId=u-2',
+        userId: 'u-2',
+        username: 'star_pilot',
+        displayName: 'Star Pilot',
+        avatarUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_digital_avatar_for_a__0_1770833865266.png',
+        statusMessage: 'Ready for takeoff',
+        presenceStatus: 'online',
+      },
+    }}
+  />
+  <PlayerSearchResultRenderer
+    result={{
+      id: 'res-busy',
+      relevanceScore: 0.8,
+      content: {
+        id: 'player-u-3',
+        type: 'player',
+        title: 'Code Wizard',
+        url: '/profile?userId=u-3',
+        userId: 'u-3',
+        username: 'code_wizard',
+        displayName: 'Code Wizard',
+        avatarUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_digital_avatar_for_a__0_1770833865266.png',
+        statusMessage: 'In a meeting',
+        presenceStatus: 'busy',
+      },
+    }}
+  />
+  <PlayerSearchResultRenderer
+    result={{
+      id: 'res-offline',
+      relevanceScore: 0.5,
+      content: {
+        id: 'player-u-4',
+        type: 'player',
+        title: 'Ghost Runner',
+        url: '/profile?userId=u-4',
+        userId: 'u-4',
+        username: 'ghost_runner',
+        displayName: 'Ghost Runner',
+        avatarUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_digital_avatar_for_a__0_1770833865266.png',
+        statusMessage: 'Last seen yesterday',
+        presenceStatus: 'offline',
+      },
+    }}
+  />
+</>
+```
+### Minimal and Long Content
+This example illustrates the component rendering players with minimal information and players with verbose display names and status messages, ensuring proper truncation.
+```tsx
+<>
+  <PlayerSearchResultRenderer
+    result={{
+      id: 'res-min',
+      relevanceScore: 0.7,
+      content: {
+        id: 'player-u-min',
+        type: 'player',
+        title: 'anonymous_void',
+        url: '/profile?userId=u-min',
+        userId: 'u-min',
+        username: 'anonymous_void',
+        // No display name, no status message
+        avatarUrl: undefined, 
+        presenceStatus: 'away',
+      },
+    }}
+  />
+  <PlayerSearchResultRenderer
+    result={{
+      id: 'res-max',
+      relevanceScore: 0.9,
+      content: {
+        id: 'player-u-max',
+        type: 'player',
+        title: 'The Great Storyteller of the Northern Quadrant',
+        url: '/profile?userId=u-max',
+        userId: 'u-max',
+        username: 'storyteller_prime',
+        displayName: 'The Great Storyteller of the Northern Quadrant',
+        avatarUrl: 'https://storage.googleapis.com/bit-generated-images/images/image_abstract_digital_avatar_for_a__0_1770833865266.png',
+        statusMessage: 'Writing the history of the CloudHop universe, one pixel at a time. Do not disturb unless it is urgent or you have coffee.',
+        presenceStatus: 'online',
+      },
+    }}
+  />
+</>

@@ -1,0 +1,48 @@
+---
+description: A versatile and accessible paragraph component that prioritizes readability and consistent typography.
+labels: ['typography', 'text', 'paragraph', 'ui']
+---
+
+The `Paragraph` component is designed to render text content with consistent typography, ensuring readability and ease of integration into any layout. It supports various text sizes and can be rendered as different HTML elements for semantic accuracy.
+
+### Basic Paragraph and Sizes
+
+Render a simple paragraph with various predefined text sizes to suit different contexts.
+
+```tsx
+<Paragraph size="large">
+  Welcome to the CloudHop platform, where communication meets innovation.
+</Paragraph>
+<Paragraph size="default">
+  CloudHop is a modular operating system for next-generation communication.
+</Paragraph>
+<Paragraph size="small">
+  Copyright © 2024 CloudHop. All rights reserved.
+</Paragraph>
+```
+### Paragraph with a Custom HTML Element
+Use a different HTML element like span or div instead of the default p tag for semantic flexibility.
+```tsx
+<Paragraph element="span" size="medium" style={{ display: 'block', marginBottom: '8px' }}>
+  This is a paragraph rendered as a span.
+</Paragraph>
+<Paragraph element="div" className="my-custom-paragraph-class">
+  And this is a paragraph rendered as a div with a custom class.
+</Paragraph>
+```
+### Paragraph with Custom Styles and Class Names
+Apply custom CSS styles and additional class names to tailor the appearance of the paragraph.
+```tsx
+<Paragraph
+  size="large"
+  style={{ color: 'var(--colors-primary-default)', textTransform: 'uppercase' }}
+>
+  Important Announcement
+</Paragraph>
+<Paragraph
+  size="default"
+  className="my-highlight-text"
+  style={{ fontWeight: 'bold', border: '1px solid var(--colors-border-default)', padding: '8px', borderRadius: '4px' }}
+>
+  This text is highlighted with custom styles and a class name.
+</Paragraph>

@@ -1,0 +1,50 @@
+---
+description: A game leaderboard data entity.
+labels: ['leaderboard', 'entity', 'game']
+---
+
+### Creating a Leaderboard
+
+This example demonstrates how to create a new Leaderboard instance.
+
+```ts
+import { Leaderboard } from '@cloudhop/leaderboard';
+const newLeaderboard = new Leaderboard(
+  'lb-racing-001',
+  'game-racing-001',
+  [
+    { userId: 'driver-a', score: 1200, timestamp: Date.now() },
+    { userId: 'driver-b', score: 1150, timestamp: Date.now() - 60000 },
+  ]
+);
+console.log(newLeaderboard.leaderboardId);
+```
+
+### Creating from a plain object
+This example shows how to construct a Leaderboard from a plain object using the static from method. This is useful when deserializing data from an API or storage.
+```ts
+import { Leaderboard } from '@cloudhop/leaderboard';
+import { PlainLeaderboard } from '@cloudhop/leaderboard';
+const plainData: PlainLeaderboard = {
+  leaderboardId: 'lb-shooter-002',
+  gameId: 'game-shooter-002',
+  scores: [
+    { userId: 'sniper-king', score: 2500, timestamp: 1678886400000 },
+    { userId: 'marksman-ace', score: 2300, timestamp: 1678882800000 },
+  ],
+};
+const leaderboardFromJson = Leaderboard.from(plainData);
+console.log(leaderboardFromJson.gameId);
+```
+
+### Using mock data
+You can use mock data for development and testing purposes.
+```ts
+import { mockLeaderboard, mockLeaderboards } from '@cloudhop/leaderboard';
+const singleMockLeaderboard = mockLeaderboard({
+  gameId: 'my-test-game',
+  scores: [{ userId: 'tester-1', score: 100, timestamp: Date.now() }],
+});
+console.log(singleMockLeaderboard.gameId);
+const multipleMockLeaderboards = mockLeaderboards();
+console.log(multipleMockLeaderboards.length);

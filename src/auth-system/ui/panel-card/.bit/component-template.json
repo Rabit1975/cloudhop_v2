@@ -1,0 +1,24 @@
+{
+    "componentId": "panel-card",
+    "componentName": "panel-card",
+    "files": [
+        {
+            "path": "panel-card.spec.tsx"
+        },
+        {
+            "path": "panel-card.module.scss"
+        },
+        {
+            "path": "panel-card.tsx"
+        },
+        {
+            "path": "panel-card.compositions.tsx"
+        },
+        {
+            "path": "index.ts"
+        },
+        {
+            "path": "panel-card.docs.mdx"
+        }
+    ]
+}

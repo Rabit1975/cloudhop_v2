@@ -1,6 +1,6 @@
 import React from 'react'; 
  
- type HubTab = 'hopspaces' | 'music' | 'gamehub'; 
+ type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified' | 'call'; 
  type SpaceSubTab = 'groups' | 'channels'; 
  
  interface HubNavTabsProps { 
@@ -17,10 +17,13 @@ import React from 'react';
    onSpaceTabChange, 
  }) => { 
    const mainTabs: { key: HubTab; label: string; icon: string }[] = [ 
-     { key: 'hopspaces', label: 'HopSpaces', icon: '🌌' }, 
-     { key: 'music', label: 'Music', icon: '🎵' }, 
-     { key: 'gamehub', label: 'GameHub', icon: '🎮' }, 
-   ]; 
+    { key: 'hophub', label: 'HopHub', icon: '🌌' }, 
+    { key: 'music', label: 'Music', icon: '🎵' }, 
+    { key: 'gamehub', label: 'GameHub', icon: '🎮' }, 
+    { key: 'spaces', label: 'Spaces', icon: '🚀' }, 
+    { key: 'unified', label: 'Unified Hub', icon: '🎯' }, 
+    { key: 'call', label: 'Call', icon: '📞' }, 
+  ]; 
  
    const spaceSubTabs: { key: SpaceSubTab; label: string; icon: string }[] = [ 
      { key: 'groups', label: 'Groups', icon: '👥' }, 
@@ -28,7 +31,7 @@ import React from 'react';
    ]; 
  
    return ( 
-     <div className="bg-transparent"> 
+     <> 
        {/* Main Tabs */} 
        <div className="flex border-b border-white/10 bg-black/20 backdrop-blur-sm"> 
          {mainTabs.map(tab => ( 
@@ -51,7 +54,7 @@ import React from 'react';
        </div> 
  
        {/* Space Sub-tabs - Only show when HopSpaces tab is active */} 
-       {activeTab === 'hopspaces' && onSpaceTabChange && ( 
+       {activeTab === 'hophub' && onSpaceTabChange && ( 
          <div className="flex border-b border-white/5 bg-black/30 backdrop-blur-md"> 
            {spaceSubTabs.map(tab => ( 
              <button 
@@ -72,6 +75,6 @@ import React from 'react';
            ))} 
          </div> 
        )} 
-     </div> 
+     </> 
    ); 
  };

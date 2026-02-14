@@ -1,0 +1,139 @@
+---
+description: A React Hook for managing game leaderboard data
+labels: ['hook', 'react', 'leaderboard', 'gamehub']
+---
+
+A React Hook for managing game leaderboard data. It provides functions to retrieve leaderboards by game ID and to submit new scores. This hook also handles loading and error states for these operations.
+
+## Usage
+
+### Fetching a Leaderboard
+
+This example demonstrates how to fetch and display a game leaderboard using the `useLeaderboards` hook. The `getLeaderboard` function is called when the component mounts to retrieve entries for a specific game.
+
+```tsx
+const LeaderboardDisplay = () => {
+  const { entries, getLeaderboard, loading, error } = useLeaderboards();
+  const gameId = 'racing-legends';
+
+  useEffect(() => {
+    getLeaderboard(gameId);
+  }, [getLeaderboard, gameId]);
+
+  if (loading) return <p>Loading leaderboard...</p>;
+  if (error) return <p>Error loading leaderboard: {error.message}</p>;
+  if (!entries || entries.length === 0) return <p>No leaderboard data available.</p>;
+
+  return (
+    <div>
+      <h2>Leaderboard for {gameId}</h2>
+      <ul>
+        {entries.map((entry) => (
+          <li key={entry.gameScoreId}>
+            Rank: {entry.rank}, Player: {entry.username}, Score: {entry.score}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+
+### Submitting a Score
+
+This example shows how to submit a new score to a game's leaderboard. The `submitScore` function is called when the user interacts with the UI, typically after completing a game.
+
+```tsx
+const ScoreSubmission = () => {
+  const { submitScore, loading, error } = useLeaderboards();
+  const gameId = 'puzzle-quest';
+  const [currentScore, setCurrentScore] = useState(0);
+
+  const handleScoreSubmit = async () => {
+    try {
+      await submitScore(gameId, currentScore);
+      alert('Score submitted successfully!');
+      // Optionally refetch leaderboard here
+    } catch (err) {
+      alert('Failed to submit score.');
+      console.error('Score submission error:', err);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Submit Score for {gameId}</h2>
+      <input
+        type="number"
+        value={currentScore}
+        onChange={(e) => setCurrentScore(Number(e.target.value))}
+        placeholder="Enter your score"
+      />
+      <button onClick={handleScoreSubmit} disabled={loading}>
+        {loading ? 'Submitting...' : 'Submit Score'}
+      </button>
+      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
+    </div>
+  );
+};
+```
+
+### Displaying Loading and Error States
+
+This example illustrates how to effectively manage and display loading and error states when interacting with the leaderboard. It combines both fetching and submission operations to show a comprehensive state management.
+
+```tsx
+const LeaderboardManager = () => {
+  const { entries, getLeaderboard, submitScore, loading, error } = useLeaderboards();
+  const gameId = 'space-shooter';
+  const [newScore, setNewScore] = useState(100);
+
+  useEffect(() => {
+    getLeaderboard(gameId);
+  }, [getLeaderboard, gameId]);
+
+  const handleScoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewScore(Number(e.target.value));
+  };
+
+  const handleSubmit = async () => {
+    await submitScore(gameId, newScore);
+    // After submission, refresh the leaderboard to show the new score
+    getLeaderboard(gameId);
+  };
+
+  return (
+    <div>
+      <h1>Game Leaderboard</h1>
+      {loading && <p>Loading data...</p>}
+      {error && <p style={{ color: 'red' }}>An error occurred: {error.message}</p>}
+      {!loading && !error && (
+        <>
+          <h2>{gameId} Top Scores</h2>
+          {entries && entries.length > 0 ? (
+            <ul>
+              {entries.map((entry) => (
+                <li key={entry.gameScoreId}>
+                  {entry.rank}. {entry.username} - {entry.score}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No entries yet. Be the first to score!</p>
+          )}
+
+          <h2>Submit New Score</h2>
+          <input
+            type="number"
+            value={newScore}
+            onChange={handleScoreChange}
+            disabled={loading}
+          />
+          <button onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Submitting...' : 'Submit Score'}
+          </button>
+        </>
+      )}
+    </div>
+  );
+};

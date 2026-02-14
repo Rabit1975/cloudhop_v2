@@ -1,0 +1,132 @@
+.avatar {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--borders-radius-full);
+  user-select: none;
+  background-color: var(--colors-surface-tertiary);
+  color: var(--colors-text-primary);
+  vertical-align: middle;
+  flex-shrink: 0;
+
+  // Sizes
+  &.xs {
+    width: var(--spacing-medium);
+    height: var(--spacing-medium);
+    font-size: 10px;
+  }
+
+  &.sm {
+    width: 32px;
+    height: 32px;
+    font-size: var(--typography-sizes-caption-medium);
+  }
+
+  &.md {
+    width: 40px;
+    height: 40px;
+    font-size: var(--typography-sizes-body-default);
+  }
+
+  &.lg {
+    width: 48px;
+    height: 48px;
+    font-size: var(--typography-sizes-body-large);
+  }
+
+  &.xl {
+    width: 64px;
+    height: 64px;
+    font-size: var(--typography-sizes-heading-h5);
+  }
+
+  &.xxl {
+    width: 96px;
+    height: 96px;
+    font-size: var(--typography-sizes-heading-h3);
+  }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.initials {
+  font-family: var(--typography-font-family);
+  font-weight: var(--typography-font-weight-medium);
+  letter-spacing: var(--typography-letter-spacing-wide);
+  color: var(--colors-text-primary);
+  text-transform: uppercase;
+}
+
+.statusIndicator {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--borders-radius-full);
+  border: 2px solid var(--colors-surface-background);
+
+  &.xs {
+    width: 6px;
+    height: 6px;
+    bottom: -1px;
+    right: -1px;
+    border-width: 1px;
+  }
+
+  &.sm {
+    width: 8px;
+    height: 8px;
+    bottom: -1px;
+    right: -1px;
+    border-width: 1.5px;
+  }
+
+  &.md {
+    width: 10px;
+    height: 10px;
+  }
+
+  &.lg {
+    width: 12px;
+    height: 12px;
+  }
+
+  &.xl {
+    width: 16px;
+    height: 16px;
+    border-width: 2.5px;
+  }
+
+  &.xxl {
+    width: 20px;
+    height: 20px;
+    border-width: 3px;
+    bottom: 0;
+    right: 0;
+  }
+
+  &.online {
+    background-color: var(--colors-status-positive-default);
+  }
+
+  &.busy {
+    background-color: var(--colors-status-negative-default);
+  }
+
+  &.away {
+    background-color: var(--colors-status-warning-default);
+  }
+
+  &.offline {
+    background-color: var(--colors-text-secondary);
+  }
+}

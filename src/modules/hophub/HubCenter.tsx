@@ -4,7 +4,7 @@ import { HubChatArea } from '../../components/HopHub/HubChatArea';
 import { CloudHopMusicPlayer } from '../../components/CloudHopMusicPlayer';
 import GalaxyHomeScreen from '../spaces/GalaxyHomeScreen';
 
-type HubTab = 'hopspaces' | 'music' | 'gamehub';
+type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified';
 type SpaceSubTab = 'groups' | 'channels';
 
 interface HubCenterProps {
@@ -54,7 +54,7 @@ export const HubCenter: React.FC<HubCenterProps> = ({
             </div>
           </div>
         </div>
-      ) : activeTab === 'hopspaces' ? (
+      ) : activeTab === 'hophub' ? (
         selectedChatId && selectedChat ? (
           <HubChatArea 
             chatId={selectedChatId} 

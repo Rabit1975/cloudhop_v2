@@ -1,0 +1,67 @@
+---
+description: A component to display a users collection of played games.
+labels: ['game', 'collection', 'ui']
+---
+
+A `GameCollection` component to display a users collection of played games. It accepts an array of game objects and renders each game using a game card component.
+
+### Basic Game Collection
+
+Use this to display a simple list of game cards from a games array.
+
+```tsx
+import { GameCollection } from './game-collection.js';
+// Assume Game type is similar to:
+// type Game = {
+//   id: string;
+//   name: string;
+//   tags: string[];
+//   imageUrls: string[];
+//   gameType?: 'unity' | 'html5' | 'external_stream';
+// };
+const sampleGames = [
+  {
+    id: '1',
+    name: "Cyber Racer X",
+    tags: ["Racing", "Cyberpunk"],
+    imageUrls: ["https://example.com/cyber-racer.jpg"]
+  },
+  {
+    id: '2',
+    name: "Nebula Quest",
+    gameType: "unity",
+    tags: ["RPG", "Adventure"],
+    imageUrls: ["https://example.com/nebula-quest.jpg"]
+  },
+];
+<GameCollection games={sampleGames} />
+```
+### Game Collection with a Title
+Add a title to your game collection using the title prop.
+```tsx
+import { GameCollection } from './game-collection.js';
+const sampleGames = [
+  {
+    id: '1',
+    name: "Cyber Racer X",
+    tags: ["Racing", "Cyberpunk"],
+    imageUrls: ["https://example.com/cyber-racer.jpg"]
+  },
+  {
+    id: '2',
+    name: "Nebula Quest",
+    gameType: "unity",
+    tags: ["RPG", "Adventure"],
+    imageUrls: ["https://example.com/nebula-quest.jpg"]
+  },
+];
+<GameCollection 
+  title="My Favorite Games" 
+  games={sampleGames} 
+/>
+```
+### Handling an Empty Collection
+When no games are provided or the games array is empty the component will render nothing.
+```tsx
+import { GameCollection } from './game-collection.js';
+<GameCollection games={[]} />

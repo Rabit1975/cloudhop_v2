@@ -1,0 +1,90 @@
+---
+description: A panel component to display featured or recently played games in the GameHub dashboard.
+labels: ['gamehub', 'dashboard', 'panel', 'games']
+---
+
+
+A dedicated panel for the GameHub dashboard, designed to showcase a curated selection of games. It integrates with game data hooks and presents games using `GameCard` components, all within a `PanelCard` layout.
+
+
+### Displaying featured games
+
+
+This example shows the default display of the GameHubDashboardPanel with a list of mock games. It demonstrates how the component renders multiple GameCard elements within the panel, suitable for showcasing curated content or popular titles.
+
+```tsx
+const sampleGames = mockGames([
+  {
+    name: "Nebula Racers",
+    gameType: "html5",
+    tags: ["Racing", "Sci-Fi"],
+    imageUrls: ["https://storage.googleapis.com/bit-generated-images/images/image_a_stunning__futuristic_game_da_0_1770835130519.png"]
+  },
+  {
+    name: "Cosmic Quest",
+    gameType: "unity",
+    tags: ["Adventure", "RPG"],
+    imageUrls: ["https://storage.googleapis.com/bit-generated-images/images/image_a_stunning__futuristic_game_da_0_1770835130519.png"]
+  },
+  {
+    name: "Starfighter Arena",
+    gameType: "external_stream",
+    tags: ["Action", "Multiplayer"],
+    imageUrls: ["https://storage.googleapis.com/bit-generated-images/images/image_a_stunning__futuristic_game_da_0_1770835130519.png"]
+  }
+]);
+<div style={{ maxWidth: 900, padding: 24, backgroundColor: 'var(--colors-surface-background)' }}>
+  <div style={{ height: 500 }}>
+    <GameHubDashboardPanel mockGames={sampleGames} />
+  </div>
+</div>
+```
+
+### Handling no available games
+
+
+This example illustrates the component behavior when there are no games to display. The GameHubDashboardPanel shows an informative message, guiding the user or indicating that content is not yet available.
+```tsx
+<div style={{ maxWidth: 600, padding: 24, backgroundColor: 'var(--colors-surface-background)' }}>
+  <div style={{ height: 300 }}>
+    <GameHubDashboardPanel mockGames={[]} />
+  </div>
+</div>
+```
+
+### Limiting the number of games displayed
+
+
+This example demonstrates how to control the maximum number of games shown in the panel using the limit prop. It is useful for creating concise dashboard sections that highlight only a few top games.
+```tsx
+const manySampleGames = mockGames([
+  {
+    name: "Nebula Racers",
+    gameType: "html5",
+    tags: ["Racing", "Sci-Fi"],
+    imageUrls: ["https://storage.googleapis.com/bit-generated-images/images/image_a_stunning__futuristic_game_da_0_1770835130519.png"]
+  },
+  {
+    name: "Cosmic Quest",
+    gameType: "unity",
+    tags: ["Adventure", "RPG"],
+    imageUrls: ["https://storage.googleapis.com/bit-generated-images/images/image_a_stunning__futuristic_game_da_0_1770835130519.png"]
+  },
+  {
+    name: "Starfighter Arena",
+    gameType: "external_stream",
+    tags: ["Action", "Multiplayer"],
+    imageUrls: ["https://storage.googleapis.com/bit-generated-images/images/image_a_stunning__futuristic_game_da_0_1770835130519.png"]
+  },
+  {
+    name: "Galactic Explorer",
+    gameType: "html5",
+    tags: ["Exploration", "Puzzle"],
+    imageUrls: ["https://storage.googleapis.com/bit-generated-images/images/image_a_stunning__futuristic_game_da_0_1770835130519.png"]
+  }
+]);
+<div style={{ maxWidth: 900, padding: 24, backgroundColor: 'var(--colors-surface-background)' }}>
+  <div style={{ height: 500 }}>
+    <GameHubDashboardPanel mockGames={manySampleGames} limit={2} />
+  </div>
+</div>

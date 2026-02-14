@@ -2,7 +2,7 @@ import React from 'react';
 import { HopSpace } from '../../hopspaces/utils/types';
 import { useVisibility } from '../../hooks/useVisibility';
 
-type HubTab = 'hopspaces' | 'music' | 'gamehub';
+type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified';
 type SpaceSubTab = 'groups' | 'channels';
 
 interface HubLeftPanelProps {
@@ -52,7 +52,7 @@ export const HubLeftPanel: React.FC<HubLeftPanelProps> = ({
     }
 
     switch (activeTab) {
-      case 'hopspaces':
+      case 'hophub':
         if (activeSpaceTab === 'groups') {
           return (
             <div className="p-4 space-y-2">

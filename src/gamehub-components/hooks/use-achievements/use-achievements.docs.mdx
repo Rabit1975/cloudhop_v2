@@ -1,0 +1,105 @@
+---
+description: A React Hook for fetching and managing game achievement data. It provides functions for listing achievements, retrieving a single achievement by achievementId, and marking achievements as unlocked for a user using GraphQL mutations.
+labels: ['hook', 'react', 'achievements', 'gamehub', 'graphql']
+---
+
+A React Hook for fetching and managing game achievement data. It provides functions for listing achievements, retrieving a single achievement by achievementId, and marking achievements as unlocked for a user using GraphQL mutations.
+
+## Usage
+
+### Listing all achievements
+This example demonstrates how to use the useAchievements hook to fetch and display a list of all available achievements. The loading and error states are also handled.
+
+```tsx
+import { useAchievements } from './use-achievements.js';
+const AllAchievementsList = () => {
+  const { achievements, loading, error } = useAchievements();
+  if (loading) return <p>Loading achievements...</p>;
+  if (error) return <p>Error fetching achievements: {error.message}</p>;
+  return (
+    <div>
+      <h2>All Achievements</h2>
+      <ul>
+        {achievements.map((achievement) => (
+          <li key={achievement.id}>
+            <strong>{achievement.name}</strong>: {achievement.description}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+```
+### Listing achievements for a specific game
+This example demonstrates how to fetch achievements that belong to a particular game by passing a gameId to the hook.
+```tsx
+import { useAchievements } from './use-achievements.js';
+const GameAchievementsList = ({ gameId }: { gameId: string }) => {
+  const { achievements, loading, error } = useAchievements({ gameId });
+  if (loading) return <p>Loading game achievements...</p>;
+  if (error) return <p>Error fetching game achievements: {error.message}</p>;
+  return (
+    <div>
+      <h2>Achievements for Game ID: {gameId}</h2>
+      {achievements.length === 0 ? (
+        <p>No achievements found for this game.</p>
+      ) : (
+        <ul>
+          {achievements.map((achievement) => (
+            <li key={achievement.id}>
+              <strong>{achievement.name}</strong>: {achievement.description}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+```
+### Awarding an achievement to a user
+This example illustrates how to use the awardAchievement function to mark an achievement as unlocked for a specific user. It also shows how to retrieve a single achievement by its ID.
+```tsx
+import { useState } from 'react';
+import { useAchievements } from './use-achievements.js';
+const AwardAchievementComponent = () => {
+  const { achievements, getAchievement, awardAchievement, isAwarding, awardError } = useAchievements();
+  const [selectedAchievementId, setSelectedAchievementId] = useState('');
+  const userId = 'player123'; // Replace with actual user ID
+  const handleAward = async () => {
+    if (!selectedAchievementId) return;
+    try {
+      await awardAchievement(userId, selectedAchievementId);
+      alert(`Achievement awarded to ${userId}!`);
+    } catch (error: any) {
+      alert(`Failed to award achievement: ${error.message}`);
+    }
+  };
+  const currentAchievement = getAchievement(selectedAchievementId);
+  return (
+    <div>
+      <h2>Award Achievement</h2>
+      <select
+        value={selectedAchievementId}
+        onChange={(e) => setSelectedAchievementId(e.target.value)}
+      >
+        <option value="">Select an achievement</option>
+        {achievements.map((ach) => (
+          <option key={ach.id} value={ach.id}>
+            {ach.name}
+          </option>
+        ))}
+      </select>
+      <button onClick={handleAward} disabled={!selectedAchievementId || isAwarding}>
+        {isAwarding ? 'Awarding...' : 'Award Selected Achievement'}
+      </button>
+      {awardError && <p style={{ color: 'red' }}>Error awarding: {awardError.message}</p>}
+      {currentAchievement && (
+        <div>
+          <h3>Selected Achievement Details</h3>
+          <p><strong>Name:</strong> {currentAchievement.name}</p>
+          <p><strong>Description:</strong> {currentAchievement.description}</p>
+        </div>
+      )}
+    </div>
+  );
+};

@@ -1,0 +1,82 @@
+---
+description: A component to display individual game search results visually, based on a SearchResult entity with type games.
+labels: ['game', 'search', 'ui', 'renderer']
+---
+
+A component designed to render an individual game search result, showcasing its title, description, thumbnail, and platform. The entire component functions as a clickable card, navigating users to the associated game URL.
+
+### Displaying a single game result
+
+This example shows the rendering of a single game search result with a title, description, thumbnail, and platform. The entire card is clickable, navigating to the games URL.
+
+```js
+<GameSearchResultRenderer
+  result={{
+    id: 'game-1',
+    content: {
+      title: 'Cyber Odyssey',
+      description: 'Dive into the neon-soaked streets of the digital frontier. Explore a vast open world filled with cybernetic enhancements, rogue AI, and high-stakes corporate espionage. Experience the future of gaming with immersive ray-traced graphics and haptic feedback integration.',
+      thumbnail: 'https://storage.googleapis.com/bit-generated-images/images/image_modern_video_game_thumbnail__d_0_1770834022251.png',
+      platform: 'Unity',
+      url: '/gamehub/cyber-odyssey',
+    },
+  }}
+/>
+```
+### Handling results without a platform
+This example demonstrates how the component gracefully handles game results where no platform information is provided. The platform badge will not be displayed.
+```js
+<GameSearchResultRenderer
+  result={{
+    id: 'game-2',
+    content: {
+      title: 'Mysterious Journey',
+      description: 'An epic adventure through unknown lands, where ancient ruins hide untold secrets and dangerous creatures roam free.',
+      thumbnail: 'https://storage.googleapis.com/bit-generated-images/images/image_modern_video_game_thumbnail__d_0_1770834022251.png',
+      platform: undefined, // No platform specified
+      url: '/gamehub/mysterious-journey',
+    },
+  }}
+/>
+```
+### Rendering a list of game results
+This example illustrates how to display multiple game search results together, simulating a common search results page layout. Each result retains its interactive features.
+```js
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+  <GameSearchResultRenderer
+    result={{
+      id: 'game-1',
+      content: {
+        title: 'Cyber Odyssey',
+        description: 'Dive into the neon-soaked streets of the digital frontier.',
+        thumbnail: 'https://storage.googleapis.com/bit-generated-images/images/image_modern_video_game_thumbnail__d_0_1770834022251.png',
+        platform: 'Unity',
+        url: '/gamehub/cyber-odyssey',
+      },
+    }}
+  />
+  <GameSearchResultRenderer
+    result={{
+      id: 'game-2',
+      content: {
+        title: 'Retro Racer',
+        description: 'A nostalgic 8-bit racing game with modern physics.',
+        thumbnail: 'https://storage.googleapis.com/bit-generated-images/images/image_modern_video_game_thumbnail__d_0_1770834022251.png',
+        platform: 'HTML5',
+        url: '/gamehub/retro-racer',
+      },
+    }}
+  />
+  <GameSearchResultRenderer
+    result={{
+      id: 'game-3',
+      content: {
+        title: 'Galactic Strategy Live',
+        description: 'Watch the top players compete in real-time strategy battles across the galaxy.',
+        thumbnail: 'https://storage.googleapis.com/bit-generated-images/images/image_modern_video_game_thumbnail__d_0_1770834022251.png',
+        platform: 'Twitch',
+        url: '/gamehub/galactic-strategy',
+      },
+    }}
+  />
+</div>

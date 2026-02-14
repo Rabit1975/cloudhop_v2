@@ -1,0 +1,117 @@
+.spinnerContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  
+  // Default color fallback
+  color: var(--colors-primary-default);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--interactions-z-index-base);
+  background-color: var(--colors-overlay);
+  backdrop-filter: var(--effects-blur-small);
+  border-radius: inherit;
+}
+
+.spinnerSvg {
+  animation: rotate 2s linear infinite;
+  transform-origin: center;
+  width: 100%;
+  height: 100%;
+  
+  // Ensure the SVG takes the text color
+  stroke: currentColor;
+}
+
+.track {
+  opacity: 0.2;
+  stroke: currentColor;
+}
+
+.indicator {
+  stroke: currentColor;
+  stroke-dasharray: 80, 200;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
+// Sizes
+.small {
+  width: 16px;
+  height: 16px;
+  
+  .spinnerSvg circle {
+    stroke-width: 5;
+  }
+}
+
+.medium {
+  width: 32px;
+  height: 32px;
+}
+
+.large {
+  width: 48px;
+  height: 48px;
+}
+
+.xl {
+  width: 64px;
+  height: 64px;
+}
+
+// Variants
+.primary {
+  color: var(--colors-primary-default);
+}
+
+.secondary {
+  color: var(--colors-secondary-default);
+}
+
+.neutral {
+  color: var(--colors-text-secondary);
+}
+
+.nebula {
+  color: var(--colors-primary-default);
+  
+  .indicator {
+    filter: drop-shadow(0 0 4px var(--colors-primary-default));
+  }
+  
+  .track {
+    stroke: var(--colors-secondary-default);
+    opacity: 0.3;
+  }
+}

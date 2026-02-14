@@ -1,0 +1,106 @@
+---
+description: A flexible dashboard component for displaying various panel cards.
+labels: ['dashboard', 'ui', 'layout', 'cloudhop']
+---
+
+A central dashboard component for CloudHop, designed to display a configurable list of panel cards in a responsive flex layout. When no specific panels are provided, it renders a set of useful placeholder panels.
+
+### Basic usage with custom panels
+
+This example shows how to configure the Dashboard with a list of custom panel components. Each panel can display different types of content and interactions.
+
+```tsx
+import { Dashboard } from './dashboard.js';
+import { PanelCard } from '@cloudrabbit/cloudhop-platform.ui.panel-card';
+
+// Define your custom panel components
+const MyChatPanel = () => (
+  <PanelCard title="Recent Chats" variant="nebula">
+    <div style={{ padding: 'var(--spacing-medium)', color: 'var(--colors-text-primary)' }}>
+      You have 3 unread messages in #general.
+    </div>
+  </PanelCard>
+);
+const MyCalendarPanel = () => (
+  <PanelCard title="Upcoming Meetings" variant="default">
+    <div style={{ padding: 'var(--spacing-medium)', color: 'var(--colors-text-primary)' }}>
+      Daily Standup at 10:00 AM.
+    </div>
+  </PanelCard>
+);
+
+// Define the panel configurations
+const panels = [
+  { name: 'chat', component: MyChatPanel },
+  { name: 'calendar', component: MyCalendarPanel },
+];
+
+export default function MyDashboardPage() {
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--colors-surface-background)' }}>
+      <Dashboard panels={panels} />
+    </div>
+  );
+}
+```
+
+### Dashboard with placeholder panels
+
+When no custom panels are provided, the Dashboard component automatically renders a set of informative placeholder panels to guide the user.
+
+```tsx
+import { Dashboard } from './dashboard.js';
+
+export default function EmptyDashboardPage() {
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--colors-surface-background)' }}>
+      <Dashboard panels={[]} />
+    </div>
+  );
+}
+```
+
+### Ordering panels with weight
+
+The order of panels can be controlled using the optional weight property in the panel configuration. Panels with a lower weight value will appear first.
+
+```tsx
+import { Dashboard } from './dashboard.js';
+import { PanelCard } from '@cloudrabbit/cloudhop-platform.ui.panel-card';
+
+const FirstPanel = () => (
+  <PanelCard title="First Item" variant="clean">
+    <div style={{ padding: 'var(--spacing-medium)', color: 'var(--colors-text-primary)' }}>
+      This panel has a weight of 10.
+    </div>
+  </PanelCard>
+);
+const SecondPanel = () => (
+  <PanelCard title="Second Item" variant="nebula">
+    <div style={{ padding: 'var(--spacing-medium)', color: 'var(--colors-text-primary)' }}>
+      This panel has a weight of 20.
+    </div>
+  </PanelCard>
+);
+const ThirdPanel = () => (
+  <PanelCard title="Third Item" variant="default">
+    <div style={{ padding: 'var(--spacing-medium)', color: 'var(--colors-text-primary)' }}>
+      This panel has a weight of 5.
+    </div>
+  </PanelCard>
+);
+
+// Panels will be displayed in order of weight: Third, First, Second
+const orderedPanels = [
+  { name: 'panel1', component: FirstPanel, weight: 10 },
+  { name: 'panel2', component: SecondPanel, weight: 20 },
+  { name: 'panel3', component: ThirdPanel, weight: 5 },
+];
+
+export default function OrderedDashboardPage() {
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--colors-surface-background)' }}>
+      <Dashboard panels={orderedPanels} />
+    </div>
+  );
+}

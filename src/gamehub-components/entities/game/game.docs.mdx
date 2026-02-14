@@ -1,0 +1,61 @@
+---
+description: A Game entity, supports serialization and de-serialization of Game objects and can be used from both backend and frontend.
+labels: ['game', 'entity', 'data']
+---
+
+A component for a Game entity, supports serialization and de-serialization of Game objects and can be used from
+both backend and frontend.
+
+## Get started
+
+### Creating a Game instance
+
+Install and use the component in your code to create a Game instance from a plain object.
+Assume `Game` and `PlainGame` are imported from the component's package.
+
+```ts
+const plainGameData = {
+  id: 'new-game-001',
+  name: 'Adventure Quest',
+  description: 'An exciting HTML5 adventure game.',
+  categoryId: 'adventure',
+  gameType: 'html5',
+  imageUrls: ['https://example.com/adventure.png'],
+  developer: 'Adventure Devs',
+  createdAt: new Date().toISOString(),
+  playUrl: 'https://example.com/play/adventure-quest',
+};
+const game = Game.from(plainGameData);
+console.log(game.name);
+```
+### Serializing a Game instance
+Convert a Game instance back into a plain object for storage or transfer.
+Assume `Game` and `PlainGame` are imported from the component's package.
+```ts
+const plainGameData = {
+  id: 'new-game-002',
+  name: 'Puzzle Master',
+  description: 'A challenging puzzle game.',
+  categoryId: 'puzzle',
+  gameType: 'html5',
+  imageUrls: ['https://example.com/puzzle.png'],
+  developer: 'Puzzle Co.',
+  createdAt: new Date().toISOString(),
+  playUrl: 'https://example.com/play/puzzle-master',
+};
+const game = Game.from(plainGameData);
+const serializedGame = game.toObject();
+console.log(serializedGame.id);
+```
+
+### Mock data
+Use mock game data for development and testing purposes with the mockGames API.
+Assume `mockGames` is imported from the component's package.
+```ts
+const games = mockGames();
+console.log(games[0].name);
+const customGames = mockGames([
+  { name: 'Custom Game 1', description: 'A custom game', categoryId: 'custom', gameType: 'html5', createdAt: new Date().toISOString(), imageUrls: [] },
+  { name: 'Custom Game 2', description: 'Another custom game', categoryId: 'custom', gameType: 'unity', createdAt: new Date().toISOString(), imageUrls: [] }
+]);
+console.log(customGames[0].name);

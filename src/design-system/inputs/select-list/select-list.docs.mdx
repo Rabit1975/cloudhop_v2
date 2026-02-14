@@ -1,0 +1,94 @@
+---
+description: A user-friendly and customizable select list component.
+labels: ['select', 'form', 'dropdown', 'ui']
+---
+
+A versatile select list component designed for selecting an option from a predefined list. It supports icons, placeholders, labels, and disabled states, making it suitable for various user interface needs.
+
+### Basic Channel Selection
+
+Select a channel from a predefined list.
+
+```tsx
+import { useState } from 'react';
+import { SelectList } from './select-list.js';
+const HashIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18" />
+  </svg>
+);
+const options = [
+  { value: 'general', label: 'general', icon: <HashIcon /> },
+  { value: 'announcements', label: 'announcements', icon: <HashIcon /> },
+  { value: 'random', label: 'random', icon: <HashIcon /> },
+  { value: 'design', label: 'design-team', icon: <HashIcon /> },
+];
+function BasicChannelExample() {
+  const [value, setValue] = useState('general');
+  return (
+    <div style={{ maxWidth: '300px' }}>
+      <SelectList
+        label="Select Destination Channel"
+        placeholder="Choose a channel..."
+        options={options}
+        value={value}
+        onChange={setValue}
+      />
+    </div>
+  );
+}
+```
+### User Status Update
+Update your current online status with visual indicators.
+```tsx
+import { useState } from 'react';
+import { SelectList } from './select-list.js';
+const StatusDot = ({ color }) => (
+  <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: color }} />
+);
+const statusOptions = [
+  { value: 'online', label: 'Online', icon: <StatusDot color="green" /> },
+  { value: 'idle', label: 'Idle', icon: <StatusDot color="orange" /> },
+  { value: 'dnd', label: 'Do Not Disturb', icon: <StatusDot color="red" /> },
+  { value: 'invisible', label: 'Invisible', icon: <StatusDot color="gray" /> },
+];
+function UserStatusExample() {
+  const [status, setStatus] = useState('online');
+  return (
+    <div style={{ maxWidth: '300px' }}>
+      <SelectList
+        label="Update Your Status"
+        options={statusOptions}
+        value={status}
+        onChange={setStatus}
+        placeholder="Set your status"
+      />
+    </div>
+  );
+}
+```
+### Language Selection
+Choose an interface language for the application.
+```tsx
+import { useState } from 'react';
+import { SelectList } from './select-list.js';
+const languages = [
+  { value: 'en', label: 'English (US)' },
+  { value: 'es', label: 'Español' },
+  { value: 'fr', label: 'Français' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'ja', label: '日本語' },
+];
+function LanguageSelectionExample() {
+  const [language, setLanguage] = useState('en');
+  return (
+    <div style={{ maxWidth: '300px' }}>
+      <SelectList
+        label="Interface Language"
+        options={languages}
+        value={language}
+        onChange={setLanguage}
+      />
+    </div>
+  );
+}

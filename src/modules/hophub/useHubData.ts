@@ -19,8 +19,52 @@ export interface Channel {
 }
 
 export function useHubData() {
-  const [groups, setGroups] = useState<Group[]>([])
-  const [channels, setChannels] = useState<Channel[]>([])
+  const [groups, setGroups] = useState<Group[]>([
+    {
+      id: '1',
+      name: 'General',
+      description: 'General discussion group',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: '2', 
+      name: 'Music Lovers',
+      description: 'Discuss music and share tracks',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: '3',
+      name: 'Gaming',
+      description: 'Talk about games and organize sessions',
+      created_at: new Date().toISOString()
+    }
+  ])
+  const [channels, setChannels] = useState<Channel[]>([
+    {
+      id: '1',
+      group_id: '1',
+      name: '#general',
+      type: 'chat',
+      description: 'General chat channel',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: '2',
+      group_id: '1', 
+      name: '#random',
+      type: 'chat',
+      description: 'Random discussions',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: '3',
+      group_id: '2',
+      name: '#music-sharing',
+      type: 'chat', 
+      description: 'Share your favorite tracks',
+      created_at: new Date().toISOString()
+    }
+  ])
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null)
 
   // Load groups and channels from Supabase

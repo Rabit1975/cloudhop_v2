@@ -12,6 +12,7 @@ import { CreateSpaceModal } from './CreateSpaceModal';
 import GalaxyBackground from '../../hopspaces/components/GalaxyBackground';
 import { useHubData } from './useHubData';
 import { View } from '../../types';
+import { VideoCallInterface } from '../../components/VideoCall/VideoCallInterface';
 
 interface HopHubProps {
   user: any;
@@ -19,14 +20,14 @@ interface HopHubProps {
   onLogout?: () => void;
 }
 
-type HubTab = 'hopspaces' | 'music' | 'gamehub';
+type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified' | 'call';
 type SpaceSubTab = 'groups' | 'channels';
 
 export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) => {
   const { groups, channels, createGroup, createChannel } = useHubData();
-  const [activeTab, setActiveTab] = useState<HubTab>('hopspaces');
+  const [activeTab, setActiveTab] = useState<HubTab>('hophub');
   const [activeSpaceTab, setActiveSpaceTab] = useState<SpaceSubTab>('groups');
-  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>('1'); // Default to first group
   const [selectedSpace, setSelectedSpace] = useState<HopSpace | null>(null);
 
   // Modal states
@@ -76,11 +77,8 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) =>
   const handleTabChange = (tab: HubTab) => {
     setActiveTab(tab);
     VisibilityManager.setActiveScreen(`hub-${tab}`);
-
     setSelectedChatId(null);
     setSelectedSpace(null);
-
-    // Music and GameHub tabs are now handled internally, no external links
   };
 
   const handleSpaceSelect = (space: HopSpace) => {
@@ -202,6 +200,7 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) =>
 
           {/* Notifications */}
           <button
+            onClick={() => console.log('Notifications clicked')}
             className="
             p-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30
             rounded-lg text-white/80 hover:text-white text-sm relative
@@ -234,9 +233,10 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) =>
               <span className="text-white/40">▼</span>
             </button>
 
-            {/* Dropdown Menu */}
+            {/* Dropdown Menu - Portal */}
             {isUserMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-black/90 border border-white/20 rounded-lg shadow-xl overflow-hidden z-[100] backdrop-blur-xl">
+              <div className="fixed inset-0 z-[99999] pointer-events-none">
+                <div className="absolute right-4 top-16 w-48 bg-black/95 border border-white/20 rounded-lg shadow-2xl overflow-hidden backdrop-blur-xl pointer-events-auto">
                 <div className="p-2 border-b border-white/10">
                   <p className="text-xs text-white/50 px-2 py-1">Signed in as</p>
                   <p className="text-sm text-white font-medium px-2 truncate">{user?.name || 'User'}</p>
@@ -295,6 +295,7 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) =>
                   </button>
                 </div>
               </div>
+            </div>
             )}
           </div>
         </div>
@@ -368,4 +369,6 @@ export const HopHub: React.FC<HopHubProps> = ({ user, onNavigate, onLogout }) =>
       </div>
     </GalaxyBackground>
   );
-};
+}
+
+export default HopHub;

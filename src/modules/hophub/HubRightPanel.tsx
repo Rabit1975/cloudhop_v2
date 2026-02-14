@@ -1,7 +1,7 @@
 import React from 'react';
 import { HopSpace } from '../../hopspaces/utils/types';
 
-type HubTab = 'hopspaces' | 'music' | 'gamehub';
+type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified';
 
 interface HubRightPanelProps {
   activeTab: HubTab;
@@ -19,7 +19,7 @@ export const HubRightPanel: React.FC<HubRightPanelProps> = ({
   groups = [],
   channels = [],
 }) => {
-  if (activeTab !== 'hopspaces') return null;
+  if (activeTab !== 'hophub') return null;
 
   const selectedChat = 
     groups.find(g => g.id === selectedChatId) || 

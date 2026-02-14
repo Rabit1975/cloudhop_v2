@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import GalaxyBackground from '../components/GalaxyBackground';
-import SpaceCreationWizard from './creation-flow/SpaceCreationWizard';
-import { HopSpace, HopSpaceMood, HopSpaceType } from '../utils/types';
+import GalaxyBackground from '../../hopspaces/components/GalaxyBackground';
+import SpaceCreationWizard from './SpaceCreationWizard';
+import { HopSpace, HopSpaceMood, HopSpaceType } from '../../hopspaces/utils/types';
 
 interface GalaxyHomeScreenProps {
     spaces: HopSpace[];
@@ -24,7 +24,7 @@ const GalaxyHomeScreen: React.FC<GalaxyHomeScreenProps> = ({
   return (
     <div className="relative w-full h-full overflow-hidden text-white font-sans" ref={containerRef}>
         
-        <GalaxyBackground mood={galaxyMood} className="absolute inset-0">
+        <GalaxyBackground mood={galaxyMood === 'chaotic' ? 'intense' : galaxyMood as 'calm' | 'dreamy' | 'intense'} className="absolute inset-0">
             
             {/* Interactive Layer */}
             <div className="absolute inset-0 overflow-hidden cursor-move" 
