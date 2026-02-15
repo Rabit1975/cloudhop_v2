@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View } from '../types';
-import { rabbitAIService } from '../services/RabbitAIService';
+import rabbitAIService from '../services/RabbitAIService';
 
 interface AIToolsIntegratedProps {
   currentView: View;
