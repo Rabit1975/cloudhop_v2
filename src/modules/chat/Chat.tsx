@@ -8,7 +8,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { CallHistory } from '../../types/call';
 import { Message, ReactionSummary } from '../../types/message';
 import { motion, AnimatePresence } from 'framer-motion';
-import { rabbitAIService } from '../../services/RabbitAIService';
+import rabbitAIService from '../../services/RabbitAIService';
 import { cn } from '../../lib/utils';
 import ChatDropdown from '../../components/HopHub/ChatDropdown';
 import AdvancedMessageInput from '../../components/HopHub/AdvancedMessageInput';
