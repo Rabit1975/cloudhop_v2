@@ -4,7 +4,7 @@ import { HubChatArea } from '../../components/HopHub/HubChatArea';
 import { CloudHopMusicPlayer } from '../../components/CloudHopMusicPlayer';
 import GalaxyHomeScreen from '../spaces/GalaxyHomeScreen';
 
-type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified';
+type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified' | 'call';
 type SpaceSubTab = 'groups' | 'channels';
 
 interface HubCenterProps {

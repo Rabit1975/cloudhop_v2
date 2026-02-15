@@ -2,7 +2,7 @@ import React from 'react';
 import { HopSpace } from '../../hopspaces/utils/types';
 import { useVisibility } from '../../hooks/useVisibility';
 
-type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified';
+type HubTab = 'hophub' | 'music' | 'gamehub' | 'spaces' | 'unified' | 'call';
 type SpaceSubTab = 'groups' | 'channels';
 
 interface HubLeftPanelProps {

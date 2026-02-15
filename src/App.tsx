@@ -53,7 +53,7 @@ function App() {
     if (activeSection === "home") {
       return <Home onNavigate={handleTabChange} onSectionChange={handleSectionChange} user={user} />;
     } else if (activeSection === "hophub") {
-      return <HopHub user={user || { name: 'Guest' }} onNavigate={handleTabChange} onLogout={() => {}} />;
+      return <HopHub user={user || { name: 'Guest' }} onNavigate={handleSectionChange} onLogout={() => {}} />;
     } else if (activeSection === "meetings") {
       return <HopMeetings />;
     } else if (activeSection === "settings") {

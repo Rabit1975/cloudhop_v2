@@ -16,7 +16,7 @@ import { VideoCallInterface } from '../../components/VideoCall/VideoCallInterfac
 
 interface HopHubProps {
   user: any;
-  onNavigate: (view: View) => void;
+  onNavigate: (view: any) => void;
   onLogout?: () => void;
 }
 
