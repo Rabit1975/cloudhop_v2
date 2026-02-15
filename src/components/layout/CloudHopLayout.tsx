@@ -2,7 +2,7 @@ import React, { useState, ReactNode } from 'react';
 import { Menu, X, LogOut, Search, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/logo';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 import YouTubeMusicIntegration from '../YouTubeMusicIntegration';
 import GameHub from '../GameHub/GameHub';
 import SpacesWithChat from '../HopHub/SpacesWithChat';

@@ -26,3 +26,4 @@ const SpaceCreationWizard: React.FC<SpaceCreationWizardProps> = ({
       mood: 'calm',
     });
     onClose();
+  };
