@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { rabbitAIService } from '../../services/RabbitAIService';
+import rabbitAIService from '../../services/RabbitAIService';
 
 const AITools: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'Summarize' | 'Rewrite' | 'Translate' | 'Extract Actions' | 'Thinking Mode' | 'Transcribe'>('Summarize');

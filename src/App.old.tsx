@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View } from './types';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
-import { HopHub } from './components/HopHub/HopHub';
+import HopHub from './modules/hophub/HopHub';
 import Meetings from './components/Meetings';
 import GameHub from './components/GameHub';
 import { CloudHopMusicPlayer } from './components/CloudHopMusicPlayer';
