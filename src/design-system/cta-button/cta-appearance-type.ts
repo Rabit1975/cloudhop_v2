@@ -1,1 +1,0 @@
-export type CtaAppearance = 'primary' | 'secondary' | 'tertiary';

@@ -1,42 +1,29 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-export type BadgeVariant = 'default' | 'secondary' | 'outline' | 'destructive';
+import { cn } from "@/lib/utils";
 
-export type BadgeSize = 'xs' | 'sm' | 'md' | 'lg';
+const badgeVariants = cva(
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        outline: "text-foreground",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  },
+);
 
-export interface BadgeProps {
-  children: React.ReactNode;
-  variant?: BadgeVariant;
-  size?: BadgeSize;
-  className?: string;
+export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}
+
+function Badge({ className, variant, ...props }: BadgeProps) {
+  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 
-export function Badge({ children, variant = 'default', size = 'md', className }: BadgeProps) {
-  const baseClasses = 'inline-flex items-center rounded-full font-medium';
-  
-  const variantClasses = {
-    default: 'bg-cyan-500 text-white',
-    secondary: 'bg-white/10 text-white border border-white/20',
-    outline: 'border border-cyan-500/50 text-cyan-400',
-    destructive: 'bg-red-500 text-white'
-  };
-  
-  const sizeClasses = {
-    xs: 'px-2 py-0.5 text-xs',
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-1 text-sm',
-    lg: 'px-4 py-2 text-base'
-  };
-
-  return (
-    <div className={cn(
-      baseClasses,
-      variantClasses[variant],
-      sizeClasses[size],
-      className
-    )}>
-      {children}
-    </div>
-  );
-}
+export { Badge, badgeVariants };

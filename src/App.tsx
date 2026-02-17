@@ -1,90 +1,49 @@
-import React, { useState } from 'react';
-import CloudHopLayout from './components/layout/CloudHopLayoutFixed';
-import Chat from './modules/chat/Chat';
-import Home from './components/Home/Home';
-import HopMeetings from './components/HopMeetings/HopMeetings';
-import Settings from './components/Settings/Settings';
-import YouTubeMusicIntegration from './components/YouTubeMusicIntegration';
-import GameHub from './components/GameHub/GameHub';
-import SpacesWithChat from './components/HopHub/SpacesWithChat';
-import UnifiedHub from './components/UnifiedHub/UnifiedHub';
-import TwitchIntegration from './components/TwitchIntegration/TwitchIntegration';
-import { MusicEngineProvider } from './core/music/MusicEngineProvider';
-import HopHub from './modules/hophub/HopHub';
-import { useAuth } from './kernel/auth/useAuth';
-import { Login } from './components/Auth/Login';
-import { GameHubEnhanced } from './components/GameHub/GameHubEnhanced';
-import { SpacesEnhanced } from './components/Spaces/SpacesEnhanced';
-import { UnifiedHubEnhanced } from './components/UnifiedHub/UnifiedHubEnhanced';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index (1)";
+import Landing from "./pages/Landing";
+import GameHub from "./pages/GameHub";
+import Chat from "./pages/Chat";
+import Spaces from "./pages/Spaces";
+import SpacesWithChat from "./pages/SpacesWithChat";
+import Music from "./pages/Music";
+import Twitch from "./pages/Twitch";
+import Home from "./pages/Home";
+import HopMeetings from "./pages/HopMeetings";
+import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 
-type TabType = "hophub" | "music" | "gamehub" | "spaces" | "unified";
-type SectionType = "home" | "hophub" | "meetings" | "settings";
+const queryClient = new QueryClient();
 
-function App() {
-  const { user, isAuthenticated, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<TabType>("hophub");
-  const [activeSection, setActiveSection] = useState<SectionType>("home");
-
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab);
-    // Update section based on tab
-    if (tab === "hophub" || tab === "unified") {
-      setActiveSection("hophub"); // These show in hophub section
-    } else {
-      setActiveSection("home"); // Everything else shown in home context
-    }
-  };
-
-  const handleSectionChange = (section: SectionType) => {
-    setActiveSection(section);
-    // Switch to appropriate tab if not already there
-    if (section === "hophub" && activeTab !== "hophub") {
-      setActiveTab("hophub");
-    }
-  };
-
-  const renderContent = () => {
-    // Show login if not authenticated
-    if (!isAuthenticated) {
-      return <Login onLoginSuccess={() => {}} />;
-    }
-
-    // Handle main navigation sections - check section first
-    if (activeSection === "home") {
-      return <Home onNavigate={handleTabChange} onSectionChange={handleSectionChange} user={user} />;
-    } else if (activeSection === "hophub") {
-      return <HopHub user={user || { name: 'Guest' }} onNavigate={handleSectionChange} onLogout={() => {}} />;
-    } else if (activeSection === "meetings") {
-      return <HopMeetings />;
-    } else if (activeSection === "settings") {
-      return <Settings />;
-    } else if (activeTab === "music") {
-      return <YouTubeMusicIntegration />;
-    } else if (activeTab === "gamehub") {
-      return <GameHubEnhanced />;
-    } else if (activeTab === "spaces") {
-      return <SpacesEnhanced />;
-    } else if (activeTab === "unified") {
-      return <UnifiedHubEnhanced />;
-    } else {
-      // Default to Home
-      return <Home onNavigate={handleTabChange} onSectionChange={handleSectionChange} user={user} />;
-    }
-  };
-
-  return (
-    <MusicEngineProvider>
-      <CloudHopLayout 
-        activeTab={activeTab} 
-        onTabChange={handleTabChange}
-        activeSection={activeSection}
-        onSectionChange={handleSectionChange}
-        onLogout={logout}
-      >
-        {renderContent()}
-      </CloudHopLayout>
-    </MusicEngineProvider>
-  );
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/gamehub" element={<GameHub />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/spaces" element={<Spaces />} />
+          <Route path="/spaces-with-chat" element={<SpacesWithChat />} />
+          <Route path="/music" element={<Music />} />
+          <Route path="/twitch" element={<Twitch />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/hopmeetings" element={<HopMeetings />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<Profile />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
