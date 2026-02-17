@@ -10,6 +10,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist",
+    cssCodeSplit: false,
   },
   plugins: [react()],
   resolve: {
