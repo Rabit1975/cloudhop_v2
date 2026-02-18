@@ -1,0 +1,79 @@
+{
+  "games": [
+    {
+      "id": "2048",
+      "name": "2048",
+      "category": "Puzzle"
+    },
+    {
+      "id": "1v1lol",
+      "name": "1v1.LOL",
+      "category": "Action"
+    },
+    {
+      "id": "8ball",
+      "name": "8 Ball Pool",
+      "category": "Sports"
+    },
+    {
+      "id": "adarkroom",
+      "name": "A Dark Room",
+      "category": "Adventure"
+    },
+    {
+      "id": "amongus",
+      "name": "Among Us",
+      "category": "Social"
+    },
+    {
+      "id": "asteroids",
+      "name": "Asteroids",
+      "category": "Classic"
+    },
+    {
+      "id": "basketballstars",
+      "name": "Basketball Stars",
+      "category": "Sports"
+    },
+    {
+      "id": "chess",
+      "name": "Chess",
+      "category": "Strategy"
+    },
+    {
+      "id": "cookieclicker",
+      "name": "Cookie Clicker",
+      "category": "Idle"
+    },
+    {
+      "id": "crossyroad",
+      "name": "Crossy Road",
+      "category": "Arcade"
+    },
+    {
+      "id": "dogeminer",
+      "name": "Doge Miner",
+      "category": "Idle"
+    },
+    {
+      "id": "doodle-jump",
+      "name": "Doodle Jump",
+      "category": "Arcade"
+    },
+    {
+      "id": "flappybird",
+      "name": "Flappy Bird",
+      "category": "Arcade"
+    },
+    {
+      "id": "geometrydash",
+      "name": "Geometry Dash",
+      "category": "Platformer"
+    },
+    {
+      "id": "hextris",
+      "name": "Hextris",
+      "category": "Puzzle"
+    }
+  ]
+}

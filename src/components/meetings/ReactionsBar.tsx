@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { X, Hand, Smile } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from 'react';
+import { X, Hand, Smile } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Reaction {
   id: string;
@@ -14,9 +14,12 @@ interface ReactionsBarProps {
   isHandRaised: boolean;
 }
 
-const EMOJIS = ["👏", "🎉", "❤️", "😂", "👍", "🔥"];
+const EMOJIS = ['👏', '🎉', '❤️', '😂', '👍', '🔥'];
 
-export default function ReactionsBar({ onHandRaise, isHandRaised }: ReactionsBarProps) {
+export default function ReactionsBar({
+  onHandRaise,
+  isHandRaised,
+}: ReactionsBarProps) {
   const [reactions, setReactions] = useState<Reaction[]>([]);
 
   const handleReaction = (emoji: string) => {
@@ -42,7 +45,7 @@ export default function ReactionsBar({ onHandRaise, isHandRaised }: ReactionsBar
             className="absolute text-4xl animate-bounce"
             style={{
               left: `${r.x}%`,
-              animation: "floatUp 2s ease-out forwards",
+              animation: 'floatUp 2s ease-out forwards',
             }}
           >
             {r.emoji}
@@ -65,10 +68,10 @@ export default function ReactionsBar({ onHandRaise, isHandRaised }: ReactionsBar
         <button
           onClick={onHandRaise}
           className={cn(
-            "p-2 rounded-full transition-all flex items-center gap-1 text-sm font-medium",
+            'p-2 rounded-full transition-all flex items-center gap-1 text-sm font-medium',
             isHandRaised
-              ? "bg-yellow-500/30 border border-yellow-400 text-yellow-300"
-              : "bg-white/5 border border-white/10 text-muted-foreground hover:bg-white/10"
+              ? 'bg-yellow-500/30 border border-yellow-400 text-yellow-300'
+              : 'bg-white/5 border border-white/10 text-muted-foreground hover:bg-white/10'
           )}
         >
           ✋

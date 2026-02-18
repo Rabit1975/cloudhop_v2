@@ -1,5 +1,5 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import webpush from "https://esm.sh/web-push@3.6.3";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import webpush from 'https://esm.sh/web-push@3.6.3';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const vapidKeys = {
@@ -15,7 +15,9 @@ webpush.setVapidDetails(
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: { 'Access-Control-Allow-Origin': '*' } });
+    return new Response('ok', {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    });
   }
 
   try {
@@ -49,42 +51,58 @@ serve(async (req) => {
 
     // --- Event Processing ---
     if (eventType) {
-        if (eventType === 'new_message') {
-            title = `New message from ${payload.sender_name || 'User'}`;
-            body = payload.content;
-            icon = '/assets/cloudhopq1.png';
-            clickAction = `/chat/${payload.chat_id}`;
-        } else if (eventType === 'incoming_call') {
-            title = 'Incoming Call';
-            body = 'Tap to answer';
-            icon = '/assets/cloudhopq1.png';
-            clickAction = '/'; 
-        } else {
-            console.log('Unknown event type:', eventType);
-            // If it's a real DB event, we should probably clear it so it doesn't retry forever
-            if (eventId) {
-                 const supabaseClient = createClient(
-                    Deno.env.get('SUPABASE_URL') ?? '',
-                    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-                    { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
-                 );
-                 await supabaseClient.from('notification_events').delete().eq('id', eventId);
+      if (eventType === 'new_message') {
+        title = `New message from ${payload.sender_name || 'User'}`;
+        body = payload.content;
+        icon = '/assets/cloudhopq1.png';
+        clickAction = `/chat/${payload.chat_id}`;
+      } else if (eventType === 'incoming_call') {
+        title = 'Incoming Call';
+        body = 'Tap to answer';
+        icon = '/assets/cloudhopq1.png';
+        clickAction = '/';
+      } else {
+        console.log('Unknown event type:', eventType);
+        // If it's a real DB event, we should probably clear it so it doesn't retry forever
+        if (eventId) {
+          const supabaseClient = createClient(
+            Deno.env.get('SUPABASE_URL') ?? '',
+            Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+            {
+              global: {
+                headers: { Authorization: req.headers.get('Authorization')! },
+              },
             }
-            return new Response(JSON.stringify({ message: 'Unknown event type' }), { headers: { 'Content-Type': 'application/json' } });
+          );
+          await supabaseClient
+            .from('notification_events')
+            .delete()
+            .eq('id', eventId);
         }
+        return new Response(JSON.stringify({ message: 'Unknown event type' }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     if (!userId || !title) {
-        return new Response(JSON.stringify({ message: 'Missing userId or title' }), { status: 400 });
+      return new Response(
+        JSON.stringify({ message: 'Missing userId or title' }),
+        { status: 400 }
+      );
     }
 
     // --- Push Sending Logic ---
-    
+
     // Initialize Supabase Client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
     );
 
     // Fetch user's push subscriptions
@@ -97,26 +115,45 @@ serve(async (req) => {
       console.log('No subscription found for user', userId);
       // Clean up event if no subscription
       if (eventId) {
-          await supabaseClient.from('notification_events').delete().eq('id', eventId);
+        await supabaseClient
+          .from('notification_events')
+          .delete()
+          .eq('id', eventId);
       }
-      return new Response(JSON.stringify({ message: 'No subscription found' }), {
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ message: 'No subscription found' }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
-    const notificationPayload = JSON.stringify({ title, body, icon, click_action: clickAction });
+    const notificationPayload = JSON.stringify({
+      title,
+      body,
+      icon,
+      click_action: clickAction,
+    });
 
     // Send push to all user's devices
     const results = await Promise.allSettled(
-      subscriptions.map(sub => 
-        webpush.sendNotification({
-          endpoint: sub.endpoint,
-          keys: { p256dh: sub.p256dh, auth: sub.auth }
-        }, notificationPayload)
-          .catch(err => {
+      subscriptions.map((sub) =>
+        webpush
+          .sendNotification(
+            {
+              endpoint: sub.endpoint,
+              keys: { p256dh: sub.p256dh, auth: sub.auth },
+            },
+            notificationPayload
+          )
+          .catch((err) => {
             if (err.statusCode === 410) {
-                // Subscription expired/gone, remove it
-                supabaseClient.from('push_subscriptions').delete().eq('id', sub.id).then();
+              // Subscription expired/gone, remove it
+              supabaseClient
+                .from('push_subscriptions')
+                .delete()
+                .eq('id', sub.id)
+                .then();
             }
             throw err;
           })
@@ -125,13 +162,15 @@ serve(async (req) => {
 
     // Delete event from queue if successful
     if (eventId) {
-      await supabaseClient.from('notification_events').delete().eq('id', eventId);
+      await supabaseClient
+        .from('notification_events')
+        .delete()
+        .eq('id', eventId);
     }
 
     return new Response(JSON.stringify({ success: true, results }), {
       headers: { 'Content-Type': 'application/json' },
     });
-
   } catch (error) {
     console.error('Error processing notification:', error);
     return new Response(JSON.stringify({ error: error.message }), {

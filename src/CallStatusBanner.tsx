@@ -8,7 +8,10 @@ interface CallStatusBannerProps {
   duration?: number; // in seconds
 }
 
-const CallStatusBanner: React.FC<CallStatusBannerProps> = ({ status, duration }) => {
+const CallStatusBanner: React.FC<CallStatusBannerProps> = ({
+  status,
+  duration,
+}) => {
   const getStatusText = () => {
     switch (status) {
       case 'calling':

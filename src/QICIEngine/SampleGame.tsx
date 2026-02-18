@@ -5,10 +5,12 @@ interface SampleGameProps {
   title?: string;
 }
 
-export default function SampleGame({ title = "QICI Engine Demo" }: SampleGameProps) {
+export default function SampleGame({
+  title = 'QICI Engine Demo',
+}: SampleGameProps) {
   const handleGameReady = () => {
     console.log('QICI Engine game is ready!');
-    
+
     // Example game logic would go here
     // This is where you'd create sprites, physics, etc.
   };
@@ -21,7 +23,7 @@ export default function SampleGame({ title = "QICI Engine Demo" }: SampleGamePro
           QICI Engine HTML5 Game Engine - Powered by Phaser
         </p>
       </div>
-      
+
       <div className="game-wrapper border border-gray-700 rounded-lg overflow-hidden">
         <QICIEngine
           gameId="sample-game"
@@ -29,17 +31,17 @@ export default function SampleGame({ title = "QICI Engine Demo" }: SampleGamePro
           height={600}
           config={{
             canvas: {
-              backgroundColor: '#1a1a2e'
+              backgroundColor: '#1a1a2e',
             },
             physics: {
               enabled: true,
-              gravity: { x: 0, y: 500 }
-            }
+              gravity: { x: 0, y: 500 },
+            },
           }}
           onReady={handleGameReady}
         />
       </div>
-      
+
       <div className="mt-4 p-4 bg-gray-800 rounded-lg">
         <h3 className="text-lg font-semibold text-white mb-2">Game Features</h3>
         <ul className="text-gray-300 text-sm space-y-1">

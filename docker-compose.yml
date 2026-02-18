@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  cloudhop:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  # Optional: Add a database or other services here
+  # redis:
+  #   image: redis:alpine
+  #   ports:
+  #     - "6379:6379"

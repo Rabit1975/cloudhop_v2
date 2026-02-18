@@ -7,8 +7,14 @@ interface AIPanelProps {
   onClose: () => void;
 }
 
-const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) => {
-  const [activeTab, setActiveTab] = useState<'assistant' | 'leonardo' | 'music'>('assistant');
+const AIPanel: React.FC<AIPanelProps> = ({
+  currentView,
+  isVisible,
+  onClose,
+}) => {
+  const [activeTab, setActiveTab] = useState<
+    'assistant' | 'leonardo' | 'music'
+  >('assistant');
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -32,35 +38,35 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
           'Daily Briefing',
           'Suggest Focus',
           'Review Activity',
-          'Plan Day'
+          'Plan Day',
         ];
       case View.CHAT:
         return [
           'Summarize Chat',
           'Suggest Response',
           'Analyze Mood',
-          'Find Topics'
+          'Find Topics',
         ];
       case View.MEETINGS:
         return [
           'Prepare Meeting',
           'Take Notes',
           'Summarize Discussion',
-          'Action Items'
+          'Action Items',
         ];
       case View.ARCADE:
         return [
           'Game Strategy',
           'Find Players',
           'Game Tips',
-          'Performance Analysis'
+          'Performance Analysis',
         ];
       case View.MUSIC:
         return [
           'Generate Playlist',
           'Mood Analysis',
           'Discover Music',
-          'Create Mix'
+          'Create Mix',
         ];
       default:
         return ['General Help', 'Explain Feature', 'Suggestion', 'Analysis'];
@@ -69,31 +75,39 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
 
   const handleAssistantMessage = async () => {
     if (!message.trim()) return;
-    
+
     setIsThinking(true);
     const userMessage = message;
     setMessage('');
-    
+
     // Simulate AI response
     setTimeout(() => {
       const responses = {
-        [View.DASHBOARD]: "I've analyzed your dashboard activity. You have 3 unread messages, 1 meeting today at 3 PM, and your gaming progress is at 67%. I suggest focusing on responding to messages first, then preparing for the meeting.",
-        [View.CHAT]: "Based on the chat context, I can see there are active discussions in HopHub General and Dev Team. The mood seems collaborative. Consider responding to Sarah's message about the new project.",
-        [View.MEETINGS]: "For your upcoming meeting, I recommend reviewing the agenda items: project updates, timeline review, and resource allocation. I can help prepare talking points.",
-        [View.ARCADE]: "Your gaming stats show you're strong in Cyber Racing 2077. Try focusing on the racing line optimization and consider joining the evening gaming session with Mike.",
-        [View.MUSIC]: "I can generate a playlist based on your current mood and activity. Would you prefer something energetic for focus or relaxing for creativity?",
+        [View.DASHBOARD]:
+          "I've analyzed your dashboard activity. You have 3 unread messages, 1 meeting today at 3 PM, and your gaming progress is at 67%. I suggest focusing on responding to messages first, then preparing for the meeting.",
+        [View.CHAT]:
+          "Based on the chat context, I can see there are active discussions in HopHub General and Dev Team. The mood seems collaborative. Consider responding to Sarah's message about the new project.",
+        [View.MEETINGS]:
+          'For your upcoming meeting, I recommend reviewing the agenda items: project updates, timeline review, and resource allocation. I can help prepare talking points.',
+        [View.ARCADE]:
+          "Your gaming stats show you're strong in Cyber Racing 2077. Try focusing on the racing line optimization and consider joining the evening gaming session with Mike.",
+        [View.MUSIC]:
+          'I can generate a playlist based on your current mood and activity. Would you prefer something energetic for focus or relaxing for creativity?',
       };
-      
-      setResponse(responses[currentView as keyof typeof responses] || "I'm here to help! What would you like to know?");
+
+      setResponse(
+        responses[currentView as keyof typeof responses] ||
+          "I'm here to help! What would you like to know?"
+      );
       setIsThinking(false);
     }, 1500);
   };
 
   const handleArtGeneration = async () => {
     if (!artPrompt.trim()) return;
-    
+
     setIsThinking(true);
-    
+
     // Simulate Leonardo AI image generation
     setTimeout(() => {
       // Generate a placeholder image URL (in real implementation, this would call Leonardo AI)
@@ -105,17 +119,17 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
 
   const handleMusicGeneration = async () => {
     if (!musicPrompt.trim()) return;
-    
+
     setIsThinking(true);
-    
+
     // Simulate AI playlist generation
     setTimeout(() => {
       const mockPlaylist = [
-        "Cosmic Journey - Electronic Dreams",
-        "Neon Nights - Synthwave Collection", 
-        "Digital Horizon - Future Bass",
-        "Quantum Beats - Experimental Electronic",
-        "CloudHop Theme - Ambient Mix"
+        'Cosmic Journey - Electronic Dreams',
+        'Neon Nights - Synthwave Collection',
+        'Digital Horizon - Future Bass',
+        'Quantum Beats - Experimental Electronic',
+        'CloudHop Theme - Ambient Mix',
       ];
       setCurrentPlaylist(mockPlaylist);
       setIsThinking(false);
@@ -125,40 +139,46 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
   if (!isVisible) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      right: '20px',
-      bottom: '20px',
-      width: '400px',
-      height: '600px',
-      background: 'rgba(14, 20, 48, 0.95)',
-      border: '1px solid rgba(83, 200, 255, 0.3)',
-      borderRadius: '16px',
-      backdropFilter: 'blur(20px)',
-      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
-      display: 'flex',
-      flexDirection: 'column',
-      zIndex: 1000
-    }}>
-      {/* Header */}
-      <div style={{
-        padding: '16px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    <div
+      style={{
+        position: 'fixed',
+        right: '20px',
+        bottom: '20px',
+        width: '400px',
+        height: '600px',
+        background: 'rgba(14, 20, 48, 0.95)',
+        border: '1px solid rgba(83, 200, 255, 0.3)',
+        borderRadius: '16px',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
+        flexDirection: 'column',
+        zIndex: 1000,
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: '16px',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            background: 'linear-gradient(135deg, #53C8FF 0%, #A3E7FF 100%)',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '16px'
-          }}>
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              background: 'linear-gradient(135deg, #53C8FF 0%, #A3E7FF 100%)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '16px',
+            }}
+          >
             🤖
           </div>
           <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: 'white' }}>
@@ -173,7 +193,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
             color: 'rgba(255, 255, 255, 0.6)',
             fontSize: '20px',
             cursor: 'pointer',
-            padding: '4px'
+            padding: '4px',
           }}
         >
           ✕
@@ -181,22 +201,33 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
       </div>
 
       {/* Tabs */}
-      <div style={{
-        padding: '12px 16px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        display: 'flex',
-        gap: '8px'
-      }}>
+      <div
+        style={{
+          padding: '12px 16px',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          display: 'flex',
+          gap: '8px',
+        }}
+      >
         <button
           onClick={() => setActiveTab('assistant')}
           style={{
-            background: activeTab === 'assistant' ? 'rgba(83, 200, 255, 0.2)' : 'transparent',
-            border: activeTab === 'assistant' ? '1px solid rgba(83, 200, 255, 0.4)' : '1px solid transparent',
-            color: activeTab === 'assistant' ? '#53C8FF' : 'rgba(255, 255, 255, 0.7)',
+            background:
+              activeTab === 'assistant'
+                ? 'rgba(83, 200, 255, 0.2)'
+                : 'transparent',
+            border:
+              activeTab === 'assistant'
+                ? '1px solid rgba(83, 200, 255, 0.4)'
+                : '1px solid transparent',
+            color:
+              activeTab === 'assistant'
+                ? '#53C8FF'
+                : 'rgba(255, 255, 255, 0.7)',
             padding: '6px 12px',
             borderRadius: '6px',
             fontSize: '12px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           🧠 Assistant
@@ -204,13 +235,20 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
         <button
           onClick={() => setActiveTab('leonardo')}
           style={{
-            background: activeTab === 'leonardo' ? 'rgba(83, 200, 255, 0.2)' : 'transparent',
-            border: activeTab === 'leonardo' ? '1px solid rgba(83, 200, 255, 0.4)' : '1px solid transparent',
-            color: activeTab === 'leonardo' ? '#53C8FF' : 'rgba(255, 255, 255, 0.7)',
+            background:
+              activeTab === 'leonardo'
+                ? 'rgba(83, 200, 255, 0.2)'
+                : 'transparent',
+            border:
+              activeTab === 'leonardo'
+                ? '1px solid rgba(83, 200, 255, 0.4)'
+                : '1px solid transparent',
+            color:
+              activeTab === 'leonardo' ? '#53C8FF' : 'rgba(255, 255, 255, 0.7)',
             padding: '6px 12px',
             borderRadius: '6px',
             fontSize: '12px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           🎨 Leonardo
@@ -218,13 +256,18 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
         <button
           onClick={() => setActiveTab('music')}
           style={{
-            background: activeTab === 'music' ? 'rgba(83, 200, 255, 0.2)' : 'transparent',
-            border: activeTab === 'music' ? '1px solid rgba(83, 200, 255, 0.4)' : '1px solid transparent',
-            color: activeTab === 'music' ? '#53C8FF' : 'rgba(255, 255, 255, 0.7)',
+            background:
+              activeTab === 'music' ? 'rgba(83, 200, 255, 0.2)' : 'transparent',
+            border:
+              activeTab === 'music'
+                ? '1px solid rgba(83, 200, 255, 0.4)'
+                : '1px solid transparent',
+            color:
+              activeTab === 'music' ? '#53C8FF' : 'rgba(255, 255, 255, 0.7)',
             padding: '6px 12px',
             borderRadius: '6px',
             fontSize: '12px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           🎵 Music
@@ -232,20 +275,40 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <div
+        style={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Assistant Tab */}
         {activeTab === 'assistant' && (
           <>
             {/* Quick Actions */}
-            <div style={{ padding: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-              <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '8px' }}>
+            <div
+              style={{
+                padding: '12px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '12px',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  marginBottom: '8px',
+                }}
+              >
                 Quick Actions:
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {getContextActions().map((action) => (
                   <button
                     key={action}
-                    onClick={() => setMessage(`Help me with ${action.toLowerCase()}`)}
+                    onClick={() =>
+                      setMessage(`Help me with ${action.toLowerCase()}`)
+                    }
                     style={{
                       background: 'rgba(255, 255, 255, 0.1)',
                       border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -253,7 +316,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                       padding: '4px 8px',
                       borderRadius: '4px',
                       fontSize: '10px',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
                     }}
                   >
                     {action}
@@ -263,35 +326,53 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
             </div>
 
             {/* Chat Area */}
-            <div ref={responseRef} style={{ flex: 1, padding: '16px', overflow: 'auto' }}>
+            <div
+              ref={responseRef}
+              style={{ flex: 1, padding: '16px', overflow: 'auto' }}
+            >
               {response && (
-                <div style={{
-                  background: 'rgba(83, 200, 255, 0.1)',
-                  border: '1px solid rgba(83, 200, 255, 0.3)',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  fontSize: '14px',
-                  lineHeight: '1.4',
-                  color: 'white'
-                }}>
+                <div
+                  style={{
+                    background: 'rgba(83, 200, 255, 0.1)',
+                    border: '1px solid rgba(83, 200, 255, 0.3)',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    fontSize: '14px',
+                    lineHeight: '1.4',
+                    color: 'white',
+                  }}
+                >
                   {response}
                 </div>
               )}
               {isThinking && (
-                <div style={{ textAlign: 'center', padding: '20px', color: '#53C8FF' }}>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    padding: '20px',
+                    color: '#53C8FF',
+                  }}
+                >
                   <div style={{ fontSize: '14px' }}>🤔 Thinking...</div>
                 </div>
               )}
             </div>
 
             {/* Input */}
-            <div style={{ padding: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div
+              style={{
+                padding: '12px',
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
               <div style={{ display: 'flex', gap: '8px' }}>
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleAssistantMessage()}
+                  onKeyPress={(e) =>
+                    e.key === 'Enter' && handleAssistantMessage()
+                  }
                   placeholder="Ask Rabbit AI anything..."
                   style={{
                     flex: 1,
@@ -301,7 +382,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                     padding: '8px 12px',
                     color: 'white',
                     fontSize: '14px',
-                    outline: 'none'
+                    outline: 'none',
                   }}
                 />
                 <button
@@ -315,7 +396,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                     borderRadius: '6px',
                     fontSize: '12px',
                     fontWeight: '600',
-                    cursor: isThinking ? 'not-allowed' : 'pointer'
+                    cursor: isThinking ? 'not-allowed' : 'pointer',
                   }}
                 >
                   Send
@@ -329,7 +410,14 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
         {activeTab === 'leonardo' && (
           <>
             <div style={{ padding: '16px' }}>
-              <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: '#53C8FF' }}>
+              <div
+                style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  marginBottom: '12px',
+                  color: '#53C8FF',
+                }}
+              >
                 🎨 Leonardo AI Art Generation
               </div>
               <textarea
@@ -346,7 +434,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                   color: 'white',
                   fontSize: '14px',
                   outline: 'none',
-                  resize: 'none'
+                  resize: 'none',
                 }}
               />
               <button
@@ -362,7 +450,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                   fontWeight: '600',
                   cursor: isThinking ? 'not-allowed' : 'pointer',
                   width: '100%',
-                  marginTop: '12px'
+                  marginTop: '12px',
                 }}
               >
                 {isThinking ? 'Generating...' : 'Generate Art'}
@@ -370,7 +458,13 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
 
               {generatedImage && (
                 <div style={{ marginTop: '16px' }}>
-                  <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '8px' }}>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: 'rgba(255, 255, 255, 0.6)',
+                      marginBottom: '8px',
+                    }}
+                  >
                     Generated Art:
                   </div>
                   <img
@@ -379,7 +473,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                     style={{
                       width: '100%',
                       borderRadius: '8px',
-                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
                     }}
                   />
                 </div>
@@ -392,7 +486,14 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
         {activeTab === 'music' && (
           <>
             <div style={{ padding: '16px' }}>
-              <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: '#53C8FF' }}>
+              <div
+                style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  marginBottom: '12px',
+                  color: '#53C8FF',
+                }}
+              >
                 🎵 AI Music Engine
               </div>
               <textarea
@@ -409,7 +510,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                   color: 'white',
                   fontSize: '14px',
                   outline: 'none',
-                  resize: 'none'
+                  resize: 'none',
                 }}
               />
               <button
@@ -425,7 +526,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                   fontWeight: '600',
                   cursor: isThinking ? 'not-allowed' : 'pointer',
                   width: '100%',
-                  marginTop: '12px'
+                  marginTop: '12px',
                 }}
               >
                 {isThinking ? 'Generating...' : 'Generate Playlist'}
@@ -433,10 +534,22 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
 
               {currentPlaylist.length > 0 && (
                 <div style={{ marginTop: '16px' }}>
-                  <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '8px' }}>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: 'rgba(255, 255, 255, 0.6)',
+                      marginBottom: '8px',
+                    }}
+                  >
                     Generated Playlist:
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                    }}
+                  >
                     {currentPlaylist.map((song, index) => (
                       <div
                         key={index}
@@ -447,7 +560,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                           padding: '8px 12px',
                           display: 'flex',
                           justifyContent: 'space-between',
-                          alignItems: 'center'
+                          alignItems: 'center',
                         }}
                       >
                         <span style={{ fontSize: '12px', color: 'white' }}>
@@ -462,7 +575,7 @@ const AIPanel: React.FC<AIPanelProps> = ({ currentView, isVisible, onClose }) =>
                             padding: '4px 8px',
                             borderRadius: '4px',
                             fontSize: '10px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
                           }}
                         >
                           {isPlaying ? '⏸️' : '▶️'}

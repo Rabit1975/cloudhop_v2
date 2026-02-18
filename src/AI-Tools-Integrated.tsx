@@ -13,9 +13,9 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
   isVisible,
   onClose,
 }) => {
-  const [activeTab, setActiveTab] = useState<'assistant' | 'tools' | 'leonardo' | 'music'>(
-    'assistant'
-  );
+  const [activeTab, setActiveTab] = useState<
+    'assistant' | 'tools' | 'leonardo' | 'music'
+  >('assistant');
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -36,11 +36,25 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
   const getContextActions = () => {
     switch (currentView) {
       case View.DASHBOARD:
-        return ['Daily Briefing', 'Suggest Focus', 'Review Activity', 'Plan Day'];
+        return [
+          'Daily Briefing',
+          'Suggest Focus',
+          'Review Activity',
+          'Plan Day',
+        ];
       case View.CHAT:
-        return ['Summarize Chat', 'Suggest Response', 'Analyze Mood', 'Find Topics'];
+        return [
+          'Summarize Chat',
+          'Suggest Response',
+          'Analyze Mood',
+          'Find Topics',
+        ];
       case View.MEETINGS:
-        return ['Start Transcription', 'Summarize Discussion', 'Extract Action Items'];
+        return [
+          'Start Transcription',
+          'Summarize Discussion',
+          'Extract Action Items',
+        ];
       case View.ARCADE:
         return ['Game Strategy', 'Find Players', 'Performance Analysis'];
       default:
@@ -55,14 +69,16 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
-      mediaRecorder.ondataavailable = event => {
+      mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: 'audio/wav',
+        });
         void handleTranscription(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorder.start();
@@ -99,7 +115,10 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
 
     try {
       // Use Rabbit AI + Puter.js combined service
-      const response = await rabbitAIService.getContextualResponse(currentView, prompt);
+      const response = await rabbitAIService.getContextualResponse(
+        currentView,
+        prompt
+      );
       setResponse(response);
     } catch (err) {
       setError('AI Error. Please try again.');
@@ -151,7 +170,10 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
 
     try {
       // Use Rabbit AI + Puter.js for playlist generation
-      const songs = await rabbitAIService.generatePlaylist('energetic', musicPrompt);
+      const songs = await rabbitAIService.generatePlaylist(
+        'energetic',
+        musicPrompt
+      );
       setCurrentPlaylist(songs);
     } catch (err) {
       setError('Playlist generation failed.');
@@ -205,7 +227,9 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
           >
             🤖
           </div>
-          <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: 'white' }}>Rabbit AI Suite</h3>
+          <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: 'white' }}>
+            Rabbit AI Suite
+          </h3>
         </div>
         <button
           onClick={onClose}
@@ -232,14 +256,17 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
           flexWrap: 'wrap',
         }}
       >
-        {['assistant', 'tools', 'leonardo', 'music'].map(tab => (
+        {['assistant', 'tools', 'leonardo', 'music'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab as any)}
             style={{
-              background: activeTab === tab ? 'rgba(83, 200, 255, 0.2)' : 'transparent',
+              background:
+                activeTab === tab ? 'rgba(83, 200, 255, 0.2)' : 'transparent',
               border:
-                activeTab === tab ? '1px solid rgba(83, 200, 255, 0.4)' : '1px solid transparent',
+                activeTab === tab
+                  ? '1px solid rgba(83, 200, 255, 0.4)'
+                  : '1px solid transparent',
               color: activeTab === tab ? '#53C8FF' : 'rgba(255, 255, 255, 0.7)',
               padding: '4px 8px',
               borderRadius: '6px',
@@ -248,25 +275,47 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
               textTransform: 'uppercase',
             }}
           >
-            {tab === 'assistant' ? '🧠' : tab === 'tools' ? '🛠️' : tab === 'leonardo' ? '🎨' : '🎵'}{' '}
+            {tab === 'assistant'
+              ? '🧠'
+              : tab === 'tools'
+                ? '🛠️'
+                : tab === 'leonardo'
+                  ? '🎨'
+                  : '🎵'}{' '}
             {tab}
           </button>
         ))}
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <div
+        style={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Assistant Tab */}
         {activeTab === 'assistant' && (
           <>
-            <div style={{ padding: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div
+              style={{
+                padding: '12px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
               <div
-                style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '8px' }}
+                style={{
+                  fontSize: '11px',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  marginBottom: '8px',
+                }}
               >
                 Quick Actions:
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                {getContextActions().map(action => (
+                {getContextActions().map((action) => (
                   <button
                     key={action}
                     onClick={() => handleAction(action)}
@@ -286,7 +335,10 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
               </div>
             </div>
 
-            <div ref={responseRef} style={{ flex: 1, padding: '12px', overflow: 'auto' }}>
+            <div
+              ref={responseRef}
+              style={{ flex: 1, padding: '12px', overflow: 'auto' }}
+            >
               {response && (
                 <div
                   style={{
@@ -303,22 +355,41 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
                 </div>
               )}
               {isThinking && (
-                <div style={{ textAlign: 'center', padding: '20px', color: '#53C8FF' }}>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    padding: '20px',
+                    color: '#53C8FF',
+                  }}
+                >
                   <div style={{ fontSize: '12px' }}>🤔 Processing...</div>
                 </div>
               )}
               {error && (
-                <div style={{ color: '#ff6b6b', fontSize: '12px', padding: '10px' }}>{error}</div>
+                <div
+                  style={{
+                    color: '#ff6b6b',
+                    fontSize: '12px',
+                    padding: '10px',
+                  }}
+                >
+                  {error}
+                </div>
               )}
             </div>
 
-            <div style={{ padding: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div
+              style={{
+                padding: '12px',
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+              }}
+            >
               <div style={{ display: 'flex', gap: '6px' }}>
                 <input
                   type="text"
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  onKeyPress={e => e.key === 'Enter' && handleAction()}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleAction()}
                   placeholder="Ask Rabbit AI..."
                   style={{
                     flex: 1,
@@ -354,9 +425,22 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
 
         {/* Tools Tab */}
         {activeTab === 'tools' && (
-          <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div
+            style={{
+              padding: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+            }}
+          >
             <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-              {['Summarize', 'Rewrite', 'Translate', 'Extract Actions', 'Transcribe'].map(tool => (
+              {[
+                'Summarize',
+                'Rewrite',
+                'Translate',
+                'Extract Actions',
+                'Transcribe',
+              ].map((tool) => (
                 <button
                   key={tool}
                   onClick={() => setActiveTab(tool as any)}
@@ -377,7 +461,7 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
 
             <textarea
               value={inputText}
-              onChange={e => setInputText(e.target.value)}
+              onChange={(e) => setInputText(e.target.value)}
               placeholder="Enter text to process..."
               style={{
                 flex: 1,
@@ -434,7 +518,7 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
           <div style={{ padding: '12px' }}>
             <textarea
               value={artPrompt}
-              onChange={e => setArtPrompt(e.target.value)}
+              onChange={(e) => setArtPrompt(e.target.value)}
               placeholder="Describe what you want to create..."
               style={{
                 width: '100%',
@@ -503,7 +587,9 @@ const AIToolsIntegrated: React.FC<AIToolsIntegratedProps> = ({
               }}
             />
             <button
-              onClick={() => handleAction('Generate playlist based on current mood')}
+              onClick={() =>
+                handleAction('Generate playlist based on current mood')
+              }
               disabled={isThinking}
               style={{
                 background: '#53C8FF',

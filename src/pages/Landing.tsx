@@ -16,9 +16,9 @@ import {
   Star,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import logoSplash from '@/assets/logo-splash.png';
-import logo3d from '@/assets/logo-3d-rabbit.png';
-import nebulaBg from '@/assets/nebula3.jpg';
+import logoSplash from '../assets/logo-splash.png';
+import logo3d from '../assets/logo-3d-rabbit.png';
+import nebulaBg from '../assets/nebula3.jpg';
 
 const FEATURES = [
   {

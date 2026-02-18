@@ -3,7 +3,12 @@ import rabbitAIService from '../services/RabbitAIService';
 
 const AITools: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    'Summarize' | 'Rewrite' | 'Translate' | 'Extract Actions' | 'Thinking Mode' | 'Transcribe'
+    | 'Summarize'
+    | 'Rewrite'
+    | 'Translate'
+    | 'Extract Actions'
+    | 'Thinking Mode'
+    | 'Transcribe'
   >('Summarize');
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
@@ -21,14 +26,16 @@ const AITools: React.FC = () => {
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
-      mediaRecorder.ondataavailable = event => {
+      mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) audioChunksRef.current.push(event.data);
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: 'audio/wav',
+        });
         void handleTranscription(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorder.start();
@@ -43,7 +50,9 @@ const AITools: React.FC = () => {
     setIsLoading(true);
     try {
       // RabbitAI transcription is a placeholder for now
-      setOutputText("Audio transcription is currently unavailable via RabbitAI.");
+      setOutputText(
+        'Audio transcription is currently unavailable via RabbitAI.'
+      );
       setIsLoading(false);
     } catch (err) {
       setError('Transcription failed.');
@@ -101,7 +110,7 @@ const AITools: React.FC = () => {
               'Extract Actions',
               'Thinking Mode',
               'Transcribe',
-            ].map(tab => (
+            ].map((tab) => (
               <button
                 key={tab}
                 onClick={() => {
@@ -127,7 +136,11 @@ const AITools: React.FC = () => {
           {activeTab === 'Transcribe' ? (
             <div className="flex-1 flex flex-col items-center justify-center p-10 space-y-6">
               <button
-                onClick={isRecording ? () => mediaRecorderRef.current?.stop() : startRecording}
+                onClick={
+                  isRecording
+                    ? () => mediaRecorderRef.current?.stop()
+                    : startRecording
+                }
                 className={`px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${isRecording ? 'bg-red-500 text-white' : 'bg-[#53C8FF] text-[#0A0F1F]'}`}
               >
                 {isRecording ? 'Stop Recording' : 'Start Recording'}
@@ -137,7 +150,7 @@ const AITools: React.FC = () => {
             <textarea
               className="flex-1 bg-transparent p-6 text-sm text-white/80 focus:outline-none resize-none custom-scrollbar italic font-medium"
               value={inputText}
-              onChange={e => {
+              onChange={(e) => {
                 setInputText(e.target.value);
               }}
             />
@@ -160,7 +173,9 @@ const AITools: React.FC = () => {
               Thinking...
             </div>
           ) : (
-            <div className="text-sm leading-relaxed whitespace-pre-wrap">{outputText}</div>
+            <div className="text-sm leading-relaxed whitespace-pre-wrap">
+              {outputText}
+            </div>
           )}
           {error && <div className="text-red-400 font-bold">{error}</div>}
         </div>

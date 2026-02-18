@@ -1,5 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { initializeQICI, loadQICIEngine, QICI_CONFIG } from '../../lib/qiciengine';
+import {
+  initializeQICI,
+  loadQICIEngine,
+  QICI_CONFIG,
+} from '../../lib/qiciengine';
 
 interface QICIEngineProps {
   gameId: string;
@@ -9,12 +13,12 @@ interface QICIEngineProps {
   onReady?: () => void;
 }
 
-export default function QICIEngine({ 
-  gameId, 
-  width = 800, 
-  height = 600, 
+export default function QICIEngine({
+  gameId,
+  width = 800,
+  height = 600,
   config,
-  onReady 
+  onReady,
 }: QICIEngineProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,15 +28,15 @@ export default function QICIEngine({
       try {
         // Load QICI Engine scripts
         await loadQICIEngine();
-        
+
         // Initialize game configuration
         const gameConfig = initializeQICI(gameId, {
           canvas: {
             width,
             height,
-            ...config?.canvas
+            ...config?.canvas,
           },
-          ...config
+          ...config,
         });
 
         // Create canvas element
@@ -40,7 +44,7 @@ export default function QICIEngine({
           const canvas = canvasRef.current;
           canvas.width = width;
           canvas.height = height;
-          
+
           // Initialize QICI Engine on canvas
           if (window.qc) {
             // QICI Engine is loaded
@@ -57,7 +61,7 @@ export default function QICIEngine({
   }, [gameId, width, height, config, onReady]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="qici-engine-container"
       style={{
@@ -66,7 +70,7 @@ export default function QICIEngine({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#0a0a0a'
+        backgroundColor: '#0a0a0a',
       }}
     >
       <canvas
@@ -75,7 +79,7 @@ export default function QICIEngine({
         style={{
           border: '1px solid #333',
           borderRadius: '8px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
         }}
       />
     </div>

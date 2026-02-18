@@ -1,27 +1,27 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface RabbitAIProps {
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   isThinking?: boolean;
   className?: string;
 }
 
 export default function RabbitAI({
-  size = "md",
+  size = 'md',
   isThinking = false,
   className,
 }: RabbitAIProps) {
   const sizeMap = {
-    sm: "w-8 h-8",
-    md: "w-12 h-12",
-    lg: "w-16 h-16",
-    xl: "w-24 h-24",
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16',
+    xl: 'w-24 h-24',
   };
 
   return (
     <div
       className={cn(
-        "relative flex items-center justify-center",
+        'relative flex items-center justify-center',
         sizeMap[size],
         className
       )}
@@ -29,8 +29,8 @@ export default function RabbitAI({
       {/* Glow Effect */}
       <div
         className={cn(
-          "absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-magenta-400 blur-xl opacity-60",
-          isThinking ? "animate-pulse" : ""
+          'absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-magenta-400 blur-xl opacity-60',
+          isThinking ? 'animate-pulse' : ''
         )}
       />
 

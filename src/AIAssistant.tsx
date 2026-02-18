@@ -22,11 +22,13 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
         return [
           {
             label: 'Daily Briefing',
-            prompt: 'Generate a daily briefing based on my recent activity and upcoming meetings.',
+            prompt:
+              'Generate a daily briefing based on my recent activity and upcoming meetings.',
           },
           {
             label: 'Suggest Focus',
-            prompt: 'Analyze my schedule and suggest a key focus area for today.',
+            prompt:
+              'Analyze my schedule and suggest a key focus area for today.',
           },
           {
             label: 'Review Activity',
@@ -45,27 +47,60 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
           },
           {
             label: 'Extract Action Items',
-            prompt: 'List all action items and assigned tasks from this meeting.',
+            prompt:
+              'List all action items and assigned tasks from this meeting.',
           },
         ];
       case View.CHAT: // HopHub
         return [
-          { label: 'Summarize Channel', prompt: 'Summarize the last 50 messages in this channel.' },
-          { label: 'Draft Post', prompt: 'Help me draft an engaging announcement for this community.' },
-          { label: 'Moderation Scan', prompt: 'Scan recent messages for community guideline violations.' },
-          { label: 'Suggest Reply', prompt: 'Suggest a professional yet friendly reply to the last message.' },
-          { label: 'Translate Chat', prompt: 'Translate the recent messages into English.' },
-          { label: 'Tone Check', prompt: 'Analyze the tone of my current draft message.' },
+          {
+            label: 'Summarize Channel',
+            prompt: 'Summarize the last 50 messages in this channel.',
+          },
+          {
+            label: 'Draft Post',
+            prompt:
+              'Help me draft an engaging announcement for this community.',
+          },
+          {
+            label: 'Moderation Scan',
+            prompt: 'Scan recent messages for community guideline violations.',
+          },
+          {
+            label: 'Suggest Reply',
+            prompt:
+              'Suggest a professional yet friendly reply to the last message.',
+          },
+          {
+            label: 'Translate Chat',
+            prompt: 'Translate the recent messages into English.',
+          },
+          {
+            label: 'Tone Check',
+            prompt: 'Analyze the tone of my current draft message.',
+          },
         ];
       case View.ARCADE:
         return [
-          { label: 'Game Strategy', prompt: 'Give me tips for the currently selected game.' },
-          { label: 'Find Players', prompt: 'Help me find active players looking for a match.' },
+          {
+            label: 'Game Strategy',
+            prompt: 'Give me tips for the currently selected game.',
+          },
+          {
+            label: 'Find Players',
+            prompt: 'Help me find active players looking for a match.',
+          },
         ];
       default:
         return [
-          { label: 'General Help', prompt: 'How can CloudHop help me be more productive?' },
-          { label: 'System Status', prompt: 'Check system health and connectivity.' },
+          {
+            label: 'General Help',
+            prompt: 'How can CloudHop help me be more productive?',
+          },
+          {
+            label: 'System Status',
+            prompt: 'Check system health and connectivity.',
+          },
         ];
     }
   };
@@ -75,11 +110,16 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
     setResponse(null);
 
     try {
-      const result = await rabbitAIService.getContextualResponse(currentView, prompt);
+      const result = await rabbitAIService.getContextualResponse(
+        currentView,
+        prompt
+      );
       setResponse(result);
     } catch (error) {
       console.error('AI Error:', error);
-      setResponse('I apologize, but I encountered an error while processing your request. Please check if RabbitAI service is available.');
+      setResponse(
+        'I apologize, but I encountered an error while processing your request. Please check if RabbitAI service is available.'
+      );
     } finally {
       setIsThinking(false);
     }
@@ -134,7 +174,10 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
             {!response && !isThinking && (
               <div className="space-y-4">
                 <p className="text-xs text-white/60 font-medium italic leading-relaxed">
-                  I'm active in <span className="text-[#53C8FF] font-bold">{currentView}</span>{' '}
+                  I'm active in{' '}
+                  <span className="text-[#53C8FF] font-bold">
+                    {currentView}
+                  </span>{' '}
                   mode. How can I assist you with your current task?
                 </p>
 
@@ -148,7 +191,9 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
                       <div className="text-[10px] font-black uppercase tracking-widest text-white group-hover:text-[#53C8FF] mb-1">
                         {action.label}
                       </div>
-                      <div className="text-[10px] text-white/30 truncate">{action.prompt}</div>
+                      <div className="text-[10px] text-white/30 truncate">
+                        {action.prompt}
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -199,12 +244,14 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ currentView }) => {
             <div className="flex gap-2">
               <input
                 value={input}
-                onChange={e => {
+                onChange={(e) => {
                   setInput(e.target.value);
                 }}
                 placeholder="Ask anything..."
                 className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 text-xs text-white focus:border-[#53C8FF] outline-none"
-                onKeyDown={e => e.key === 'Enter' && input && handleAction(input)}
+                onKeyDown={(e) =>
+                  e.key === 'Enter' && input && handleAction(input)
+                }
               />
               <button
                 onClick={() => input && handleAction(input)}

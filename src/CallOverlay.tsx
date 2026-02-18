@@ -52,7 +52,7 @@ const CallOverlay: React.FC<CallOverlayProps> = ({
     let interval: unknown;
     if (callState === 'connected') {
       setDuration(0); // Reset duration on new connection
-      interval = setInterval(() => setDuration(d => d + 1), 1000);
+      interval = setInterval(() => setDuration((d) => d + 1), 1000);
     }
     return () => {
       clearInterval(interval as number);
@@ -124,7 +124,9 @@ const CallOverlay: React.FC<CallOverlayProps> = ({
               </motion.div>
 
               <div>
-                <h2 className="text-3xl font-black text-white tracking-tight">{callerName}</h2>
+                <h2 className="text-3xl font-black text-white tracking-tight">
+                  {callerName}
+                </h2>
                 <p className="text-[#53C8FF] text-sm font-bold uppercase tracking-widest mt-2 animate-pulse">
                   Incoming Video Call...
                 </p>
@@ -242,9 +244,14 @@ const CallOverlay: React.FC<CallOverlayProps> = ({
               ) : (
                 // No streams yet or calling
                 <div className="flex items-center justify-center h-full flex-col">
-                  <img src={callerAvatar} className="w-32 h-32 rounded-full opacity-50 mb-4" />
+                  <img
+                    src={callerAvatar}
+                    className="w-32 h-32 rounded-full opacity-50 mb-4"
+                  />
                   <p className="text-white/20 font-bold uppercase tracking-widest">
-                    {callState === 'calling' ? 'Calling...' : 'Waiting for video...'}
+                    {callState === 'calling'
+                      ? 'Calling...'
+                      : 'Waiting for video...'}
                   </p>
                 </div>
               )}
@@ -315,7 +322,11 @@ const ControlButton = ({ icon, active, onClick, color, label }: any) => (
     >
       {icon}
     </button>
-    {label && <span className="text-[10px] font-bold text-white/40 uppercase">{label}</span>}
+    {label && (
+      <span className="text-[10px] font-bold text-white/40 uppercase">
+        {label}
+      </span>
+    )}
   </div>
 );
 

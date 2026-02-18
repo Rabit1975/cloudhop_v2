@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { TrendingUp, Flame, Play, Users, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from 'react';
+import { TrendingUp, Flame, Play, Users, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface FeaturedStream {
   id: string;
@@ -15,30 +15,30 @@ interface FeaturedStream {
 export default function Home() {
   const [featuredStreams] = useState<FeaturedStream[]>([
     {
-      id: "1",
-      channelName: "StreamMaster",
-      title: "24/7 Gameplay Marathon - Come Hang Out!",
-      category: "Games",
+      id: '1',
+      channelName: 'StreamMaster',
+      title: '24/7 Gameplay Marathon - Come Hang Out!',
+      category: 'Games',
       viewers: 3421,
-      uptime: "4h 23m",
+      uptime: '4h 23m',
       isLive: true,
     },
     {
-      id: "2",
-      channelName: "ArtisticCode",
-      title: "Web Dev Live Coding Session - Building React App",
-      category: "Creative",
+      id: '2',
+      channelName: 'ArtisticCode',
+      title: 'Web Dev Live Coding Session - Building React App',
+      category: 'Creative',
       viewers: 1205,
-      uptime: "2h 15m",
+      uptime: '2h 15m',
       isLive: true,
     },
     {
-      id: "3",
-      channelName: "SpeedRunner",
-      title: "World Record Attempts - Speedrunning Marathon",
-      category: "Games",
+      id: '3',
+      channelName: 'SpeedRunner',
+      title: 'World Record Attempts - Speedrunning Marathon',
+      category: 'Games',
       viewers: 5634,
-      uptime: "6h 42m",
+      uptime: '6h 42m',
       isLive: true,
     },
   ]);
@@ -62,7 +62,9 @@ export default function Home() {
             <div className="glass-panel rounded-xl p-6 border-cyan-400/30 hover:border-cyan-400/60 transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm mb-2">Active Streams</p>
+                  <p className="text-muted-foreground text-sm mb-2">
+                    Active Streams
+                  </p>
                   <p className="text-3xl font-black text-cyan-400">2,847</p>
                 </div>
                 <div className="p-3 rounded-lg bg-cyan-500/20">
@@ -74,7 +76,9 @@ export default function Home() {
             <div className="glass-panel rounded-xl p-6 border-magenta-400/30 hover:border-magenta-400/60 transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm mb-2">Online Users</p>
+                  <p className="text-muted-foreground text-sm mb-2">
+                    Online Users
+                  </p>
                   <p className="text-3xl font-black text-magenta-400">156K</p>
                 </div>
                 <div className="p-3 rounded-lg bg-magenta-500/20">
@@ -86,7 +90,9 @@ export default function Home() {
             <div className="glass-panel rounded-xl p-6 border-purple-400/30 hover:border-purple-400/60 transition-all">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-muted-foreground text-sm mb-2">Games Available</p>
+                  <p className="text-muted-foreground text-sm mb-2">
+                    Games Available
+                  </p>
                   <p className="text-3xl font-black text-purple-400">500+</p>
                 </div>
                 <div className="p-3 rounded-lg bg-purple-500/20">
@@ -127,15 +133,21 @@ export default function Home() {
                       {stream.viewers.toLocaleString()}
                     </div>
                     <div className="text-center">
-                      <div className="text-5xl mb-2 opacity-60 group-hover:opacity-80 transition-opacity">📺</div>
-                      <p className="text-muted-foreground text-xs">{stream.uptime}</p>
+                      <div className="text-5xl mb-2 opacity-60 group-hover:opacity-80 transition-opacity">
+                        📺
+                      </div>
+                      <p className="text-muted-foreground text-xs">
+                        {stream.uptime}
+                      </p>
                     </div>
                   </div>
                   <div className="p-4">
                     <h3 className="font-bold text-foreground text-sm mb-1 line-clamp-2 group-hover:text-cyan-300 transition-colors">
                       {stream.title}
                     </h3>
-                    <p className="text-xs text-cyan-400 font-semibold mb-3">{stream.channelName}</p>
+                    <p className="text-xs text-cyan-400 font-semibold mb-3">
+                      {stream.channelName}
+                    </p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs px-2 py-1 rounded bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 font-semibold">
                         {stream.category}
@@ -154,7 +166,8 @@ export default function Home() {
                 Discover More Streams
               </h3>
               <p className="text-muted-foreground mb-4">
-                Explore thousands of live streams, find new creators, and join the community
+                Explore thousands of live streams, find new creators, and join
+                the community
               </p>
               <div className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold group-hover:opacity-90 transition-all">
                 Go to Twitch
@@ -166,7 +179,9 @@ export default function Home() {
           {/* Quick Access Sections */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="glass-panel rounded-xl p-8 border-cyan-400/30 hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer">
-              <h3 className="text-2xl font-bold text-foreground mb-2">🎮 GameHub</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-2">
+                🎮 GameHub
+              </h3>
               <p className="text-muted-foreground mb-4">
                 Play 500+ HTML5 games, from classic arcade to modern adventures
               </p>
@@ -177,9 +192,12 @@ export default function Home() {
             </div>
 
             <div className="glass-panel rounded-xl p-8 border-magenta-400/30 hover:border-magenta-400/60 transition-all hover:shadow-lg hover:shadow-magenta-500/20 cursor-pointer">
-              <h3 className="text-2xl font-bold text-foreground mb-2">🎵 YouTube Music</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-2">
+                🎵 YouTube Music
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Listen to your favorite music, create playlists, and watch music videos
+                Listen to your favorite music, create playlists, and watch music
+                videos
               </p>
               <div className="flex items-center gap-2 text-magenta-400 font-semibold group hover:gap-3 transition-all">
                 Listen Now
@@ -192,7 +210,8 @@ export default function Home() {
                 🌍 Spaces - Powered by RabbitAI
               </h3>
               <p className="text-muted-foreground mb-4">
-                Create your own spaces for creativity, community, and personal reflection. Get personalized guidance from RabbitAI
+                Create your own spaces for creativity, community, and personal
+                reflection. Get personalized guidance from RabbitAI
               </p>
               <div className="flex items-center gap-2 text-purple-400 font-semibold group hover:gap-3 transition-all">
                 Enter Your Spaces
