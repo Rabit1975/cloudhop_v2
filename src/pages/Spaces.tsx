@@ -6,6 +6,7 @@ import {
   MessageSquare,
   ChevronRight,
   Radio,
+  Plus,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import RabbitAI from '@/components/RabbitAI';

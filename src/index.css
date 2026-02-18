@@ -59,6 +59,77 @@
 
 @layer components {
   .glass-panel {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-md shadow-black/30;
   }
+}
+
+/* ── Twinkling Starfield ─────────────────────────────────── */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.85; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes twinkle-slow {
+  0%, 100% { opacity: 0.7; }
+  60%       { opacity: 0.25; }
+}
+
+/* Layer 1 – small 1 px stars */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 1px; height: 1px;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  z-index: -1;
+  will-change: opacity;
+  animation: twinkle 2.8s ease-in-out infinite;
+  box-shadow:
+    52px 18px #fff,  98px 245px #fff, 147px 89px #fff,
+    203px 312px #fff, 267px 156px #fff, 334px 423px #fff,
+    389px 67px #fff, 423px 289px #fff, 478px 134px #fff,
+    512px 398px #fff, 567px 45px #fff, 634px 267px #fff,
+    689px 189px #fff, 745px 356px #fff, 801px 78px #fff,
+    856px 234px #fff, 912px 445px #fff, 967px 123px #fff,
+    1023px 312px #fff, 1078px 89px #fff, 1134px 267px #fff,
+    1189px 412px #fff, 1245px 156px #fff, 1301px 334px #fff,
+    1356px 78px #fff, 1412px 245px #fff, 1467px 189px #fff,
+    1523px 423px #fff, 1578px 112px #fff, 1634px 356px #fff,
+    1689px 234px #fff, 1745px 89px #fff, 1801px 378px #fff,
+    1856px 156px #fff, 1912px 289px #fff,
+    45px 478px #fff,  123px 534px #fff, 267px 589px #fff,
+    412px 545px #fff, 589px 501px #fff, 734px 556px #fff,
+    879px 612px #fff, 1024px 568px #fff, 1169px 623px #fff,
+    1314px 579px #fff, 1459px 634px #fff, 1604px 590px #fff,
+    1749px 645px #fff, 1894px 601px #fff, 78px 756px #fff;
+}
+
+/* Layer 2 – slightly larger 2 px stars, offset timing */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  z-index: -1;
+  will-change: opacity;
+  animation: twinkle-slow 4.5s ease-in-out 1.4s infinite;
+  box-shadow:
+    75px 234px rgba(255,255,255,.8),  189px 145px rgba(255,255,255,.8),
+    334px 378px rgba(255,255,255,.8), 478px 201px rgba(255,255,255,.8),
+    623px 356px rgba(255,255,255,.8), 767px 123px rgba(255,255,255,.8),
+    912px 289px rgba(255,255,255,.8), 1056px 445px rgba(255,255,255,.8),
+    1201px 67px rgba(255,255,255,.8), 1345px 234px rgba(255,255,255,.8),
+    1489px 378px rgba(255,255,255,.8), 1634px 145px rgba(255,255,255,.8),
+    1778px 312px rgba(255,255,255,.8), 89px 623px rgba(255,255,255,.8),
+    245px 712px rgba(255,255,255,.8), 423px 678px rgba(255,255,255,.8),
+    601px 734px rgba(255,255,255,.8), 779px 689px rgba(255,255,255,.8),
+    957px 645px rgba(255,255,255,.8), 1135px 701px rgba(255,255,255,.8),
+    1313px 656px rgba(255,255,255,.8), 1491px 712px rgba(255,255,255,.8),
+    1669px 667px rgba(255,255,255,.8), 1847px 723px rgba(255,255,255,.8),
+    1920px 512px rgba(255,255,255,.8);
 }

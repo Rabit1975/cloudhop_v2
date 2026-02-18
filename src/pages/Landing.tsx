@@ -16,9 +16,9 @@ import {
   Star,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import logoSplash from '/logo-splash.png';
-import logo3d from '/logo-3d-rabbit.png';
-import nebulaBg from '/nebula.png';
+import logoSplash from '../assets/logo-splash.png';
+import logo3d from '../assets/logo-3d-rabbit.png';
+import nebulaBg from '../assets/Nebula4.png';
 
 const FEATURES = [
   {
@@ -204,9 +204,9 @@ export default function Landing() {
         <img
           src={nebulaBg}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background pointer-events-none" />
 
         <div className="relative z-10">
           {/* Nav */}
@@ -242,7 +242,7 @@ export default function Landing() {
               </a>
             </div>
             <button
-              onClick={() => navigate('/app')}
+              onClick={() => navigate('/login')}
               className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-sm hover:opacity-90 transition-all"
             >
               Open App
@@ -267,7 +267,7 @@ export default function Landing() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
-                onClick={() => navigate('/app')}
+                onClick={() => navigate('/login')}
                 className="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-lg hover:opacity-90 transition-all shadow-lg shadow-cyan-500/30 flex items-center gap-2"
               >
                 Get Started Free <ArrowRight className="w-5 h-5" />

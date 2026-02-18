@@ -205,14 +205,14 @@ export default function HopMeetings() {
               <div className="relative h-64 bg-gradient-to-br from-cyan-900/30 via-gray-900 to-magenta-900/30 rounded-xl overflow-hidden mb-8 flex items-center justify-center border border-cyan-400/20">
                 {cameraOn ? (
                   <div className="text-center">
-                    <div className="text-6xl mb-2">📹</div>
+                    <Video className="w-16 h-16 mb-2 text-cyan-400/60" />
                     <p className="text-muted-foreground">
                       Your camera is ready
                     </p>
                   </div>
                 ) : (
                   <div className="text-center">
-                    <div className="text-6xl mb-2">📵</div>
+                    <VideoOff className="w-16 h-16 mb-2 text-red-400/60" />
                     <p className="text-muted-foreground">Camera is off</p>
                   </div>
                 )}
@@ -313,7 +313,7 @@ export default function HopMeetings() {
       <div className="h-full w-full overflow-y-auto">
         <div className="min-h-screen bg-gradient-to-b from-purple-900/20 via-transparent to-black p-6 flex items-center justify-center">
           <div className="glass-panel rounded-2xl border-cyan-400/30 p-12 max-w-md w-full text-center">
-            <div className="text-6xl mb-4">✅</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             <h2 className="text-3xl font-bold text-foreground mb-2">
               Meeting Ended
             </h2>
@@ -326,7 +326,7 @@ export default function HopMeetings() {
             {isRecording && (
               <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-400/30">
                 <p className="text-sm text-red-300 font-semibold mb-2">
-                  🎥 Recording saved
+                  Recording saved
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Recording duration: {formatTime(recordingTime)}
@@ -420,7 +420,7 @@ export default function HopMeetings() {
                   >
                     {participant.cameraOn ? (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cyan-800/30 to-magenta-800/30">
-                        <div className="text-4xl opacity-40">📹</div>
+                        <Video className="w-10 h-10 opacity-40 text-cyan-400" />
                       </div>
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center gap-2">

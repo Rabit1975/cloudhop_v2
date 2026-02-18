@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import logoSplash from '../assets/logo-splash.png';
-import nebulaBg from '../assets/nebula3.jpg';
+import nebulaBg from '../assets/Nebula4.png';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,16 +11,19 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Already logged in? Go straight to app
+  if (localStorage.getItem('cloudhop_authenticated') === 'true') {
+    navigate('/app');
+    return null;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) return;
 
     setIsLoading(true);
     
-    // Simple authentication simulation
     setTimeout(() => {
-      // In a real app, this would validate against a backend
-      // For now, accept any non-empty credentials
       localStorage.setItem('cloudhop_user', username);
       localStorage.setItem('cloudhop_authenticated', 'true');
       navigate('/app');
@@ -29,20 +32,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden relative">
-      {/* Background */}
-      <img
-        src={nebulaBg}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
+    <div className="min-h-screen text-foreground overflow-hidden relative">
+      {/* Nebula background - fixed layer */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{ backgroundImage: `url(${nebulaBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background pointer-events-none" />
+      <div className="fixed inset-0 z-0 bg-black/30" />
 
-      {/* Login Form */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-6">
         <div className="w-full max-w-md">
-          <div className="glass-panel rounded-2xl p-8 border-cyan-400/30">
-            {/* Logo and Title */}
+          <div className="rounded-2xl p-8 border border-cyan-400/30 bg-black/60 backdrop-blur-md">
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <img
@@ -58,9 +58,7 @@ export default function Login() {
               <p className="text-muted-foreground">Sign in to access your creative workspace</p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Username */}
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-foreground mb-2">
                   Username
@@ -76,7 +74,6 @@ export default function Login() {
                 />
               </div>
 
-              {/* Password */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
                   Password
@@ -96,16 +93,11 @@ export default function Login() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading || !username.trim() || !password.trim()}
@@ -120,7 +112,6 @@ export default function Login() {
               </button>
             </form>
 
-            {/* Demo Info */}
             <div className="mt-6 p-4 rounded-lg bg-cyan-500/10 border border-cyan-400/30">
               <p className="text-xs text-cyan-300 text-center">
                 <strong>Demo Mode:</strong> Enter any username and password to access the application

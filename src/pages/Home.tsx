@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TrendingUp, Flame, Play, Users, ArrowRight } from 'lucide-react';
+import { TrendingUp, Flame, Play, Users, ArrowRight, Gamepad2, Music, Globe, Tv } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface FeaturedStream {
@@ -12,7 +12,9 @@ interface FeaturedStream {
   isLive: boolean;
 }
 
-export default function Home() {
+type Tab = 'home' | 'hophub' | 'music' | 'gamehub' | 'spaces' | 'twitch' | 'hopmeetings' | 'settings' | 'profile';
+
+export default function Home({ onTabChange }: { onTabChange?: (tab: Tab) => void }) {
   const [featuredStreams] = useState<FeaturedStream[]>([
     {
       id: '1',
@@ -133,8 +135,8 @@ export default function Home() {
                       {stream.viewers.toLocaleString()}
                     </div>
                     <div className="text-center">
-                      <div className="text-5xl mb-2 opacity-60 group-hover:opacity-80 transition-opacity">
-                        📺
+                      <div className="mb-2 opacity-60 group-hover:opacity-80 transition-opacity flex justify-center">
+                        <Tv className="w-12 h-12 text-cyan-300" />
                       </div>
                       <p className="text-muted-foreground text-xs">
                         {stream.uptime}
@@ -161,7 +163,7 @@ export default function Home() {
               ))}
             </div>
 
-            <button className="w-full group glass-panel rounded-xl p-8 border-cyan-400/30 hover:border-cyan-400/60 transition-all text-center hover:shadow-lg hover:shadow-cyan-500/20">
+            <button onClick={() => onTabChange?.('twitch')} className="w-full group glass-panel rounded-xl p-8 border-cyan-400/30 hover:border-cyan-400/60 transition-all text-center hover:shadow-lg hover:shadow-cyan-500/20">
               <h3 className="text-2xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-magenta-400">
                 Discover More Streams
               </h3>
@@ -178,9 +180,9 @@ export default function Home() {
 
           {/* Quick Access Sections */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="glass-panel rounded-xl p-8 border-cyan-400/30 hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer">
-              <h3 className="text-2xl font-bold text-foreground mb-2">
-                🎮 GameHub
+            <div onClick={() => onTabChange?.('gamehub')} className="glass-panel rounded-xl p-8 border-cyan-400/30 hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer">
+              <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+                <Gamepad2 className="w-6 h-6 text-cyan-400" /> GameHub
               </h3>
               <p className="text-muted-foreground mb-4">
                 Play 500+ HTML5 games, from classic arcade to modern adventures
@@ -191,9 +193,9 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="glass-panel rounded-xl p-8 border-magenta-400/30 hover:border-magenta-400/60 transition-all hover:shadow-lg hover:shadow-magenta-500/20 cursor-pointer">
-              <h3 className="text-2xl font-bold text-foreground mb-2">
-                🎵 YouTube Music
+            <div onClick={() => onTabChange?.('music')} className="glass-panel rounded-xl p-8 border-magenta-400/30 hover:border-magenta-400/60 transition-all hover:shadow-lg hover:shadow-magenta-500/20 cursor-pointer">
+              <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+                <Music className="w-6 h-6 text-pink-400" /> YouTube Music
               </h3>
               <p className="text-muted-foreground mb-4">
                 Listen to your favorite music, create playlists, and watch music
@@ -205,9 +207,9 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="glass-panel rounded-xl p-8 border-purple-400/30 hover:border-purple-400/60 transition-all hover:shadow-lg hover:shadow-purple-500/20 cursor-pointer md:col-span-2">
-              <h3 className="text-2xl font-bold text-foreground mb-2">
-                🌍 Spaces - Powered by RabbitAI
+            <div onClick={() => onTabChange?.('spaces')} className="glass-panel rounded-xl p-8 border-purple-400/30 hover:border-purple-400/60 transition-all hover:shadow-lg hover:shadow-purple-500/20 cursor-pointer md:col-span-2">
+              <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+                <Globe className="w-6 h-6 text-purple-400" /> Spaces - Powered by RabbitAI
               </h3>
               <p className="text-muted-foreground mb-4">
                 Create your own spaces for creativity, community, and personal

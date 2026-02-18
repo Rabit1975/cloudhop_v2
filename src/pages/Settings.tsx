@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Monitor,
   Bell,
   Shield,
   Palette,
@@ -13,6 +12,8 @@ import {
   ChevronRight,
   ToggleLeft,
   ToggleRight,
+  CheckCircle,
+  Save,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -99,30 +100,55 @@ function SettingRow({
   );
 }
 
+const ls = (key: string, fallback: string) => localStorage.getItem('setting_' + key) ?? fallback;
+const lsBool = (key: string, fallback: boolean) => {
+  const v = localStorage.getItem('setting_' + key);
+  return v === null ? fallback : v === 'true';
+};
+
 export default function Settings() {
   const [section, setSection] = useState<SettingsSection>('appearance');
-  const [theme, setTheme] = useState('dark');
-  const [accentColor, setAccentColor] = useState('cyan');
-  const [fontSize, setFontSize] = useState('medium');
-  const [compactMode, setCompactMode] = useState(false);
-  const [pushNotifs, setPushNotifs] = useState(true);
-  const [soundNotifs, setSoundNotifs] = useState(true);
-  const [dnd, setDnd] = useState(false);
-  const [dmNotifs, setDmNotifs] = useState(true);
-  const [mentionNotifs, setMentionNotifs] = useState(true);
-  const [channelNotifs, setChannelNotifs] = useState(false);
-  const [twoFA, setTwoFA] = useState(false);
-  const [activityVisible, setActivityVisible] = useState(true);
-  const [readReceipts, setReadReceipts] = useState(true);
-  const [onlineStatus, setOnlineStatus] = useState(true);
-  const [noiseSuppression, setNoiseSuppression] = useState(true);
-  const [echoCancellation, setEchoCancellation] = useState(true);
-  const [autoGainControl, setAutoGainControl] = useState(true);
-  const [hdVideo, setHdVideo] = useState(true);
-  const [language, setLanguage] = useState('en');
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [highContrast, setHighContrast] = useState(false);
-  const [largeText, setLargeText] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [theme, setTheme] = useState(() => ls('theme', 'dark'));
+  const [accentColor, setAccentColor] = useState(() => ls('accentColor', 'cyan'));
+  const [fontSize, setFontSize] = useState(() => ls('fontSize', 'medium'));
+  const [compactMode, setCompactMode] = useState(() => lsBool('compactMode', false));
+  const [pushNotifs, setPushNotifs] = useState(() => lsBool('pushNotifs', true));
+  const [soundNotifs, setSoundNotifs] = useState(() => lsBool('soundNotifs', true));
+  const [dnd, setDnd] = useState(() => lsBool('dnd', false));
+  const [dmNotifs, setDmNotifs] = useState(() => lsBool('dmNotifs', true));
+  const [mentionNotifs, setMentionNotifs] = useState(() => lsBool('mentionNotifs', true));
+  const [channelNotifs, setChannelNotifs] = useState(() => lsBool('channelNotifs', false));
+  const [twoFA, setTwoFA] = useState(() => lsBool('twoFA', false));
+  const [activityVisible, setActivityVisible] = useState(() => lsBool('activityVisible', true));
+  const [readReceipts, setReadReceipts] = useState(() => lsBool('readReceipts', true));
+  const [onlineStatus, setOnlineStatus] = useState(() => lsBool('onlineStatus', true));
+  const [noiseSuppression, setNoiseSuppression] = useState(() => lsBool('noiseSuppression', true));
+  const [echoCancellation, setEchoCancellation] = useState(() => lsBool('echoCancellation', true));
+  const [autoGainControl, setAutoGainControl] = useState(() => lsBool('autoGainControl', true));
+  const [hdVideo, setHdVideo] = useState(() => lsBool('hdVideo', true));
+  const [language, setLanguage] = useState(() => ls('language', 'en'));
+  const [reducedMotion, setReducedMotion] = useState(() => lsBool('reducedMotion', false));
+  const [highContrast, setHighContrast] = useState(() => lsBool('highContrast', false));
+  const [largeText, setLargeText] = useState(() => lsBool('largeText', false));
+
+  const handleSave = () => {
+    const settings: Record<string, string> = {
+      theme, accentColor, fontSize,
+      compactMode: String(compactMode), pushNotifs: String(pushNotifs),
+      soundNotifs: String(soundNotifs), dnd: String(dnd),
+      dmNotifs: String(dmNotifs), mentionNotifs: String(mentionNotifs),
+      channelNotifs: String(channelNotifs), twoFA: String(twoFA),
+      activityVisible: String(activityVisible), readReceipts: String(readReceipts),
+      onlineStatus: String(onlineStatus), noiseSuppression: String(noiseSuppression),
+      echoCancellation: String(echoCancellation), autoGainControl: String(autoGainControl),
+      hdVideo: String(hdVideo), language, reducedMotion: String(reducedMotion),
+      highContrast: String(highContrast), largeText: String(largeText),
+    };
+    Object.entries(settings).forEach(([k, v]) => localStorage.setItem('setting_' + k, v));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
 
   const accents = [
     { id: 'cyan', color: 'bg-cyan-400' },
@@ -140,6 +166,12 @@ export default function Settings() {
           <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-magenta-400 mb-8">
             Settings
           </h1>
+
+          {saved && (
+            <div className="mb-4 flex items-center gap-2 px-4 py-3 rounded-lg bg-green-500/20 border border-green-400/50 text-green-300 text-sm font-semibold">
+              <CheckCircle className="w-4 h-4" /> Settings saved successfully!
+            </div>
+          )}
 
           <div className="flex gap-6">
             {/* Settings Nav */}
@@ -490,6 +522,16 @@ export default function Settings() {
                   </SettingRow>
                 </div>
               )}
+
+              {/* Save Button */}
+              <div className="mt-8 pt-6 border-t border-white/10">
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold flex items-center gap-2 hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-cyan-500/30"
+                >
+                  <Save className="w-4 h-4" /> Save Settings
+                </button>
+              </div>
             </div>
           </div>
         </div>

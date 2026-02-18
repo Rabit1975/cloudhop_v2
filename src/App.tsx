@@ -32,7 +32,7 @@ const App = () => {
             <Route 
               path="/app" 
               element={
-                isAuthenticated ? <Index /> : <Navigate to="/login" replace />
+                localStorage.getItem('cloudhop_authenticated') === 'true' ? <Index /> : <Navigate to="/login" replace />
               } 
             />
             <Route path="/landing" element={<Landing />} />

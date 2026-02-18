@@ -1,4 +1,4 @@
-import { useState } from 'react';
+ import { useState } from 'react';
 import {
   Play,
   Pause,
@@ -9,6 +9,8 @@ import {
   Volume2,
   Heart,
   LogOut,
+  Music as MusicIcon,
+  Lock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -55,24 +57,24 @@ export default function Music() {
       songs: [
         {
           id: '1',
-          title: 'Doomed',
-          artist: 'Iann Dior',
-          duration: 234,
-          videoId: 'placeholder1',
+          title: 'Blinding Lights',
+          artist: 'The Weeknd',
+          duration: 200,
+          videoId: '4NRXx6U8ABQ',
         },
         {
           id: '2',
-          title: 'I Grew Up In This',
-          artist: 'By Relazione',
-          duration: 210,
-          videoId: 'placeholder2',
+          title: 'Shape of You',
+          artist: 'Ed Sheeran',
+          duration: 234,
+          videoId: 'JGwWNGJdvx8',
         },
         {
           id: '3',
-          title: "I'm losing it",
-          artist: 'Uo the Don',
-          duration: 194,
-          videoId: 'placeholder3',
+          title: 'Uptown Funk',
+          artist: 'Mark Ronson ft. Bruno Mars',
+          duration: 270,
+          videoId: 'OPf0YbXqDm0',
         },
       ],
     },
@@ -82,17 +84,17 @@ export default function Music() {
       songs: [
         {
           id: '4',
-          title: 'SOC - Artificial Intelligence',
-          artist: 'Skyler Casting',
-          duration: 219,
-          videoId: 'placeholder4',
+          title: 'Sunflower',
+          artist: 'Post Malone & Swae Lee',
+          duration: 158,
+          videoId: 'ApXoWvfEYVU',
         },
         {
           id: '5',
-          title: 'Crash',
-          artist: 'One Less Lonely Girl',
-          duration: 207,
-          videoId: 'placeholder5',
+          title: 'Stay With Me',
+          artist: 'Sam Smith',
+          duration: 172,
+          videoId: 'pB-5XG-DbAA',
         },
       ],
     },
@@ -135,7 +137,7 @@ export default function Music() {
     return (
       <div className="h-full w-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-transparent to-black">
         <div className="glass-panel rounded-2xl border-cyan-400/30 p-12 max-w-md w-full text-center">
-          <div className="text-6xl mb-6">🎵</div>
+          <MusicIcon className="w-16 h-16 mx-auto mb-6 text-cyan-400" />
           <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-magenta-400 mb-2">
             YouTube Music
           </h1>
@@ -147,7 +149,7 @@ export default function Music() {
             onClick={handleYouTubeLogin}
             className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-lg hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-cyan-500/40 mb-4 flex items-center justify-center gap-3"
           >
-            <span className="text-xl">🔐</span> Sign In with Google
+            <Lock className="w-5 h-5" /> Sign In with Google
           </button>
           <div className="text-xs text-muted-foreground mt-6 px-4">
             You'll be able to access your YouTube Music account, playlists,
@@ -174,7 +176,7 @@ export default function Music() {
               />
             ) : (
               <div className="text-center">
-                <div className="text-6xl mb-4">🎵</div>
+                <MusicIcon className="w-12 h-12 mx-auto mb-4 text-cyan-400/40" />
                 <p className="text-muted-foreground">Video Player Area</p>
                 <p className="text-sm text-muted-foreground mt-2">
                   YouTube videos will load here

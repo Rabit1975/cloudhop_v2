@@ -17,8 +17,11 @@ import {
   Search,
   Gift,
   Play,
+  Phone,
+  Video,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import CallOverlay from '../CallOverlay';
 import CloudHopLayout from '@/components/CloudHopLayout';
 import GameHub from './GameHub';
 import SpacesWithChat from './SpacesWithChat';
@@ -182,6 +185,37 @@ export default function Chat() {
   const [activeTabView, setActiveTabView] = useState<'messages' | 'requests'>(
     'messages'
   );
+
+  // ── 1-on-1 call state ─────────────────────────────────────────
+  const [callState, setCallState] = useState<
+    'idle' | 'calling' | 'incoming' | 'connected' | 'ended'
+  >('idle');
+  const [callTargetName, setCallTargetName] = useState('');
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isCameraOn, setIsCameraOn] = useState(true);
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [remoteStream] = useState<MediaStream | null>(null);
+
+  const startCall = async (targetName: string, video: boolean) => {
+    setCallTargetName(targetName);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video,
+      });
+      setLocalStream(stream);
+    } catch {
+      setLocalStream(null);
+    }
+    setCallState('calling');
+    setTimeout(() => setCallState('connected'), 2000);
+  };
+
+  const endCall = () => {
+    localStream?.getTracks().forEach((t) => t.stop());
+    setLocalStream(null);
+    setCallState('idle');
+  };
 
   const [groups, setGroups] = useState<Group[]>([
     {
@@ -407,7 +441,7 @@ export default function Chat() {
   if (activeTab === 'home')
     return (
       <CloudHopLayout activeTab={activeTab} onTabChange={setActiveTab}>
-        <Home />
+        <Home onTabChange={setActiveTab} />
       </CloudHopLayout>
     );
   if (activeTab === 'gamehub')
@@ -587,6 +621,20 @@ export default function Chat() {
                     </div>
                   )}
                 </div>
+                <button
+                  onClick={() => startCall(selectedDM.username, false)}
+                  title="Voice Call"
+                  className="p-2 hover:bg-green-400/10 rounded-lg transition-all text-muted-foreground hover:text-green-400"
+                >
+                  <Phone className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => startCall(selectedDM.username, true)}
+                  title="Video Call"
+                  className="p-2 hover:bg-cyan-400/10 rounded-lg transition-all text-muted-foreground hover:text-cyan-400"
+                >
+                  <Video className="w-5 h-5" />
+                </button>
                 <button
                   onClick={() => {
                     setSelectedUser(null);

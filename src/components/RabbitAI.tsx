@@ -1,5 +1,6 @@
-import { cn } from '@/lib/utils';
-import logoRabbit from '@/assets/logo-3d-rabbit.png';
+ import { cn } from '@/lib/utils';
+
+const rabbitAvatar = '/rabbitavatar1.PNG';
 
 interface RabbitAIProps {
   size?: 'sm' | 'md' | 'lg';
@@ -24,7 +25,7 @@ export default function RabbitAI({
       )}
     >
       <img
-        src={logoRabbit}
+        src={rabbitAvatar}
         alt="RabbitAI"
         className="w-full h-full object-cover"
       />
