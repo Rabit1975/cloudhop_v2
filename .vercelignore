@@ -1,0 +1,53 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+
+# Development files
+.git
+.gitignore
+
+# IDE files
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Temporary folders
+tmp
+temp
+
+# Duplicate files
+plan (1).md
+README (2).md
+README (3).md
+package (2).json
+vite.config (2).ts
+src/main (2).tsx
+src/RabbitAI (2).tsx
+index (2).html
+
+# PowerShell scripts
+kill_vscode_workers.ps1
+
+# Folders that shouldn't be deployed
+NewGaming Platform Dashboard folder
+unity-spectrum
