@@ -198,15 +198,15 @@ export default function Landing() {
   const [billingAnnual, setBillingAnnual] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-foreground overflow-x-hidden">
       {/* Hero */}
       <div className="relative overflow-hidden">
         <img
           src={nebulaBg}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-90 pointer-events-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/40 to-background pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/20 to-background pointer-events-none" />
 
         <div className="relative z-10">
           {/* Nav */}
@@ -242,7 +242,7 @@ export default function Landing() {
               </a>
             </div>
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/app')}
               className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-sm hover:opacity-90 transition-all"
             >
               Open App
@@ -254,6 +254,11 @@ export default function Landing() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-sm font-semibold mb-8">
               <Zap className="w-4 h-4" /> The all-in-one creative platform
             </div>
+            <img
+              src="/landingpagelogo.png"
+              alt="Landing Page Logo"
+              className="mx-auto mb-6 w-48 h-48 object-contain"
+            />
             <h1 className="text-6xl md:text-8xl font-black mb-6 leading-tight">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-magenta-400 to-cyan-400">
                 Hop In,
@@ -267,7 +272,7 @@ export default function Landing() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/app')}
                 className="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-lg hover:opacity-90 transition-all shadow-lg shadow-cyan-500/30 flex items-center gap-2"
               >
                 Get Started Free <ArrowRight className="w-5 h-5" />
@@ -279,12 +284,6 @@ export default function Landing() {
                 View Pricing
               </a>
             </div>
-            <img
-              src={logo3d}
-              alt="CloudHop Rabbit"
-              className="mx-auto mt-16 w-40 h-40 object-contain drop-shadow-2xl animate-bounce"
-              style={{ animationDuration: '3s' }}
-            />
           </div>
         </div>
       </div>
@@ -322,9 +321,9 @@ export default function Landing() {
         <img
           src={nebulaBg}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-50 pointer-events-none"
         />
-        <div className="absolute inset-0 bg-background/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-background/60 pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-magenta-400 mb-4">
@@ -480,7 +479,7 @@ export default function Landing() {
         <img
           src={nebulaBg}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background pointer-events-none" />
         <div className="relative z-10 text-center max-w-3xl mx-auto px-6">

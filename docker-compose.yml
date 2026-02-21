@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  # ── Development (hot reload, runs inside container) ──────────
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app                  # live source mount — edits reflect instantly
+      - /app/node_modules       # keep container node_modules separate
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # ensures file watch works on Windows
+    restart: unless-stopped
+
+  # ── Production (nginx static build) ─────────────────────────
   cloudhop:
     build: .
     ports:

@@ -61,6 +61,15 @@
   .glass-panel {
     @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-md shadow-black/30;
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ── Twinkling Starfield ─────────────────────────────────── */

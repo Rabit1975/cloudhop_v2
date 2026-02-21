@@ -1,0 +1,32 @@
+{
+  "name": "CloudHop Dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/app",
+  "forwardPorts": [5173],
+  "postCreateCommand": "sudo npm install",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "typescript.tsdk": "/app/node_modules/typescript/lib",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "tailwindCSS.includeLanguages": {
+          "typescriptreact": "html"
+        },
+        "css.validate": false,
+        "editor.quickSuggestions": {
+          "strings": true
+        }
+      },
+      "extensions": [
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-typescript-next",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}

@@ -121,9 +121,10 @@ export default function Home({ onTabChange }: { onTabChange?: (tab: Tab) => void
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {featuredStreams.map((stream) => (
-                <div
+                <button
                   key={stream.id}
-                  className="group glass-panel rounded-lg overflow-hidden border-cyan-400/30 hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer"
+                  onClick={() => onTabChange?.('twitch')}
+                  className="group glass-panel rounded-lg overflow-hidden border-cyan-400/30 hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer text-left w-full"
                 >
                   <div className="relative h-40 bg-gradient-to-br from-cyan-900/30 to-magenta-900/20 flex items-center justify-center overflow-hidden">
                     <div className="absolute top-3 left-3 flex items-center gap-1 bg-red-600/90 px-3 py-1 rounded-full text-white text-xs font-bold z-10">
@@ -159,7 +160,7 @@ export default function Home({ onTabChange }: { onTabChange?: (tab: Tab) => void
                       </button>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
 
@@ -180,7 +181,7 @@ export default function Home({ onTabChange }: { onTabChange?: (tab: Tab) => void
 
           {/* Quick Access Sections */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onClick={() => onTabChange?.('gamehub')} className="glass-panel rounded-xl p-8 border-cyan-400/30 hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer">
+            <button onClick={() => onTabChange?.('gamehub')} className="glass-panel rounded-xl p-8 border-cyan-400/30 hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer text-left w-full">
               <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
                 <Gamepad2 className="w-6 h-6 text-cyan-400" /> GameHub
               </h3>
@@ -191,9 +192,9 @@ export default function Home({ onTabChange }: { onTabChange?: (tab: Tab) => void
                 Explore Games
                 <ArrowRight className="w-4 h-4" />
               </div>
-            </div>
+            </button>
 
-            <div onClick={() => onTabChange?.('music')} className="glass-panel rounded-xl p-8 border-magenta-400/30 hover:border-magenta-400/60 transition-all hover:shadow-lg hover:shadow-magenta-500/20 cursor-pointer">
+            <button onClick={() => onTabChange?.('music')} className="glass-panel rounded-xl p-8 border-magenta-400/30 hover:border-magenta-400/60 transition-all hover:shadow-lg hover:shadow-magenta-500/20 cursor-pointer text-left w-full">
               <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
                 <Music className="w-6 h-6 text-pink-400" /> YouTube Music
               </h3>
@@ -205,9 +206,9 @@ export default function Home({ onTabChange }: { onTabChange?: (tab: Tab) => void
                 Listen Now
                 <ArrowRight className="w-4 h-4" />
               </div>
-            </div>
+            </button>
 
-            <div onClick={() => onTabChange?.('spaces')} className="glass-panel rounded-xl p-8 border-purple-400/30 hover:border-purple-400/60 transition-all hover:shadow-lg hover:shadow-purple-500/20 cursor-pointer md:col-span-2">
+            <button onClick={() => onTabChange?.('spaces')} className="glass-panel rounded-xl p-8 border-purple-400/30 hover:border-purple-400/60 transition-all hover:shadow-lg hover:shadow-purple-500/20 cursor-pointer text-left w-full md:col-span-2">
               <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
                 <Globe className="w-6 h-6 text-purple-400" /> Spaces - Powered by RabbitAI
               </h3>
@@ -219,7 +220,7 @@ export default function Home({ onTabChange }: { onTabChange?: (tab: Tab) => void
                 Enter Your Spaces
                 <ArrowRight className="w-4 h-4" />
               </div>
-            </div>
+            </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import rabbitAIService from '../services/RabbitAIService';
+import rabbitAIService from './services/RabbitAIService';
 
 const AITools: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -121,9 +121,9 @@ const AITools: React.FC = () => {
                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-[#53C8FF] text-[#0A0F1F]' : 'text-white/40 hover:bg-white/10'}`}
               >
                 {tab === 'Thinking Mode'
-                  ? '🧠 Thinking'
+                  ? 'Thinking'
                   : tab === 'Transcribe'
-                    ? '🎙️ Transcribe'
+                    ? 'Transcribe'
                     : tab}
               </button>
             ))}

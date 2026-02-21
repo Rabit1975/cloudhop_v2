@@ -38,11 +38,10 @@ export default function Login() {
         className="fixed inset-0 z-0"
         style={{ backgroundImage: `url(${nebulaBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       />
-      <div className="fixed inset-0 z-0 bg-black/30" />
 
       <div className="relative z-10 flex items-center justify-center min-h-screen px-6">
         <div className="w-full max-w-md">
-          <div className="rounded-2xl p-8 border border-cyan-400/30 bg-black/60 backdrop-blur-md">
+          <div className="rounded-2xl p-8 border border-cyan-400/50 bg-background/90 backdrop-blur-md">
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <img
@@ -69,7 +68,7 @@ export default function Login() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your username"
-                  className="w-full px-4 py-3 bg-white/5 border border-cyan-400/30 rounded-lg text-foreground placeholder-muted-foreground outline-none focus:border-cyan-400/60 focus:bg-white/10 transition-all"
+                  className="w-full px-4 py-3 bg-white/15 border border-cyan-400/50 rounded-lg text-foreground placeholder-muted-foreground outline-none focus:border-cyan-400/80 focus:bg-white/25 transition-all"
                   required
                 />
               </div>
@@ -85,7 +84,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="w-full px-4 py-3 pr-12 bg-white/5 border border-cyan-400/30 rounded-lg text-foreground placeholder-muted-foreground outline-none focus:border-cyan-400/60 focus:bg-white/10 transition-all"
+                    className="w-full px-4 py-3 pr-12 bg-white/15 border border-cyan-400/50 rounded-lg text-foreground placeholder-muted-foreground outline-none focus:border-cyan-400/80 focus:bg-white/25 transition-all"
                     required
                   />
                   <button

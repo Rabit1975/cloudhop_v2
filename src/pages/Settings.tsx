@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Bell,
   Shield,
@@ -14,6 +15,7 @@ import {
   ToggleRight,
   CheckCircle,
   Save,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -107,6 +109,7 @@ const lsBool = (key: string, fallback: boolean) => {
 };
 
 export default function Settings() {
+  const navigate = useNavigate();
   const [section, setSection] = useState<SettingsSection>('appearance');
   const [saved, setSaved] = useState(false);
   const [theme, setTheme] = useState(() => ls('theme', 'dark'));
@@ -148,6 +151,12 @@ export default function Settings() {
     Object.entries(settings).forEach(([k, v]) => localStorage.setItem('setting_' + k, v));
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('cloudhop_authenticated');
+    localStorage.removeItem('cloudhop_user');
+    navigate('/');
   };
 
   const accents = [
@@ -386,6 +395,15 @@ export default function Settings() {
                         <Shield className="w-4 h-4 text-cyan-400" /> Data Export
                       </div>
                       <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-3 rounded-lg bg-cyan-500/10 border border-cyan-400/20 hover:border-cyan-400/50 text-cyan-300 text-sm font-medium flex items-center justify-between transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <LogOut className="w-4 h-4" /> Sign Out
+                      </div>
+                      <ChevronRight className="w-4 h-4" />
                     </button>
                     <button className="w-full px-4 py-3 rounded-lg bg-red-500/10 border border-red-400/20 hover:border-red-400/50 text-red-300 text-sm font-medium flex items-center justify-between transition-all">
                       Delete Account

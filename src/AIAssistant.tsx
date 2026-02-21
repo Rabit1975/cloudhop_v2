@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { View } from '../types';
-import rabbitAIService from '../services/RabbitAIService';
-import { Icons } from '../constants';
+import { View } from './types';
+import rabbitAIService from './services/RabbitAIService';
+import { Icons } from './constants';
 
 interface AIAssistantProps {
   currentView: View;

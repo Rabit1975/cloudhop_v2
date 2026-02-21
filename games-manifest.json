@@ -3,7 +3,7 @@
     { "id": "1v1lol", "name": "1v1.LOL", "category": "Action" },
     { "id": "8ball", "name": "8 Ball Pool", "category": "Sports" },
     { "id": "2048", "name": "2048", "category": "Puzzle" },
-    { "id": "adarkaroom", "name": "A Dark Room", "category": "Adventure" },
+    { "id": "adarkroom", "name": "A Dark Room", "category": "Adventure" },
     { "id": "amongus", "name": "Among Us", "category": "Multiplayer" },
     { "id": "asciispace", "name": "ASCII Space", "category": "Action" },
     { "id": "asteroids", "name": "Asteroids", "category": "Classic" },
@@ -11,7 +11,7 @@
     { "id": "backcountry", "name": "Back Country", "category": "Adventure" },
     { "id": "basketballstars", "name": "Basketball Stars", "category": "Sports" },
     { "id": "blackholesquare", "name": "Black Hole Square", "category": "Puzzle" },
-    { "id": "bloonst4", "name": "Bloons Tower Defense 4", "category": "Strategy" },
+    { "id": "bloonstd4", "name": "Bloons Tower Defense 4", "category": "Strategy" },
     { "id": "bounceback", "name": "Bounce Back", "category": "Arcade" },
     { "id": "breaklock", "name": "Breaklock", "category": "Puzzle" },
     { "id": "breakout", "name": "Breakout", "category": "Classic" },
@@ -23,10 +23,10 @@
     { "id": "cookieclicker", "name": "Cookie Clicker", "category": "Idle" },
     { "id": "crossyroad", "name": "Crossy Road", "category": "Arcade" },
     { "id": "cubefield", "name": "Cube Field", "category": "Action" },
-    { "id": "cutherope", "name": "Cut the Rope", "category": "Puzzle" },
-    { "id": "cutherope2", "name": "Cut the Rope 2", "category": "Puzzle" },
-    { "id": "cuttherope_holiday", "name": "Cut the Rope Holiday", "category": "Puzzle" },
-    { "id": "cutttheropetravel", "name": "Cut the Rope Travel", "category": "Puzzle" },
+    { "id": "cuttherope", "name": "Cut the Rope", "category": "Puzzle" },
+    { "id": "cuttherope2", "name": "Cut the Rope 2", "category": "Puzzle" },
+    { "id": "cuttheropeholiday", "name": "Cut the Rope Holiday", "category": "Puzzle" },
+    { "id": "cuttheropetimetravel", "name": "Cut the Rope Time Travel", "category": "Puzzle" },
     { "id": "dinosaur", "name": "Dinosaur", "category": "Classic" },
     { "id": "doctor-acorn2", "name": "Doctor Acorn 2", "category": "Adventure" },
     { "id": "doctor-acorn3", "name": "Doctor Acorn 3", "category": "Adventure" },
@@ -61,6 +61,7 @@
     { "id": "gopher", "name": "Gopher", "category": "Classic" },
     { "id": "hextris", "name": "Hextris", "category": "Puzzle" },
     { "id": "icypurplehead2", "name": "Icy Purple Head 2", "category": "Adventure" },
-    { "id": "qiciengine", "name": "QICI Engine", "category": "Game Engine" }
+    { "id": "qiciengine", "name": "QICI Engine", "category": "Game Engine" },
+    { "id": "unity-spectrum", "name": "Unity Spectrum", "category": "Audio Visualizer" }
   ]
 }
