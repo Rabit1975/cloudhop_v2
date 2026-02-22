@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "_comment": "CSP includes vercel.live to allow Vercel feedback script",
   "headers": [
     {
       "source": "/(.*)",
