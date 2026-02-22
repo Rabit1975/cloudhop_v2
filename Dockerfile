@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine as builder
+FROM node:20.18-alpine3.21 AS builder
 
 # Set working directory in container
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for build)
-RUN npm install
+RUN npm ci --frozen-lockfile
 
 # Copy the rest of the application code to container
 COPY . .
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine as production
+FROM nginx:1.27-alpine
 
 # Copy built app from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
