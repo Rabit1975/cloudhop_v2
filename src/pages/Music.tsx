@@ -14,6 +14,9 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+// Google OAuth2 Configuration
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+
 interface Song {
   id: string;
   title: string;
@@ -26,6 +29,13 @@ interface Playlist {
   id: string;
   name: string;
   songs: Song[];
+}
+
+declare global {
+  interface Window {
+    gapi: any;
+    google: any;
+  }
 }
 
 export default function Music() {
@@ -62,13 +72,36 @@ export default function Music() {
   const allSongs = playlists.flatMap((p) => p.songs);
   const currentSong = allSongs[currentSongIndex];
 
+  // Initialize Google Sign-In on mount
+  useEffect(() => {
+    const initGoogleSignIn = () => {
+      if (!window.google) {
+        // Load Google Sign-In script
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+          if (window.google && window.google.accounts) {
+            window.google.accounts.id.initialize({
+              client_id: GOOGLE_CLIENT_ID,
+              callback: handleCredentialResponse,
+            });
+          }
+        };
+        document.head.appendChild(script);
+      }
+    };
+
+    initGoogleSignIn();
+  }, []);
+
   // Advance progress bar when playing
   useEffect(() => {
     if (!isPlaying) return;
     const interval = setInterval(() => {
       setCurrentTime((prev) => {
         if (prev >= (currentSong?.duration ?? 0)) {
-          // auto-advance to next song
           handleNext();
           return 0;
         }
@@ -77,6 +110,64 @@ export default function Music() {
     }, 1000);
     return () => clearInterval(interval);
   }, [isPlaying, currentSongIndex]);
+
+  const handleCredentialResponse = (response: any) => {
+    try {
+      // Decode JWT token
+      const base64Url = response.credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const data = JSON.parse(jsonPayload);
+      
+      setIsAuthenticated(true);
+      setUserEmail(data.email);
+      console.log('Successfully signed in as:', data.email);
+    } catch (error) {
+      console.error('Error processing credential:', error);
+      alert('Sign-in failed. Please try again.');
+    }
+  };
+
+  const handleYouTubeLogin = () => {
+    try {
+      if (window.google && window.google.accounts) {
+        window.google.accounts.id.renderButton(
+          document.getElementById('google-signin-button') || document.body,
+          { theme: 'dark', size: 'large' }
+        );
+        // Trigger the prompt
+        window.google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // Fallback: show button
+            const button = document.querySelector('[data-client_id]') as HTMLElement;
+            if (button) button.click();
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+      alert('Failed to initialize Google Sign-In. Please check your configuration.');
+    }
+  };
+
+  const handleLogout = () => {
+    try {
+      if (window.google && window.google.accounts) {
+        window.google.accounts.id.disableAutoSelect();
+      }
+      setIsAuthenticated(false);
+      setUserEmail('');
+    } catch (error) {
+      console.error('Logout error:', error);
+      setIsAuthenticated(false);
+      setUserEmail('');
+    }
+  };
 
   const handlePlaySong = (songId: string) => {
     const idx = allSongs.findIndex((s) => s.id === songId);
@@ -123,16 +214,6 @@ export default function Music() {
     setRepeatMode(modes[(modes.indexOf(repeatMode) + 1) % modes.length]);
   };
 
-  const handleYouTubeLogin = () => {
-    setIsAuthenticated(true);
-    setUserEmail('user@gmail.com');
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUserEmail('');
-  };
-
   if (!isAuthenticated) {
     return (
       <div className="h-full w-full overflow-hidden flex items-center justify-center bg-gradient-to-br from-purple-900/20 via-transparent to-black">
@@ -151,9 +232,20 @@ export default function Music() {
           >
             <Lock className="w-5 h-5" /> Sign In with Google
           </button>
+          <div id="google-signin-button" className="flex justify-center mb-4" />
           <div className="text-xs text-muted-foreground mt-6 px-4">
             You'll be able to access your YouTube Music account, playlists,
             liked songs, and watch music videos with your credentials.
+          </div>
+          <div className="mt-6 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+            <p className="text-xs text-yellow-600 font-semibold">Setup Required</p>
+            <p className="text-xs text-yellow-600 mt-2">
+              To enable Google Sign-In, add your Google Client ID to the .env file:
+              <br />
+              <code className="block mt-2 bg-black/50 p-2 rounded">
+                REACT_APP_GOOGLE_CLIENT_ID=YOUR_CLIENT_ID.apps.googleusercontent.com
+              </code>
+            </p>
           </div>
         </div>
       </div>
@@ -165,7 +257,7 @@ export default function Music() {
       {/* Video + Controls */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 glass-panel rounded-xl overflow-hidden border-cyan-400/30 mb-4 flex flex-col">
-          {/* YouTube player — key forces full remount on song change so autoplay works */}
+          {/* YouTube player */}
           <div className="flex-1 bg-black flex items-center justify-center relative">
             {currentSong?.videoId ? (
               <iframe
@@ -226,7 +318,7 @@ export default function Music() {
               </div>
             </div>
 
-            {/* Progress bar — clickable scrub */}
+            {/* Progress bar */}
             <div className="mb-2">
               <div
                 className="h-2 bg-secondary rounded-full overflow-hidden mb-2 cursor-pointer"
