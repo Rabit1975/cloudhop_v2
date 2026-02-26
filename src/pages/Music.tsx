@@ -27,6 +27,12 @@ interface Playlist {
   songs: Song[];
 }
 
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
+
 export default function Music() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userEmail, setUserEmail] = useState('');
@@ -61,6 +67,18 @@ export default function Music() {
   const allSongs = playlists.flatMap((p) => p.songs);
   const currentSong = allSongs[currentSongIndex];
 
+  // Load Google Sign-In script once
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      console.log('Google Sign-In script loaded');
+    };
+    document.head.appendChild(script);
+  }, []);
+
   // Advance progress bar when playing
   useEffect(() => {
     if (!isPlaying) return;
@@ -76,15 +94,61 @@ export default function Music() {
     return () => clearInterval(interval);
   }, [isPlaying, currentSongIndex]);
 
-  // Simplified login - just authenticate without Google OAuth for now
+  const handleCredentialResponse = (response: any) => {
+    try {
+      // Decode JWT token to get user info
+      const base64Url = response.credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const data = JSON.parse(jsonPayload);
+      
+      setIsAuthenticated(true);
+      setUserEmail(data.email);
+      console.log('Successfully authenticated as:', data.email);
+      
+      // TODO: Fetch user's YouTube Music playlists and liked songs here
+      // You'll need to use the YouTube Data API v3 with the access token
+    } catch (error) {
+      console.error('Error processing credential:', error);
+    }
+  };
+
   const handleYouTubeLogin = () => {
-    // For now, just authenticate with a demo account
-    setIsAuthenticated(true);
-    setUserEmail('user@youtube.com');
-    console.log('Signed in successfully');
+    if (!window.google) {
+      console.error('Google Sign-In not loaded yet');
+      alert('Google Sign-In is loading. Please try again in a moment.');
+      return;
+    }
+
+    try {
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_YOUTUBE_CLIENT_ID,
+        callback: handleCredentialResponse,
+      });
+
+      // Render the sign-in button
+      window.google.accounts.id.renderButton(
+        document.getElementById('google-signin-button'),
+        { theme: 'dark', size: 'large', width: '100%' }
+      );
+
+      // Show the One Tap prompt
+      window.google.accounts.id.prompt();
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
+      alert('Failed to initialize Google Sign-In. Please check console for details.');
+    }
   };
 
   const handleLogout = () => {
+    if (window.google) {
+      window.google.accounts.id.disableAutoSelect();
+    }
     setIsAuthenticated(false);
     setUserEmail('');
   };
@@ -143,14 +207,16 @@ export default function Music() {
             YouTube Music
           </h1>
           <p className="text-muted-foreground mb-8">
-            Sign in to access your playlists, favorites, and watch music videos
+            Sign in with your Google account to access your playlists,
+            favorites, and watch music videos
           </p>
           <button
             onClick={handleYouTubeLogin}
             className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold text-lg hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-cyan-500/40 mb-4"
           >
-            Sign In
+            Sign In with Google
           </button>
+          <div id="google-signin-button" className="flex justify-center my-4" />
           <div className="text-xs text-muted-foreground mt-6 px-4">
             You'll be able to access your YouTube Music account, playlists,
             liked songs, and watch music videos with your credentials.
