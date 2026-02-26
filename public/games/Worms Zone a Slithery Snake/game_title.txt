@@ -1,0 +1,51 @@
+Game Title: Worms Zone a Slithery Snake
+Game Title
+Worms Zone a Slithery Snake
+Published by
+Peaky Muzzle
+Mobile Web Compatible IOS - Android
+Language
+Bengali
+Chinese (Simplified)
+English
+Finnish
+French
+German
+Hindi
+Indonesian
+Italian
+Japanese
+Korean
+Polish
+Portuguese
+Russian
+Spanish
+Thai
+Turkish
+Ukrainian
+Vietnamese
+Chinese (Traditional)
+Gender
+Male
+Age Group
+Kids
+Teens
+YoungAdults
+DESCRIPTION
+Worms Zone is a game with a dynamic storyline. Start growing your worm right now. Having tried to get a real anaconda, a small worm never gets stuck in one place – he’s ready to bite everyone. However, there is a danger to be eaten by a more successful player. The Worms are real gourmets. They love trying various gelatinous goodies and everything they meet on their route.
+
+INSTRUCTIONS
+Use the mouse to control the worm's direction and space bar to speed up it.
+
+EMBED
+iframe src=httpshtml5.gamedistribution.com5dd0b18fb81d49da82ff459f08737390gd_sdk_referrer_url=httpswww.example.comgames{game-path} width=960 height=640 scrolling=none frameborder=0iframe
+Copy
+EXAMPLE URL
+httpshtml5.gamedistribution.com5dd0b18fb81d49da82ff459f08737390gd_sdk_referrer_url=httpsgamedistribution.comgamesworms-zone-a-slithery-snake
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as
+httpshtml5.gamedistribution.comGAME_IDgd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is httpswww.example.comgames then your request url should be as follows

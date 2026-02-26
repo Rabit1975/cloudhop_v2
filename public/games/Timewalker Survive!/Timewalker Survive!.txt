@@ -1,0 +1,40 @@
+Game Title: Timewalker: Survive!
+Game Title:
+Timewalker: Survive!
+Published by:
+GOECORUSH Media, s. r. o.
+Mobile Web Compatible: No
+Language
+English
+Simple English
+Gender
+Male
+Age Group
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Time Walker: Survive – Embark on a thrilling journey through apocalyptic landscapes in this fast-paced 2D top-down survival game! As a Timewalker, battle relentless hordes of zombies across different eras, fighting for survival against increasingly intense waves of the undead.
+
+INSTRUCTIONS
+WASD = move Move mouse = aim Left-click = shoot R = reload Space = slow-mo
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/b9bde9f7b60f44b6832384a50000dc72/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="1280" height="720" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/b9bde9f7b60f44b6832384a50000dc72/?gd_sdk_referrer_url=https://gamedistribution.com/games/timewalker/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/b9bde9f7b60f44b6832384a50000dc72/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/b9bde9f7b60f44b6832384a50000dc72/

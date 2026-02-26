@@ -1,0 +1,34 @@
+Game Title: Bubble Shooter Wild West
+
+Game Title:
+Bubble Shooter Wild West
+Published by:
+SOFTGAMES – Mobile Entertainment Services GmbH
+Mobile Web Compatible: IOS - Android
+Language
+Dutch
+English
+German
+Italian
+Polish
+Gender
+Male
+Female
+Age Group
+Kids
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Saddle up for a Wild West adventure in Bubble Shooter Wild West! Join Sheriff Bonnie as you pop colorful bubbles to defend your frontier town. Travel through dusty deserts, lively saloons, and scenic canyons while enjoying toe-tapping country tunes. Track your progress with detailed stats showing your best, current, and previous scores across Novice, Expert, and Master modes. With its vibrant Western visuals and exciting challenges, this bubble shooter brings cowboy spirit to every pop!
+
+INSTRUCTIONS
+Aim the cannon with the arrow and shoot bubbles to match 3 or more of the same color. The middle bubble shows your current shot, and the bottom-left bubble shows the next one. Clear bubbles to stop the stack from reaching the bottom. Missed shots add fouls, and new rows appear when grey bubbles run out. Use the Swap booster to change your current bubble, the Fireball to blast through obstacles, and rely on Second Chances and Last Chances to keep playing and reach higher scores!
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/0b18452cd7844e308b726bf05034fac2/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="800" height="600" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/0b18452cd7844e308b726bf05034fac2/?gd_sdk_referrer_url=https://gamedistribution.com/games/bubble-shooter-wild-west/
+Copy

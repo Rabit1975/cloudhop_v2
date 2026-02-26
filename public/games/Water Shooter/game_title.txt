@@ -1,0 +1,32 @@
+Game Title: Water Shooter
+Game Title:
+Water Shooter
+Published by:
+GamePush
+Mobile Web Compatible: No
+Language
+English
+Russian
+Gender
+Male
+Female
+Age Group
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Welcome to the 'Water Shooter'! In this exciting first-person shooter game, you will find yourself in the role of a young hero who received a water pistol as a gift. Armed with this reliable weapon, you boldly go to the dungeon, where battles with fiery monsters await you. Immerse yourself in a fascinating world of adventures, explore mysterious corners and show everyone that your water trunk has the power of victory over fire!
+
+INSTRUCTIONS
+Management: WASD - movement. Mouse movement - aiming. Left mouse button - fire (i.e. water :)) Esc or Tab - pause/opening the menu Space - jump. To start a level, click the "Levels" button in the main menu, then select a level from the list and press "Start" to start it. Fight in the arena, score more points than other players by selecting the "Arena" item in the main menu.
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/e9ac229c6a9c4b4a9795909e53a577c3/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="800" height="600" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/e9ac229c6a9c4b4a9795909e53a577c3/?gd_sdk_referrer_url=https://gamedistribution.com/games/water-shooter/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL

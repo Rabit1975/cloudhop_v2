@@ -1,0 +1,41 @@
+Game Title: Dead Zone Mech Ops
+Game Title:
+Dead Zone Mech Ops
+Published by:
+Breymantech
+Mobile Web Compatible: No
+Language
+English
+Gender
+Male
+Female
+Age Group
+Kids
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Dead Zone: Mech Ops thrusts players into the heart of a scorched Earth ravaged by endless war, where autonomous factions and rogue AI compete for control over the planet’s last remaining strongholds. You are a combat pilot in the elite “Mech Ops” unit — the final line of defense in a world on the brink of total collapse. Players will command next-gen combat exosuits equipped with modular weapon systems, advanced targeting tech, and adaptive armor that reacts to battlefield conditions.
+
+INSTRUCTIONS
+WASD to move LMB/RMB shoot
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/b20ef15d895d4ebc840f64a3f70ba12b/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="960" height="600" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/b20ef15d895d4ebc840f64a3f70ba12b/?gd_sdk_referrer_url=https://gamedistribution.com/games/dead-zone-mech-ops/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/b20ef15d895d4ebc840f64a3f70ba12b/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/b20ef15d895d4ebc840f64a3f70ba12b/

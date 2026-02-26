@@ -1,0 +1,45 @@
+Game Title: Lost in the Forest
+Game Title:
+Lost in the Forest
+Published by:
+Rabbit Bay Games
+Mobile Web Compatible: No
+Language
+Arabic
+Chinese (Simplified)
+English
+French
+German
+Russian
+Spanish
+Gender
+Male
+Age Group
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Lost in the forest is a classic adventure game. The protagonist is an airman who ends up in a storm, loses control of his plane and falls into a mysterious forest. The next day is stuck under a tree and must find a way to break free and solve various puzzles to make it back home safely.
+
+INSTRUCTIONS
+Use your mouse to find, use objects and move around
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/01c1407ac20942e688452cf1ab136b30/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="800" height="600" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/01c1407ac20942e688452cf1ab136b30/?gd_sdk_referrer_url=https://gamedistribution.com/games/lost-in-the-forest/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/01c1407ac20942e688452cf1ab136b30/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/01c1407ac20942e688452cf1ab136b30/

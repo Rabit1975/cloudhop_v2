@@ -1,0 +1,55 @@
+In hophub there isn't a way to delete channels or group chates once they've been created, please add that. YouTube music the sign in with google isn't working, please fix. I've added game are and and press kits to all games except for 1 that didn't have anything, Please ensure it is being displayed with its game and that all games are visible in the gamehub not just the 6 that are showing. Also the explore games button in the game hub doesn't work nor does the game carousel.The games aren't loading so they need to be fixed currently when you chick on them it asks for Code: NOT_FOUND
+ID: ia.  I also have a couple games I want to add as a feature from 
+- They'll have a download now button  and have game artwork  plusg youtube trailers showing the first one is Overwatch is a free-to-play, 5v5 team-based hero shooter by Blizzard Entertainment featuring over 30 characters (tanks, damage, support) and fast-paced, objective-based combat. How to Link: You can add a link or button on your website that directs users to Battle.net to download the game, or embed official trailers and media from the Blizzard website  In spaces the HTML canvas still doesn't work. We either need to get that up and running or repace it with CB Fabric.js can be made available via following approaches as suited by your project
+
+Using from CDN via script tag
+Include a script tag within your HTML page, from any cdn that offers this service like cdnjs, jsdelivr, unpkg
+
+<script src="https://cdn.jsdelivr.net/npm/fabric@latest/dist/index.min.js"></script>
+
+For the solar systems space I want to use NASA allows their "Eyes" apps to be embedded in web pages and blog posts, making it ideal for educational or personal websites. 
+Vatican Observatory
+Vatican Observatory
+Use an iframe: You can embed the interactive experience using a simple <iframe> tag in your HTML code.
+Add ?embed=true: Add ?embed=true to the end of the Eyes URL to remove the main menu and show only the 3D visualization.
+Example Code:
+html
+<iframe src="https://eyes.nasa.gov"
+        width="100%"
+        height="600px"
+        frameborder="0"
+        allowfullscreen>
+</iframe>
+ 
+Vatican Observatory
+Vatican Observatory
+Customization Options
+You can customize the embed by chaining parameters with an ampersand (&): 
+locked=true: Prevents users from navigating away from the default view.
+logo=false: Removes the NASA "meatball" logo.
+menu=false: Removes the main menu interface.
+search=false: Removes the search icon. 
+Vatican Observatory
+Vatican Observatory
+Important Usage Guidelines
+No Endorsement: While you can use these tools, they cannot be used to suggest or imply that NASA endorses your website or commercial products.
+Attribution: NASA should be acknowledged as the source of the material.
+No Commercial Use of Logos: You cannot use the official NASA logo (meatball) or the "worm" logotype in a way that suggests a product is "official" or "approved"
+
+
+
+To get your site ready to show ads, copy and paste this code between the <head></head> tags on each page of your site. Learn more about the AdSense code.
+Your AdSense code
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2761338223025470"
+     crossorigin="anonymous"></script>
+
+
+
+To get your site ready to show ads, copy and paste the text below into each ads.txt file and upload to your site's root directory. If you have an existing ads.txt file, just paste the text into each file. Learn more about creating an ads.txt file.
+
+google.com, pub-2761338223025470, DIRECT, f08c47fec0942fa0
+
+To get your site ready to show ads, copy and paste this HTML <meta> tag between the <head></head> tags on each page of your site. Learn more about using HTML <meta> tag to connect the site.
+
+<meta name="google-adsense-account" content="ca-pub-2761338223025470">

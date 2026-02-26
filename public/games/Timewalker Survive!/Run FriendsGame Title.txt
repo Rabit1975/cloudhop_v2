@@ -1,0 +1,38 @@
+Game Title: Run FriendsGame Title:
+Run Friends
+Published by:
+BUSIDOL
+Mobile Web Compatible: No
+Language
+English
+Korean
+Gender
+Male
+Female
+Age Group
+Kids
+Teens
+DESCRIPTION
+'RUN FRIENDS' is a game where beautiful heroines run to save planets in danger. Rescue the various creatures (Friends) on each planet, threatened by the cosmic villain Vegapunk, and save the planets. Are you ready to run alongside these beautiful heroines?
+
+INSTRUCTIONS
+Operable with four-directional keys and the Enter key or a mouse.
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/2983da59b976424b8d6bb25f75634b5f/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="1920" height="1080" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/2983da59b976424b8d6bb25f75634b5f/?gd_sdk_referrer_url=https://gamedistribution.com/games/run-friends/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/2983da59b976424b8d6bb25f75634b5f/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/2983da59b976424b8d6bb25f75634b5f/

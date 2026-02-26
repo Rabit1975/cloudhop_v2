@@ -1,0 +1,41 @@
+Game Title: Hero Ragdoll Fighting
+Game Title:
+Hero Ragdoll Fighting
+Published by:
+AdelikDev
+Mobile Web Compatible: No
+Language
+English
+Gender
+Male
+Female
+Age Group
+Kids
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Sahur Ragdoll Fighting Game is a dynamic action game in which you have to prove to everyone that Tung Tung Tung Sahur has no equal! ? ? Play as Sahur with a huge arsenal of weapons! Fight in different modes: — Survival: defeat wave after wave of enemies — Campaign: complete levels with different opponents and mechanics Maya
+
+INSTRUCTIONS
+The controls are simple: — Keyboard: WASD movement — Mobile control: virtual joystick In each mode, the goal is to destroy the opponents.: In Survival mode, fight against endless waves of bots In the Campaign , defeat unique enemies in each level
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/f3723439191b45bd8933b6171d0b1eab/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="800" height="600" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/f3723439191b45bd8933b6171d0b1eab/?gd_sdk_referrer_url=https://gamedistribution.com/games/hero-ragdoll-fighting/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/f3723439191b45bd8933b6171d0b1eab/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/f3723439191b45bd8933b6171d0b1eab/

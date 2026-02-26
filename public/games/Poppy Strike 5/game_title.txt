@@ -1,0 +1,38 @@
+
+Game Title: Poppy Strike 5
+Game Title:
+Poppy Strike 5
+Published by:
+G55.CO
+Mobile Web Compatible: No
+Language
+English
+Gender
+Male
+Age Group
+Teens
+YoungAdults
+DESCRIPTION
+Poppy Strike 5 is a first person shooter game with elements of horror where your mission is to use big arsenal of weapons to shoot huggy wuggy and kisiy misiy and find a way to escape liminal spaces of haunted toy factory.
+
+INSTRUCTIONS
+WASD - Move. LMB - Shoot. RMB - Aim/Flashlight. R - Reload. F - Use. G - Grenade. H - Melee. C - Crouch. M - Mute. TAB - Pause. Space - Jump. Shift - Run. 1-9 - Select Weapon.
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/9527fe8b99f448be8ee3044c633b7d5d/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="960" height="600" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/9527fe8b99f448be8ee3044c633b7d5d/?gd_sdk_referrer_url=https://gamedistribution.com/games/poppy-strike-5/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/9527fe8b99f448be8ee3044c633b7d5d/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/9527fe8b99f448be8ee3044c633b7d5d/

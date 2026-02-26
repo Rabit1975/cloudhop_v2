@@ -1,0 +1,41 @@
+Game Title: 99 Balls
+Game Title:
+99 Balls
+Published by:
+Playgama
+Mobile Web Compatible: No
+Language
+English
+Gender
+Male
+Female
+Age Group
+Kids
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+99 Balls 3D is an endless arcade game that mixes brick breaker and bubble shooter action in full 3D. Launch balls to smash numbered cylinders before they reach the bottom. Collect stars to unlock fun ball skins like sports balls, gems, or fruit. Simple to play, endlessly challenging, and highly addictive!
+
+INSTRUCTIONS
+Aim by dragging backward, then release to fire balls. Each cylinder needs hits equal to its number. Clear as many as possible before any reach the bottom line. Use the aiming guide to plan bounces, shoot through gaps for better angles, and fast-forward when the screen fills up. PC: click & drag mouse. Mobile: tap & drag, then release.
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/dd6edfff840a4c38ae69596cf0ce314e/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="800" height="600" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/dd6edfff840a4c38ae69596cf0ce314e/?gd_sdk_referrer_url=https://gamedistribution.com/games/99-balls/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/dd6edfff840a4c38ae69596cf0ce314e/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/dd6edfff840a4c38ae69596cf0ce314e/
