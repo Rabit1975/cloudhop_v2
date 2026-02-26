@@ -1,36 +1,16 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search, Play, ChevronLeft, ChevronRight, X, RotateCcw, Maximize2,
-  Star, Clock, Gamepad2, Settings, Bell,
+  Star, Gamepad2, Settings, Bell, Download, FileText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import robotNinja from '../assets/robot-ninja.png';
 
 interface Game {
   id: string;
   name: string;
   category: string;
-}
-
-interface GameSession {
-  gameId: string;
-  lastPlayed: Date;
-  playTime?: number;
-}
-
-interface SpectrumData {
-  frequencies: number[];
-  emotionalState: {
-    energy: number;
-    valence: number;
-    arousal: number;
-    tension: number;
-  };
-  visualParams: {
-    intensity: number;
-    speed: number;
-    mood: string;
-  };
+  image: string;
+  pressKitUrl: string;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -46,6 +26,9 @@ const CATEGORY_COLORS: Record<string, string> = {
   Racing: 'from-indigo-600 to-purple-500',
   Horror: 'from-slate-700 to-slate-900',
   Platformer: 'from-lime-600 to-green-500',
+  'Casual': 'from-pink-500 to-purple-500',
+  'Multiplayer': 'from-cyan-600 to-blue-500',
+  'Match 3': 'from-red-500 to-pink-500',
 };
 
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -61,6 +44,9 @@ const CATEGORY_EMOJI: Record<string, string> = {
   Racing: '🏎️',
   Horror: '👻',
   Platformer: '🏃',
+  Casual: '🎯',
+  Multiplayer: '👾',
+  'Match 3': '💎',
 };
 
 export default function GameHub() {
@@ -68,255 +54,126 @@ export default function GameHub() {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [continuePlaying, setContinuePlaying] = useState<GameSession[]>([]);
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [isUnityMode, setIsUnityMode] = useState(false);
-  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
-  const [audioAnalyser, setAudioAnalyser] = useState<AnalyserNode | null>(null);
-  const [audioData, setAudioData] = useState<number[]>(new Array(7).fill(0));
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const carouselIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const audioLoopRef = useRef<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Load all games from public/games folder
   useEffect(() => {
     const loadGames = async () => {
       try {
-        const response = await fetch('/games-manifest.json');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch games: ${response.statusText}`);
+        setLoading(true);
+        setError(null);
+
+        // Fetch the list of games dynamically
+        const gameIds = [
+          '1v1lol', '2048', '8ball', '99 Balls', 'adarkroom', 'amongus', 'asciispace',
+          'asteroids', 'astray', 'backcountry', 'basketballstars', 'blackholesquare',
+          'bloonstd4', 'bounceback', 'breaklock', 'breakout', 'Bubble Shooter Wild West',
+          'Candy Riddles Free Match 3 Puzzle', 'captaincallisto', 'chess', 'chromaincident',
+          'chromedino', 'connect3', 'cookieclicker', 'crossyroad', 'cubefield', 'cuttherope',
+          'cuttherope2', 'cuttheropeholiday', 'cuttheropetimetravel', 'dinosaur',
+          'doctor-acorn2', 'doctor-acorn3', 'doge2048', 'dogeminer', 'doodle-jump',
+          'driftboss', 'ducklife', 'ducklife2', 'ducklife3', 'ducklife4', 'ducklife5',
+          'edgenotfound', 'edge-surf', 'elasticmorty', 'evilglitch', 'factoryballsforever',
+          'fireboy-and-watergirl-1', 'fireboy-and-watergirl-2', 'fireboy-and-watergirl-3',
+          'fireboy-and-watergirl-4', 'firewater', 'flappy-2048', 'flappybird', 'fnaf',
+          'fnaf2', 'fnaf3', 'fnaf4', 'friendlyfire', 'geometry', 'geometrydash', 'gopher',
+          'hextris', 'icypurplehead2', 'qiciengine', 'unity-spectrum'
+        ];
+
+        const loadedGames: Game[] = [];
+
+        for (const gameId of gameIds) {
+          try {
+            // Try to find the image
+            const imageName = gameId.includes(' ') ? gameId : gameId;
+            const imageUrl = `/games/${gameId}/${imageName}.jpg`;
+            const pressKitUrl = `/games/${gameId}/${gameId} - Press Kit.pdf`;
+
+            // Determine category based on game name or ID
+            let category = 'Arcade';
+            if (gameId.includes('duck')) category = 'Sports';
+            else if (gameId.includes('fireboy') || gameId.includes('candy')) category = 'Puzzle';
+            else if (gameId.includes('doge') || gameId.includes('clicker')) category = 'Idle';
+            else if (gameId.includes('chess') || gameId.includes('strategy')) category = 'Strategy';
+            else if (gameId.includes('ball') || gameId.includes('8ball')) category = 'Sports';
+            else if (gameId.includes('rope') || gameId.includes('connect')) category = 'Puzzle';
+            else if (gameId.includes('fnaf') || gameId.includes('horror')) category = 'Horror';
+            else if (gameId.includes('race') || gameId.includes('drift')) category = 'Racing';
+            else if (gameId.includes('among') || gameId.includes('social')) category = 'Multiplayer';
+            else if (gameId.includes('match') || gameId.includes('candy')) category = 'Match 3';
+
+            loadedGames.push({
+              id: gameId,
+              name: gameId
+                .replace(/[-_]/g, ' ')
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' '),
+              category,
+              image: imageUrl,
+              pressKitUrl,
+            });
+          } catch (err) {
+            console.warn(`Failed to load game ${gameId}:`, err);
+          }
         }
-        const data = await response.json();
-        console.log('Loaded games data:', data);
-        console.log('Games array length:', data.games?.length);
-        
-        // Ensure games array exists and has valid data
-        const validGames = Array.isArray(data.games) ? data.games : [];
-        setGames(validGames);
-        
-        // Create continue playing sessions with proper error handling
-        const sessions = validGames.slice(0, 3).map((game: Game) => ({
-          gameId: game.id,
-          lastPlayed: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-          playTime: Math.floor(Math.random() * 120) + 20,
-        }));
-        setContinuePlaying(sessions);
-      } catch (error) {
-        console.error('Error loading games:', error);
-        // Set empty games array so the UI still renders
-        setGames([]);
-        setContinuePlaying([]);
+
+        if (loadedGames.length === 0) {
+          setError('No games found. Please check your games folder.');
+        } else {
+          setGames(loadedGames);
+          setSelectedGame(loadedGames[0]);
+        }
+      } catch (err) {
+        console.error('Error loading games:', err);
+        setError('Failed to load games. Please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
 
     loadGames();
   }, []);
 
-  // Audio analysis for Unity integration
-  useEffect(() => {
-    if (isUnityMode && !audioContext) {
-      const initAudio = async () => {
-        try {
-          const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-          const analyser = ctx.createAnalyser();
-          analyser.fftSize = 2048;
-          
-          // Try to get audio input (microphone)
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const source = ctx.createMediaStreamSource(stream);
-            source.connect(analyser);
-          } catch (err) {
-            console.warn('Microphone access denied, using system audio analysis');
-            // Fallback: create a dummy audio source for analysis
-            const oscillator = ctx.createOscillator();
-            const gain = ctx.createGain();
-            oscillator.connect(gain);
-            gain.connect(analyser);
-            oscillator.start();
-          }
-
-          setAudioContext(ctx);
-          setAudioAnalyser(analyser);
-
-          // Start audio analysis loop
-          startAudioAnalysis(analyser);
-        } catch (err) {
-          console.error('Failed to initialize audio:', err);
-        }
-      };
-
-      initAudio();
-    } else if (!isUnityMode && audioContext) {
-      // Clean up audio when exiting Unity mode
-      stopAudioAnalysis();
-      audioContext.close();
-      setAudioContext(null);
-      setAudioAnalyser(null);
-    }
-  }, [isUnityMode]);
-
-  const startAudioAnalysis = (analyser: AnalyserNode) => {
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    const analyzeAudio = () => {
-      analyser.getByteFrequencyData(dataArray);
-      
-      // Map frequency bands to 7 ranges
-      const bands = [
-        { start: 0, end: 10 },      // Sub-bass (20-60 Hz)
-        { start: 11, end: 30 },     // Bass (60-250 Hz)
-        { start: 31, end: 60 },     // Low-mid (250-500 Hz)
-        { start: 61, end: 120 },    // Mid (500-2kHz)
-        { start: 121, end: 240 },   // High-mid (2-4kHz)
-        { start: 241, end: 480 },   // High (4-6kHz)
-        { start: 481, end: bufferLength - 1 }  // Ultra-high (6-20kHz)
-      ];
-
-      const frequencies = bands.map(band => {
-        let sum = 0;
-        for (let i = band.start; i <= band.end; i++) {
-          sum += dataArray[i];
-        }
-        return sum / (band.end - band.start + 1) / 255; // Normalize 0-1
-      });
-
-      setAudioData(frequencies);
-
-      // Send data to Unity
-      sendSpectrumData(frequencies);
-
-      if (isUnityMode) {
-        audioLoopRef.current = requestAnimationFrame(analyzeAudio);
-      }
-    };
-
-    analyzeAudio();
-  };
-
-  const stopAudioAnalysis = () => {
-    if (audioLoopRef.current) {
-      cancelAnimationFrame(audioLoopRef.current);
-      audioLoopRef.current = null;
-    }
-  };
-
-  const sendSpectrumData = (frequencies: number[]) => {
-    // Calculate emotional state from frequencies
-    const energy = Math.max(...frequencies);
-    const valence = frequencies[3] / frequencies[1]; // Mid vs Bass ratio
-    const arousal = frequencies[5] / frequencies[2]; // High vs Low-mid ratio
-    const tension = frequencies[6] / frequencies[0]; // Ultra-high vs Sub-bass ratio
-
-    const spectrumData: SpectrumData = {
-      frequencies,
-      emotionalState: {
-        energy: Math.min(energy, 1),
-        valence: Math.min(valence, 1),
-        arousal: Math.min(arousal, 1),
-        tension: Math.min(tension, 1)
-      },
-      visualParams: {
-        intensity: energy * 2,
-        speed: arousal * 2,
-        mood: energy > 0.7 ? 'intense' : energy > 0.3 ? 'calm' : 'dreamy'
-      }
-    };
-
-    // Send to Unity iframe
-    if (iframeRef.current) {
-      iframeRef.current.contentWindow?.postMessage({
-        type: 'spectrum',
-        payload: spectrumData
-      }, '*');
-    }
-  };
-
   // Auto-rotate carousel
   useEffect(() => {
-    if (games.length > 0) {
-      carouselIntervalRef.current = setInterval(() => {
-        setCarouselIndex((prev) => (prev + 1) % games.length);
-      }, 5000);
-    }
-    return () => {
-      if (carouselIntervalRef.current) clearInterval(carouselIntervalRef.current);
-    };
-  }, [games.length]);
+    if (games.length === 0) return;
+    const interval = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % games.length);
+      setSelectedGame(games[(carouselIndex + 1) % games.length]);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [games, carouselIndex]);
 
   const filteredGames = games.filter((g) =>
     g.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const featuredGame = games[carouselIndex] || selectedGame;
-  const continuePlayingGames = continuePlaying
-    .map((session) => games.find((g) => g.id === session.gameId))
-    .filter(Boolean) as Game[];
+  const handleFullscreen = () => {
+    const iframe = document.querySelector('iframe') as HTMLIFrameElement;
+    iframe?.requestFullscreen?.();
+  };
 
-  const handleFullscreen = () => iframeRef.current?.requestFullscreen?.();
   const handleReload = () => {
-    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
+    const iframe = document.querySelector('iframe') as HTMLIFrameElement;
+    if (iframe) iframe.src = iframe.src;
   };
 
   const handleCarouselPrev = () => {
-    setCarouselIndex((prev) => (prev - 1 + games.length) % games.length);
+    const newIndex = (carouselIndex - 1 + games.length) % games.length;
+    setCarouselIndex(newIndex);
+    setSelectedGame(games[newIndex]);
   };
 
   const handleCarouselNext = () => {
-    setCarouselIndex((prev) => (prev + 1) % games.length);
+    const newIndex = (carouselIndex + 1) % games.length;
+    setCarouselIndex(newIndex);
+    setSelectedGame(games[newIndex]);
   };
 
-  /* Unity Mode */
-  if (isUnityMode) {
-    return (
-      <div className="h-full w-full flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/10 bg-slate-900 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="text-xl">🎵</span>
-            <div>
-              <p className="text-white font-bold text-sm">Unity Spectrum</p>
-              <p className="text-cyan-400 text-[11px]">Audio Visualizer</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button onClick={handleFullscreen} className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/50 hover:text-white transition-all">
-              <Maximize2 className="w-4 h-4" />
-            </button>
-            <button onClick={() => setIsUnityMode(false)} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/30 transition-all text-sm font-bold">
-              <X className="w-3.5 h-3.5" /> Exit
-            </button>
-          </div>
-        </div>
-        <div className="flex-1 relative overflow-hidden">
-          <iframe
-            ref={iframeRef}
-            src="/unity-spectrum/index.html"
-            title="Unity Spectrum"
-            className="absolute inset-0 w-full h-full border-none"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-          />
-        </div>
-        {/* Audio Visualization Overlay */}
-        <div className="absolute bottom-4 left-4 right-4 flex gap-2">
-          <div className="flex-1 bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-            <div className="flex justify-between text-xs text-white mb-2">
-              <span>Audio Spectrum</span>
-              <span>{Math.max(...audioData).toFixed(2)}</span>
-            </div>
-            <div className="flex gap-1">
-              {audioData.map((freq, i) => (
-                <div
-                  key={i}
-                  className="flex-1 bg-gradient-to-t from-cyan-500 to-magenta-500 rounded-sm"
-                  style={{ height: `${freq * 60}px` }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const featuredGame = selectedGame || games[carouselIndex];
 
   /* Playing State */
   if (isPlaying && selectedGame) {
@@ -344,7 +201,6 @@ export default function GameHub() {
         </div>
         <div className="flex-1 relative overflow-hidden">
           <iframe
-            ref={iframeRef}
             src={`/games/${selectedGame.id}/index.html`}
             title={selectedGame.name}
             className="absolute inset-0 w-full h-full border-none"
@@ -367,7 +223,7 @@ export default function GameHub() {
               <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-red-600">
                 STRIKEFORCE
               </h1>
-              <p className="text-slate-400 text-sm mt-1">Battle Arena Gaming Platform</p>
+              <p className="text-slate-400 text-sm mt-1">Battle Arena Gaming Platform - {games.length} Games</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="relative flex-1 max-w-sm">
@@ -386,138 +242,145 @@ export default function GameHub() {
             </div>
           </div>
 
-          {/* Featured Hero with Robot Ninja */}
-          <div className="relative rounded-2xl overflow-hidden border border-slate-700 h-96 group">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-900/40 to-orange-900/40">
-              <div className="absolute inset-0 bg-black/50" />
-            </div>
-
-            {/* Robot Ninja Image */}
-            <img
-              src="/Robotninja .png"
-              alt="Robot Ninja Strikeforce"
-              className="absolute right-0 top-0 h-full object-cover opacity-85"
-            />
-
-            <div className="absolute inset-0 flex flex-col justify-between p-8 z-10">
-              <div className="flex items-center gap-2">
-                <span className="px-4 py-2 rounded-full bg-red-600/80 border border-red-500/50 text-xs font-black text-white">
-                  ⚡ WELCOME TO STRIKEFORCE
-                </span>
-              </div>
-              <div className="space-y-4 max-w-lg">
-                <div>
-                  <h2 className="text-5xl font-black text-white mb-2">Battle Arena</h2>
-                  <p className="text-slate-300">Elite Gaming Platform</p>
-                </div>
-                <p className="text-slate-300 text-sm leading-relaxed">
-                  Enter the combat zone. Master epic battles and claim your glory across our entire game collection.
-                </p>
-                <div className="flex items-center gap-3 pt-4">
-                  <button className="px-6 py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold flex items-center gap-2 transition-all active:scale-95">
-                    <Gamepad2 className="w-5 h-5" />
-                    Explore Games
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Game Carousel - All games scrolling */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-black text-white">All Games - Battle Collection</h2>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleCarouselPrev}
-                  className="p-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={handleCarouselNext}
-                  className="p-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Horizontally Scrolling Carousel */}
-            <div className="relative group">
-              <div className="overflow-x-auto overflow-y-hidden scrollbar-hide">
-                <div className="flex gap-4 pb-4 min-w-min">
-                  {(searchQuery ? filteredGames : games).map((game) => (
-                    <button
-                      key={game.id}
-                      onClick={() => {
-                        setSelectedGame(game);
-                        setIsPlaying(true);
-                      }}
-                      className="group relative rounded-lg overflow-hidden border border-slate-700 hover:border-red-500/50 transition-all hover:shadow-lg hover:shadow-red-500/20 flex-shrink-0"
-                      style={{ width: '140px' }}
-                    >
-                      <div className={cn('relative h-40 bg-gradient-to-br flex items-center justify-center', CATEGORY_COLORS[game.category] || CATEGORY_COLORS.Arcade)}>
-                        <span className="text-4xl opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all">{CATEGORY_EMOJI[game.category] || '🎮'}</span>
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
-                          <Play className="w-6 h-6 text-white fill-white" />
-                        </div>
-                      </div>
-                      <div className="p-2.5 bg-slate-900">
-                        <h3 className="font-bold text-white text-[11px] leading-tight line-clamp-2 group-hover:text-red-400 transition-colors">
-                          {game.name}
-                        </h3>
-                        <span className="text-[9px] text-slate-500 mt-0.5 block">{game.category}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Gradient fade for scrolling effect */}
-              <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent pointer-events-none z-10" />
-            </div>
-
-            <p className="text-xs text-slate-500 mt-2">Showing {(searchQuery ? filteredGames : games).length} games</p>
-          </div>
-
-          {/* Continue Playing */}
-          {continuePlayingGames.length > 0 && (
-            <div className="space-y-3">
-              <h2 className="text-lg font-black text-white">Continue Playing</h2>
-              <div className="space-y-3">
-                {continuePlayingGames.map((game) => (
-                  <button
-                    key={game.id}
-                    onClick={() => {
-                      setSelectedGame(game);
-                      setIsPlaying(true);
-                    }}
-                    className="w-full flex items-center gap-4 p-4 rounded-xl bg-slate-800/50 border border-slate-700 hover:border-red-500/50 hover:bg-slate-800 transition-all group"
-                  >
-                    <div className={cn('w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0 bg-gradient-to-br', CATEGORY_COLORS[game.category] || CATEGORY_COLORS.Arcade)}>
-                      <span className="text-3xl">{CATEGORY_EMOJI[game.category] || '🎮'}</span>
-                    </div>
-                    <div className="flex-1 text-left">
-                      <h3 className="font-bold text-white group-hover:text-red-400 transition-colors">{game.name}</h3>
-                      <p className="text-xs text-slate-400">Last played 2 hours ago</p>
-                      <div className="mt-2 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-red-500 to-orange-500" style={{ width: '65%' }} />
-                      </div>
-                    </div>
-                    <Play className="w-5 h-5 text-slate-400 group-hover:text-red-400 transition-colors flex-shrink-0 fill-current" />
-                  </button>
-                ))}
-              </div>
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-12">
+              <Gamepad2 className="w-16 h-16 mx-auto mb-4 text-red-500 animate-bounce" />
+              <p className="text-slate-400 text-lg">Loading your game collection...</p>
             </div>
           )}
 
-          {/* Welcome Message */}
-          {!searchQuery && (
-            <div className="rounded-xl bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 p-6">
-              <h3 className="text-2xl font-black text-white mb-2">Welcome to STRIKEFORCE</h3>
-              <p className="text-slate-400">Select a game from the arena and dominate the competition. Every battle counts!</p>
+          {/* Error State */}
+          {error && (
+            <div className="rounded-xl bg-red-500/10 border border-red-500/30 p-6 text-center">
+              <p className="text-red-400 font-bold">{error}</p>
             </div>
+          )}
+
+          {!loading && !error && (
+            <>
+              {/* Featured Hero */}
+              {featuredGame && (
+                <div className="relative rounded-2xl overflow-hidden border border-slate-700 h-96 group">
+                  <img
+                    src={featuredGame.image}
+                    alt={featuredGame.name}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/games/default.png';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/50 to-transparent" />
+
+                  <div className="absolute inset-0 flex flex-col justify-between p-8 z-10">
+                    <div className="flex items-center gap-2">
+                      <span className="px-4 py-2 rounded-full bg-red-600/80 border border-red-500/50 text-xs font-black text-white">
+                        ⚡ FEATURED
+                      </span>
+                    </div>
+                    <div className="space-y-4 max-w-lg">
+                      <div>
+                        <h2 className="text-5xl font-black text-white mb-2">{featuredGame.name}</h2>
+                        <p className="text-slate-300">{featuredGame.category}</p>
+                      </div>
+                      <div className="flex items-center gap-3 pt-4">
+                        <button
+                          onClick={() => {
+                            setSelectedGame(featuredGame);
+                            setIsPlaying(true);
+                          }}
+                          className="px-6 py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold flex items-center gap-2 transition-all active:scale-95"
+                        >
+                          <Play className="w-5 h-5" />
+                          Play Now
+                        </button>
+                        <a
+                          href={featuredGame.pressKitUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-6 py-3 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-white font-bold flex items-center gap-2 transition-all"
+                        >
+                          <FileText className="w-5 h-5" />
+                          Press Kit
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Game Grid */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-black text-white">All Games - {filteredGames.length} Available</h2>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleCarouselPrev}
+                      className="p-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={handleCarouselNext}
+                      className="p-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Scrolling Game Grid */}
+                <div className="relative group">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {filteredGames.map((game) => (
+                      <button
+                        key={game.id}
+                        onClick={() => {
+                          setSelectedGame(game);
+                          setIsPlaying(true);
+                        }}
+                        className="group relative rounded-lg overflow-hidden border border-slate-700 hover:border-red-500/50 transition-all hover:shadow-lg hover:shadow-red-500/20 flex-shrink-0"
+                      >
+                        <div className={cn('relative h-40 bg-gradient-to-br flex items-center justify-center overflow-hidden', CATEGORY_COLORS[game.category] || CATEGORY_COLORS.Arcade)}>
+                          <img
+                            src={game.image}
+                            alt={game.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                          <span className="absolute text-4xl opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all">{CATEGORY_EMOJI[game.category] || '🎮'}</span>
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                            <Play className="w-6 h-6 text-white fill-white" />
+                          </div>
+                        </div>
+                        <div className="p-2.5 bg-slate-900">
+                          <h3 className="font-bold text-white text-[11px] leading-tight line-clamp-2 group-hover:text-red-400 transition-colors">
+                            {game.name}
+                          </h3>
+                          <span className="text-[9px] text-slate-500 mt-0.5 block">{game.category}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {filteredGames.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-slate-400">No games found matching "{searchQuery}"</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Welcome Message */}
+              {!searchQuery && (
+                <div className="rounded-xl bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 p-6">
+                  <h3 className="text-2xl font-black text-white mb-2">Welcome to STRIKEFORCE</h3>
+                  <p className="text-slate-400">Select a game from the arena and dominate the competition. Every battle counts!</p>
+                </div>
+              )}
+            </>
           )}
 
         </div>
