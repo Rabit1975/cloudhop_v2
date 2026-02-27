@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charm Farm - Play Online Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .header h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+    
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      color: #666;
+      margin: 20px 0;
+    }
+    
+    .meta-item {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    
+    .meta-label {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9em;
+    }
+    
+    .meta-value {
+      color: #666;
+      margin-top: 5px;
+    }
+    
+    .description {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      line-height: 1.6;
+      color: #555;
+    }
+    
+    .instructions {
+      background: #e8f5e9;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #4caf50;
+      color: #2e7d32;
+      margin: 20px 0;
+    }
+    
+    .game-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    
+    .game-container h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    .iframe-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    iframe {
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8em;
+      }
+      
+      .meta {
+        grid-template-columns: 1fr;
+      }
+      
+      iframe {
+        width: 100% !important;
+        height: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Charm Farm</h1>
+      <div class="meta">
+        <div class="meta-item">
+          <div class="meta-label">Published by</div>
+          <div class="meta-value">Nevosoft</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Mobile Compatible</div>
+          <div class="meta-value">No</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Target Audience</div>
+          <div class="meta-value">Kids, Seniors</div>
+        </div>
+      </div>
+      
+      <div class="description">
+        <strong>About this game:</strong><br>
+        Enchanter! Come to Magic Forest - it needs your help! Create spells and command adorable Shmoos, find and grow interesting creatures and plants!
+      </div>
+      
+      <div class="instructions">
+        <strong>How to Play:</strong><br>
+        Use your mouse
+      </div>
+    </div>
+    
+    <div class="game-container">
+      <h2>Play Now</h2>
+      <div class="iframe-container">
+        <iframe src="https://html5.gamedistribution.com/cc93d61e5dc447cf9d042d2add8b9ea6/?gd_sdk_referrer_url=https://cloudhop.cloud/games/Charm%20Farm/" width="900" height="830" scrolling="none" frameborder="0" allow="autoplay; fullscreen"></iframe>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+# Privacy Policy
+
+**Last Updated: February 26, 2026**
+
+## 1. Introduction
+
+CloudHop ("we," "us," "our," or "Company") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and otherwise handle your information when you use our website and services.
+
+## 2. Information We Collect
+
+### 2.1 Information You Provide
+- Account registration information (email, username, profile data)
+- Google Account information when you sign in with Google
+- Content you upload or create (playlists, preferences, gameplay data)
+- Communications you send us
+
+### 2.2 Automatically Collected Information
+- Device information (OS, browser type, IP address)
+- Usage data (pages visited, games played, features used)
+- Cookie and tracking data
+- Analytics data (via Google Analytics)
+
+### 2.3 Third-Party Services
+When you authenticate via Google Sign-In, we receive:
+- Email address
+- Profile name and picture
+- Linked accounts (YouTube, etc.)
+
+## 3. How We Use Your Information
+
+We use the collected information to:
+- Provide and improve our services
+- Authenticate users and manage accounts
+- Personalize your experience
+- Send you updates and announcements
+- Comply with legal obligations
+- Prevent fraud and secure our services
+- Analyze usage patterns and optimize performance
+
+## 4. Data Sharing and Disclosure
+
+We do **not** sell your personal information. We may share information with:
+- Service providers (hosting, analytics, payments)
+- Legal authorities when required by law
+- Your explicit consent
+
+### 4.1 Third-Party Services
+- **Google Sign-In**: Your authentication and profile data
+- **YouTube API**: Game and music video integration
+- **Supabase**: Database and authentication infrastructure
+- **Analytics**: Usage analytics (non-identifying data)
+
+## 5. Data Security
+
+We implement appropriate technical and organizational measures to protect your data, including:
+- HTTPS encryption for data in transit
+- Secure database storage
+- Regular security audits
+- Limited access controls
+
+**Note:** No method of transmission over the Internet is 100% secure.
+
+## 6. Your Rights
+
+Depending on your location, you may have the right to:
+- Access your personal data
+- Correct inaccurate data
+- Request data deletion
+- Opt-out of certain data uses
+- Data portability
+
+To exercise these rights, contact us at: legal@cloudhop.cloud
+
+## 7. Cookies
+
+We use cookies to:
+- Maintain your session
+- Remember preferences
+- Track usage analytics
+- Improve user experience
+
+You can control cookies through your browser settings.
+
+## 8. Children's Privacy
+
+CloudHop is not intended for children under 13. We do not knowingly collect information from children under 13. If we learn we've collected such information, we'll delete it promptly.
+
+## 9. Changes to This Policy
+
+We may update this Privacy Policy. We'll notify you of significant changes by updating the "Last Updated" date.
+
+## 10. Contact Us
+
+For privacy questions or concerns:
+- Email: legal@cloudhop.cloud
+- Website: https://cloudhop.cloud
+
+---
+
+*© 2026 CloudHop. All rights reserved.*

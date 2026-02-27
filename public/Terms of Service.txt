@@ -1,0 +1,105 @@
+# Terms of Service
+
+**Last Updated: February 26, 2026**
+
+## 1. Acceptance of Terms
+
+By accessing and using CloudHop ("Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+
+## 2. License and Access
+
+CloudHop grants you a limited, non-exclusive, non-transferable license to use the Service. You agree to:
+- Use the Service only for lawful purposes
+- Not engage in behavior that restricts or inhibits the use of the Service
+- Not attempt to gain unauthorized access to the Service
+- Not transmit viruses, malware, or any code of a destructive nature
+
+## 3. User Responsibilities
+
+You are responsible for:
+- Maintaining the confidentiality of your account credentials
+- All activities that occur under your account
+- Notifying us immediately of unauthorized access
+- Complying with all applicable laws and regulations
+
+## 4. Prohibited Content
+
+You agree not to upload or share:
+- Copyrighted material without authorization
+- Illegal, obscene, or defamatory content
+- Malware, viruses, or harmful code
+- Content that violates third-party rights
+- Harassment, hate speech, or violent content
+
+## 5. Intellectual Property Rights
+
+### 5.1 Our Content
+All content on CloudHop (code, design, text, graphics) is owned by CloudHop or its content suppliers and is protected by international copyright laws.
+
+### 5.2 Your Content
+You retain ownership of content you create or upload. By uploading, you grant CloudHop a worldwide, non-exclusive license to use your content to operate and improve the Service.
+
+### 5.3 Third-Party Content
+CloudHop includes third-party games and content. Your use of these items is subject to their respective licenses and terms.
+
+## 6. Service Limitations
+
+CloudHop is provided "as-is" without warranties. We do not warrant that:
+- The Service will be uninterrupted or error-free
+- Any defects will be corrected
+- The Service is free from viruses or harmful components
+
+## 7. Limitation of Liability
+
+To the fullest extent permitted by law, CloudHop and its affiliates shall not be liable for:
+- Indirect, incidental, or consequential damages
+- Loss of data, revenue, or business
+- Damages arising from service interruption
+- Any damages exceeding the amount you paid (if applicable)
+
+## 8. Indemnification
+
+You agree to indemnify and hold harmless CloudHop from any claims, damages, or costs arising from:
+- Your use of the Service
+- Your violation of these Terms
+- Your infringement of any third-party rights
+- Your content or conduct
+
+## 9. Termination
+
+CloudHop reserves the right to terminate or suspend your account if you:
+- Violate these Terms
+- Engage in illegal activity
+- Harass other users
+- Repeatedly violate content policies
+
+Upon termination, your right to use the Service ceases immediately.
+
+## 10. Governing Law
+
+These Terms are governed by and construed in accordance with the laws of the State of Florida, USA, without regard to conflicts of law provisions.
+
+## 11. Dispute Resolution
+
+Any disputes arising from these Terms shall be resolved through:
+1. Good faith negotiation (30 days)
+2. Binding arbitration in Florida, USA
+3. Each party bears its own legal costs
+
+## 12. Changes to Terms
+
+We reserve the right to modify these Terms. Continued use of the Service after changes constitutes acceptance of the new Terms.
+
+## 13. Entire Agreement
+
+These Terms, along with our Privacy Policy, constitute the entire agreement between you and CloudHop regarding the Service.
+
+## 14. Contact
+
+For questions regarding these Terms:
+- Email: legal@cloudhop.cloud
+- Website: https://cloudhop.cloud
+
+---
+
+*© 2026 CloudHop. All rights reserved.*
