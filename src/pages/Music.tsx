@@ -119,6 +119,15 @@ export default function Music() {
   };
 
   const handleYouTubeLogin = () => {
+    const clientId = import.meta.env.VITE_YOUTUBE_CLIENT_ID;
+    console.log('DEBUG: VITE_YOUTUBE_CLIENT_ID =', clientId);
+    
+    if (!clientId) {
+      console.error('ERROR: VITE_YOUTUBE_CLIENT_ID is not set!');
+      alert('OAuth Client ID is not configured. Contact support.');
+      return;
+    }
+    
     if (!window.google) {
       console.error('Google Sign-In not loaded yet');
       alert('Google Sign-In is loading. Please try again in a moment.');
@@ -127,7 +136,7 @@ export default function Music() {
 
     try {
       window.google.accounts.id.initialize({
-        client_id: import.meta.env.VITE_YOUTUBE_CLIENT_ID,
+        client_id: clientId,
         callback: handleCredentialResponse,
       });
 

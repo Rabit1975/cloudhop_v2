@@ -1,0 +1,39 @@
+Game Title: Eternal Fury
+Game Title:
+Eternal Fury
+Published by:
+GAME HOLLYWOOD HONG KONG LIMITED
+Mobile Web Compatible: IOS - Android
+Gender
+Male
+Female
+Age Group
+Kids
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+A strategic turn-based RPG in Html 5 that combines SLG action and classic interactions. Players can summon random acquisitions of different quality mercenaries and customize the base attributes of the mercenary growth system. The game with different genres perfectly combined, will definitely blow your mind!
+
+INSTRUCTIONS
+Use your mouse to play!
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/6f6471ecbc2447d29aa1173e591448e3/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="1280" height="800" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/6f6471ecbc2447d29aa1173e591448e3/?gd_sdk_referrer_url=https://gamedistribution.com/games/eternal-fury/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/6f6471ecbc2447d29aa1173e591448e3/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/6f6471ecbc2447d29aa1173e591448e3/

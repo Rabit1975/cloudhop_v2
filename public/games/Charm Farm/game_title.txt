@@ -1,0 +1,35 @@
+Game Title: Charm Farm
+Game Title:
+Charm Farm
+Published by:
+Nevosoft
+Mobile Web Compatible: No
+Gender
+Female
+Age Group
+Kids
+Seniors
+DESCRIPTION
+Enchanter! Come to Magic Forest - it needs your help! Create spells and command adorable Shmoos, find and grow interesting creatures and plants!
+
+INSTRUCTIONS
+Use your mouse
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/cc93d61e5dc447cf9d042d2add8b9ea6/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="900" height="830" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/cc93d61e5dc447cf9d042d2add8b9ea6/?gd_sdk_referrer_url=https://gamedistribution.com/games/charm-farm/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/cc93d61e5dc447cf9d042d2add8b9ea6/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/cc93d61e5dc447cf9d042d2add8b9ea6/

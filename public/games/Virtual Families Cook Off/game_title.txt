@@ -1,0 +1,35 @@
+Game Title: Virtual Families Cook Off
+Game Title:
+Virtual Families Cook Off
+Published by:
+Gogii Games
+Mobile Web Compatible: IOS - Android
+Gender
+Male
+Female
+Age Group
+Adults
+DESCRIPTION
+Fire up the grill, mix your marinades, become a chef and start your very own Cook-Off now! Manage your time to beat the dinner dash and dish out the delicious, from pizza to burgers, sushi and cupcakes and so much more!
+
+INSTRUCTIONS
+Tap to cook for and serve your guests!
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/9bf2e82f7c684bdcb0a8f4fa3ec0ecd6/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="1920" height="1080" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/9bf2e82f7c684bdcb0a8f4fa3ec0ecd6/?gd_sdk_referrer_url=https://gamedistribution.com/games/virtual-families-cook-off-1/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/9bf2e82f7c684bdcb0a8f4fa3ec0ecd6/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/9bf2e82f7c684bdcb0a8f4fa3ec0ecd6/

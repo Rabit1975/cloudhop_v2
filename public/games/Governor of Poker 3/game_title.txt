@@ -1,0 +1,36 @@
+Game Title: Governor of Poker 3
+Game Title
+Governor of Poker 3
+Published by
+Youda Games
+Mobile Web Compatible No
+Gender
+Male
+Age Group
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Play poker with the greatest players ever!
+
+INSTRUCTIONS
+Use your mouse.
+
+EMBED
+iframe src=httpshtml5.gamedistribution.comee00b8fb427b4ad8aa36616c6815b923gd_sdk_referrer_url=httpswww.example.comgames{game-path} width=800 height=600 scrolling=none frameborder=0iframe
+Copy
+EXAMPLE URL
+httpshtml5.gamedistribution.comee00b8fb427b4ad8aa36616c6815b923gd_sdk_referrer_url=httpsgamedistribution.comgamesgovernor-of-poker-3
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as
+httpshtml5.gamedistribution.comGAME_IDgd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is httpswww.example.comgames then your request url should be as follows
+httpshtml5.gamedistribution.comee00b8fb427b4ad8aa36616c6815b923gd_sdk_referrer_url=httpswww.example.comgames
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+httpshtml5.gamedistribution.comee00b8fb427b4ad8aa36616c6815b923

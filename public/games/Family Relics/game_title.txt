@@ -1,0 +1,34 @@
+Game Title: Family Relics
+Game Title:
+Family Relics
+Published by:
+INFINITE
+Mobile Web Compatible: Android
+Gender
+Female
+Age Group
+Seniors
+DESCRIPTION
+Welcome to the Parsley estate, situated in the beautiful and secluded Willow Hills! Passed down by your estranged uncle, it's all yours now. Clean and build up your farm, grow crops, and take care of the animals. However, don't be fooled by the rural farm life, because life in Willow Hills is anything but ordinary: mysterious events occur, and there are whispers about treasured relics of the Parsley family. Step into this curious adventure today!
+
+INSTRUCTIONS
+Use your mouse!
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/fff2df99a5dd4ff1946cd9291b35f29f/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="800" height="652" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/fff2df99a5dd4ff1946cd9291b35f29f/?gd_sdk_referrer_url=https://gamedistribution.com/games/family-relics/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/fff2df99a5dd4ff1946cd9291b35f29f/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/fff2df99a5dd4ff1946cd9291b35f29f/

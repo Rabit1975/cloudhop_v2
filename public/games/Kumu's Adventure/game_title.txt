@@ -1,0 +1,39 @@
+Game Title: Kumu's Adventure
+Game Title:
+Kumu's Adventure
+Published by:
+Camex Games
+Mobile Web Compatible: Android
+Gender
+Male
+Female
+Age Group
+Kids
+Teens
+YoungAdults
+Adults
+Seniors
+DESCRIPTION
+Start your journey in a far future continent, where magic and tech rule the world. Explore the dangerous wilderness with your team of adventurers. Kumu's Adventure is a strategic rogue-like rpg with fast and fun turn-based combat and evolving exploration. Build and improve your camp and equip your leader and your heroes in order to discover the truth of the ancient Immet Empire ruins and free the land from the evil Sartre Tribe.
+
+INSTRUCTIONS
+Tap/Click To Play. Follow The Tutorial.
+
+EMBED
+<iframe src="https://html5.gamedistribution.com/a2b4b57bb3e04f7b90450620fc2598ba/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="1000" height="700" scrolling="none" frameborder="0"></iframe>
+Copy
+EXAMPLE URL
+https://html5.gamedistribution.com/a2b4b57bb3e04f7b90450620fc2598ba/?gd_sdk_referrer_url=https://gamedistribution.com/games/kumus-adventure/
+Copy
+IMPORTANT NOTIFICATION ABOUT EMBEDDING GAMES
+Ads should be requested from the game's page url to avoid loss of ads performance. To make this happen please adjust your game frame request url as follows: gd_sdk_referrer_url should be added to the request url . To do that please modify your request url as:
+https://html5.gamedistribution.com/GAME_ID/?gd_sdk_referrer_url=YOUR_EXACT_GAME_PAGE_URL
+
+CORRECT USAGE
+If your page url is https://www.example.com/games then your request url should be as follows:
+https://html5.gamedistribution.com/a2b4b57bb3e04f7b90450620fc2598ba/?gd_sdk_referrer_url=https://www.example.com/games
+
+You can check example url below to see how we are using in this page.
+
+WRONG USAGE
+https://html5.gamedistribution.com/a2b4b57bb3e04f7b90450620fc2598ba/
