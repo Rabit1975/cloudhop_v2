@@ -255,9 +255,9 @@ export default function Landing() {
               <Zap className="w-4 h-4" /> The all-in-one creative platform
             </div>
             <img
-              src="/landingpagelogo.png"
-              alt="Landing Page Logo"
-              className="mx-auto mb-6 w-48 h-48 object-contain"
+              src={logo3d}
+              alt="CloudHop 3D Rabbit Logo"
+              className="mx-auto mb-6 w-48 h-48 object-contain drop-shadow-lg"
             />
             <h1 className="text-6xl md:text-8xl font-black mb-6 leading-tight">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-magenta-400 to-cyan-400">
