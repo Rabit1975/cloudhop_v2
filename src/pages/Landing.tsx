@@ -500,17 +500,85 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img
-              src={logoSplash}
-              alt="CloudHop"
-              className="w-8 h-8 rounded-lg object-contain"
-            />
-            <span className="font-bold text-foreground">CloudHop</span>
-            <span className="text-xs text-muted-foreground">© 2026</span>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <img
+                  src={logoSplash}
+                  alt="CloudHop"
+                  className="w-8 h-8 rounded-lg object-contain"
+                />
+                <span className="font-bold text-foreground">CloudHop</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Hop In, Cloud On ☁️</p>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="font-bold text-foreground mb-4 text-sm">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a href="/privacy" className="text-muted-foreground hover:text-cyan-400 transition-colors">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="/terms" className="text-muted-foreground hover:text-cyan-400 transition-colors">
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="/refund" className="text-muted-foreground hover:text-cyan-400 transition-colors">
+                    Refund Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="/user-data-policy" className="text-muted-foreground hover:text-cyan-400 transition-colors">
+                    User Data Policy
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="font-bold text-foreground mb-4 text-sm">Support</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a href="#features" className="text-muted-foreground hover:text-cyan-400 transition-colors">
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a href="#pricing" className="text-muted-foreground hover:text-cyan-400 transition-colors">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:legal@cloudhop.cloud" className="text-muted-foreground hover:text-cyan-400 transition-colors">
+                    Contact
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-bold text-foreground mb-4 text-sm">Contact</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>legal@cloudhop.cloud</li>
+                <li>privacy@cloudhop.cloud</li>
+                <li>support@cloudhop.cloud</li>
+              </ul>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">Hop In, Cloud On ☁️</p>
+
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground">© 2026 CloudHop. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">Made with ☁️ by CloudHop</p>
+          </div>
         </div>
       </footer>
     </div>
