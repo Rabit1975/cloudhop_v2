@@ -110,12 +110,6 @@ export default function Login() {
                 {isLoading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
-
-            <div className="mt-6 p-4 rounded-lg bg-cyan-500/10 border border-cyan-400/30">
-              <p className="text-xs text-cyan-300 text-center">
-                <strong>Demo Mode:</strong> Enter any username and password to access the application
-              </p>
-            </div>
           </div>
         </div>
       </div>
