@@ -34,7 +34,11 @@
       "destination": "/assets/$1"
     },
     {
-      "source": "/(.*)",
+      "source": "/",
+      "destination": "/home.html"
+    },
+    {
+      "source": "(.*)",
       "destination": "/index.html"
     }
   ]
