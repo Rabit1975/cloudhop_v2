@@ -18,46 +18,17 @@
   <body>
     <div id="root"></div>
 
-    <!-- Static footer (also rendered by React) so crawlers and verification bots
-         can discover links without executing JS.  The dynamic React footer lives
-         in src/pages/Landing.tsx and appears after hydration. -->
-    <footer class="border-t border-white/10 py-12 px-6">
-      <div class="max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <!-- Legal -->
-          <div>
-            <h4 class="font-bold text-foreground mb-4 text-sm">Legal</h4>
-            <ul class="space-y-2 text-sm">
-              <li><a href="/privacy" class="text-muted-foreground">Privacy Policy</a></li>
-              <li><a href="/terms" class="text-muted-foreground">Terms of Service</a></li>
-              <li><a href="/refund" class="text-muted-foreground">Refund Policy</a></li>
-              <li><a href="/user-data-policy" class="text-muted-foreground">User Data Policy</a></li>
-            </ul>
-          </div>
-          <!-- Support -->
-          <div>
-            <h4 class="font-bold text-foreground mb-4 text-sm">Support</h4>
-            <ul class="space-y-2 text-sm">
-              <li><a href="#features" class="text-muted-foreground">Features</a></li>
-              <li><a href="#pricing" class="text-muted-foreground">Pricing</a></li>
-              <li><a href="mailto:legal@cloudhop.cloud" class="text-muted-foreground">Contact</a></li>
-            </ul>
-          </div>
-          <!-- Contact -->
-          <div>
-            <h4 class="font-bold text-foreground mb-4 text-sm">Contact</h4>
-            <ul class="space-y-2 text-sm text-muted-foreground">
-              <li>legal@cloudhop.cloud</li>
-              <li>privacy@cloudhop.cloud</li>
-              <li>support@cloudhop.cloud</li>
-            </ul>
-          </div>
-        </div>
-        <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p class="text-sm text-muted-foreground">© 2026 CloudHop. All rights reserved.</p>
-          <p class="text-sm text-muted-foreground">Made with ☁️ by CloudHop</p>
-        </div>
-      </div>
+    <!-- Minimal footer for Google verification -->
+    <hr style="margin-top: 40px; border: none; border-top: 1px solid #333;" />
+    <footer style="padding: 30px; font-family: Arial, sans-serif; font-size: 14px; color: #999;">
+      <h3 style="margin-top: 0;">Legal</h3>
+      <ul style="list-style: none; padding: 0;">
+        <li><a href="/privacy" style="color: #0ea5e9; text-decoration: none;">Privacy Policy</a></li>
+        <li><a href="/terms" style="color: #0ea5e9; text-decoration: none;">Terms of Service</a></li>
+        <li><a href="/refund" style="color: #0ea5e9; text-decoration: none;">Refund Policy</a></li>
+        <li><a href="/user-data-policy" style="color: #0ea5e9; text-decoration: none;">User Data Policy</a></li>
+      </ul>
+      <p style="margin-top: 20px; font-size: 12px;">© 2026 CloudHop. All rights reserved.</p>
     </footer>
 
     <script type="module" src="/src/main.tsx"></script>
