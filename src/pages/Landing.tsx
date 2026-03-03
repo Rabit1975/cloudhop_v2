@@ -240,6 +240,12 @@ export default function Landing() {
               >
                 Add-Ons
               </a>
+              <a
+                href="/privacy"
+                className="hover:text-foreground transition-colors"
+              >
+                Privacy
+              </a>
             </div>
             <button
               onClick={() => navigate('/app')}
