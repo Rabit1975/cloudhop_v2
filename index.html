@@ -17,6 +17,49 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Static footer (also rendered by React) so crawlers and verification bots
+         can discover links without executing JS.  The dynamic React footer lives
+         in src/pages/Landing.tsx and appears after hydration. -->
+    <footer class="border-t border-white/10 py-12 px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <!-- Legal -->
+          <div>
+            <h4 class="font-bold text-foreground mb-4 text-sm">Legal</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/privacy" class="text-muted-foreground">Privacy Policy</a></li>
+              <li><a href="/terms" class="text-muted-foreground">Terms of Service</a></li>
+              <li><a href="/refund" class="text-muted-foreground">Refund Policy</a></li>
+              <li><a href="/user-data-policy" class="text-muted-foreground">User Data Policy</a></li>
+            </ul>
+          </div>
+          <!-- Support -->
+          <div>
+            <h4 class="font-bold text-foreground mb-4 text-sm">Support</h4>
+            <ul class="space-y-2 text-sm">
+              <li><a href="#features" class="text-muted-foreground">Features</a></li>
+              <li><a href="#pricing" class="text-muted-foreground">Pricing</a></li>
+              <li><a href="mailto:legal@cloudhop.cloud" class="text-muted-foreground">Contact</a></li>
+            </ul>
+          </div>
+          <!-- Contact -->
+          <div>
+            <h4 class="font-bold text-foreground mb-4 text-sm">Contact</h4>
+            <ul class="space-y-2 text-sm text-muted-foreground">
+              <li>legal@cloudhop.cloud</li>
+              <li>privacy@cloudhop.cloud</li>
+              <li>support@cloudhop.cloud</li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p class="text-sm text-muted-foreground">© 2026 CloudHop. All rights reserved.</p>
+          <p class="text-sm text-muted-foreground">Made with ☁️ by CloudHop</p>
+        </div>
+      </div>
+    </footer>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
