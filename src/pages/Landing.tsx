@@ -19,6 +19,12 @@ import { useNavigate } from 'react-router-dom';
 import logoSplash from '../assets/logo-splash.png';
 import logo3d from '../assets/logo-3d-rabbit.png';
 import nebulaBg from '../assets/Nebula4.png';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 const FEATURES = [
   {
@@ -240,12 +246,34 @@ export default function Landing() {
               >
                 Add-Ons
               </a>
-              <a
-                href="/privacy"
-                className="hover:text-foreground transition-colors"
-              >
-                Privacy
-              </a>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1 hover:text-foreground transition-colors cursor-pointer">
+                  Legal
+                  <ChevronDown className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem asChild>
+                    <a href="/privacy" className="cursor-pointer">
+                      Privacy Policy
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href="/terms" className="cursor-pointer">
+                      Terms of Service
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href="/refund" className="cursor-pointer">
+                      Refund Policy
+                    </a>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a href="/user-data-policy" className="cursor-pointer">
+                      User Data Policy
+                    </a>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <button
               onClick={() => navigate('/app')}
