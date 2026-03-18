@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { config, type TierType } from '../config';
+import { config, type TierType } from '../config.js';
 
 export interface UserSubscription {
   id: string;

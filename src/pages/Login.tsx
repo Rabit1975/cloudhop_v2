@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import logoSplash from '../assets/logo-splash.png';
 import nebulaBg from '../assets/Nebula4.png';
@@ -13,8 +13,7 @@ export default function Login() {
 
   // Already logged in? Go straight to app
   if (localStorage.getItem('cloudhop_authenticated') === 'true') {
-    navigate('/app');
-    return null;
+    return <Navigate to="/app" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

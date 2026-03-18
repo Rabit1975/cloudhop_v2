@@ -1,5 +1,5 @@
-import { sendMethodNotAllowed } from './_lib';
-import { getPlans } from '../src/server/utils/supabase';
+import { sendMethodNotAllowed } from './_lib.js';
+import { getPlans } from '../src/server/utils/supabase.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'GET') {

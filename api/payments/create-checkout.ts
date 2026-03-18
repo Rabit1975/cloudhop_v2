@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
-import { requireUser, sendMethodNotAllowed, readJsonBody } from '../_lib';
-import { config, stripeReady, type TierType } from '../../src/server/config';
+import { requireUser, sendMethodNotAllowed, readJsonBody } from '../_lib.js';
+import { config, stripeReady, type TierType } from '../../src/server/config.js';
 
 const stripe = config.stripeSecretKey
   ? new Stripe(config.stripeSecretKey, { apiVersion: '2026-02-25.clover' })

@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
-import { readRawBody, sendMethodNotAllowed } from '../_lib';
-import { config as appConfig, stripeReady, type TierType } from '../../src/server/config';
-import { updateStripeCustomerForUser, updateUserTierByStripeCustomer } from '../../src/server/utils/supabase';
+import { readRawBody, sendMethodNotAllowed } from '../_lib.js';
+import { config as appConfig, stripeReady, type TierType } from '../../src/server/config.js';
+import { updateStripeCustomerForUser, updateUserTierByStripeCustomer } from '../../src/server/utils/supabase.js';
 
 export const config = {
   api: {

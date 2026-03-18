@@ -1,4 +1,4 @@
-import { getAuthUserFromToken } from '../src/server/utils/supabase';
+import { getAuthUserFromToken } from '../src/server/utils/supabase.js';
 
 export async function readRawBody(req: any): Promise<Buffer> {
   if (Buffer.isBuffer(req.body)) {

@@ -1,5 +1,5 @@
-import { readJsonBody, requireUser, sendMethodNotAllowed } from './_lib';
-import { addStorageUsed, incrementAIActionsUsed, logUsage } from '../src/server/utils/supabase';
+import { readJsonBody, requireUser, sendMethodNotAllowed } from './_lib.js';
+import { addStorageUsed, incrementAIActionsUsed, logUsage } from '../src/server/utils/supabase.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {

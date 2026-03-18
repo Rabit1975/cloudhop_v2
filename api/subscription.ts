@@ -1,5 +1,5 @@
-import { requireUser, sendMethodNotAllowed } from './_lib';
-import { getUserSubscription } from '../src/server/utils/supabase';
+import { requireUser, sendMethodNotAllowed } from './_lib.js';
+import { getUserSubscription } from '../src/server/utils/supabase.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'GET') {
