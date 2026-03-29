@@ -8,5 +8,6 @@
     "typescript.disableAutomaticTypeAcquisition": false,
     "chat.edits2.enabled": true,
     "chat.mcp.gallery.enabled": true,
-    "chat.alternativeToolAction.enabled": true
+    "chat.alternativeToolAction.enabled": true,
+    "innocodyai.apiKey": "tm-lsA3lpOrQr0CdmdOw7dlyfV9Nud4TTtipRg8I2fxc7a308dc"
 }

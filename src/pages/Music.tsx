@@ -119,7 +119,7 @@ export default function Music() {
   };
 
   const handleYouTubeLogin = () => {
-    const clientId = import.meta.env.VITE_YOUTUBE_CLIENT_ID;
+    const clientId = import.meta.env.VITE_YOUTUBE_CLIENT_ID || '543098707668-d395qnt038q26dvf1kls0tserhckqpj4.apps.googleusercontent.com';
     console.log('DEBUG: VITE_YOUTUBE_CLIENT_ID =', clientId);
     
     if (!clientId) {
@@ -449,3 +449,4 @@ export default function Music() {
     </div>
   );
 }
+
