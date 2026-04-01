@@ -27,15 +27,16 @@ interface Playlist {
   songs: Song[];
 }
 
-declare global {
-  interface Window {
-    google?: any;
-  }
+interface User {
+  email: string;
+  name: string;
+  picture: string;
 }
 
 export default function Music() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(70);
@@ -67,16 +68,23 @@ export default function Music() {
   const allSongs = playlists.flatMap((p) => p.songs);
   const currentSong = allSongs[currentSongIndex];
 
-  // Load Google Sign-In script once
+  // Check for OAuth callback on mount
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      console.log('Google Sign-In script loaded');
-    };
-    document.head.appendChild(script);
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const userJson = params.get('user');
+
+    if (token && userJson) {
+      const userData = JSON.parse(decodeURIComponent(userJson));
+      setAccessToken(token);
+      setUser(userData);
+      setIsAuthenticated(true);
+      
+      // Clean URL
+      window.history.replaceState({}, document.title, '/app?tab=music');
+      
+      console.log('✅ Authenticated as:', userData.email);
+    }
   }, []);
 
   // Advance progress bar when playing
@@ -94,72 +102,24 @@ export default function Music() {
     return () => clearInterval(interval);
   }, [isPlaying, currentSongIndex]);
 
-  const handleCredentialResponse = (response: any) => {
+  const handleYouTubeLogin = async () => {
     try {
-      // Decode JWT token to get user info
-      const base64Url = response.credential.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      const data = JSON.parse(jsonPayload);
+      // Get OAuth URL from backend
+      const response = await fetch('http://localhost:3001/auth/google/url');
+      const { url } = await response.json();
       
-      setIsAuthenticated(true);
-      setUserEmail(data.email);
-      console.log('Successfully authenticated as:', data.email);
-      
-      // TODO: Fetch user's YouTube Music playlists and liked songs here
-      // You'll need to use the YouTube Data API v3 with the access token
+      // Redirect to Google OAuth
+      window.location.href = url;
     } catch (error) {
-      console.error('Error processing credential:', error);
-    }
-  };
-
-  const handleYouTubeLogin = () => {
-    const clientId = import.meta.env.VITE_YOUTUBE_CLIENT_ID || '543098707668-d395qnt038q26dvf1kls0tserhckqpj4.apps.googleusercontent.com';
-    console.log('DEBUG: VITE_YOUTUBE_CLIENT_ID =', clientId);
-    
-    if (!clientId) {
-      console.error('ERROR: VITE_YOUTUBE_CLIENT_ID is not set!');
-      alert('OAuth Client ID is not configured. Contact support.');
-      return;
-    }
-    
-    if (!window.google) {
-      console.error('Google Sign-In not loaded yet');
-      alert('Google Sign-In is loading. Please try again in a moment.');
-      return;
-    }
-
-    try {
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: handleCredentialResponse,
-      });
-
-      // Render the sign-in button
-      window.google.accounts.id.renderButton(
-        document.getElementById('google-signin-button'),
-        { theme: 'dark', size: 'large', width: '100%' }
-      );
-
-      // Show the One Tap prompt
-      window.google.accounts.id.prompt();
-    } catch (error) {
-      console.error('Google Sign-In error:', error);
-      alert('Failed to initialize Google Sign-In. Please check console for details.');
+      console.error('OAuth error:', error);
+      alert('Failed to initiate Google Sign-In. Make sure backend is running on port 3001.');
     }
   };
 
   const handleLogout = () => {
-    if (window.google) {
-      window.google.accounts.id.disableAutoSelect();
-    }
     setIsAuthenticated(false);
-    setUserEmail('');
+    setUser(null);
+    setAccessToken(null);
   };
 
   const handlePlaySong = (songId: string) => {
@@ -225,10 +185,10 @@ export default function Music() {
           >
             Sign In with Google
           </button>
-          <div id="google-signin-button" className="flex justify-center my-4" />
           <div className="text-xs text-muted-foreground mt-6 px-4">
-            You'll be able to access your YouTube Music account, playlists,
-            liked songs, and watch music videos with your credentials.
+            ⚙️ Make sure the OAuth backend is running on port 3001
+            <br />
+            Run: <code className="bg-black/30 px-2 py-1 rounded text-[10px]">npm run dev:oauth</code>
           </div>
         </div>
       </div>
@@ -276,12 +236,20 @@ export default function Music() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                {userEmail && (
+                {user && (
                   <div className="text-xs text-muted-foreground text-right">
-                    <div>{userEmail}</div>
+                    <div className="flex items-center gap-2">
+                      {user.picture && (
+                        <img src={user.picture} alt={user.name} className="w-6 h-6 rounded-full" />
+                      )}
+                      <div>
+                        <div className="font-semibold">{user.name}</div>
+                        <div className="text-[10px]">{user.email}</div>
+                      </div>
+                    </div>
                     <button
                       onClick={handleLogout}
-                      className="text-cyan-400 hover:text-cyan-300 transition-all flex items-center gap-1 mt-1"
+                      className="text-cyan-400 hover:text-cyan-300 transition-all flex items-center gap-1 mt-2"
                     >
                       <LogOut className="w-3 h-3" /> Sign Out
                     </button>
@@ -449,4 +417,3 @@ export default function Music() {
     </div>
   );
 }
-
