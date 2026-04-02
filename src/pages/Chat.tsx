@@ -88,6 +88,116 @@ interface Group {
   expanded: boolean;
 }
 
+// Initial messages for each channel
+const initialChannelMessages: Record<string, Message[]> = {
+  general: [
+    {
+      id: '1',
+      content: 'Welcome to #general! This is where we share updates and announcements.',
+      sender: 'assistant',
+      username: 'Admin',
+      avatar: 'A',
+      timestamp: new Date(Date.now() - 60 * 60000),
+    },
+    {
+      id: '2',
+      content: 'Thanks! Looking forward to collaborating with everyone here 👋',
+      sender: 'user',
+      username: 'You',
+      avatar: 'U',
+      timestamp: new Date(Date.now() - 55 * 60000),
+    },
+    {
+      id: '3',
+      content: 'Great to have you on board! Feel free to introduce yourself.',
+      sender: 'assistant',
+      username: 'Sarah Chen',
+      avatar: 'SC',
+      timestamp: new Date(Date.now() - 50 * 60000),
+    },
+  ],
+  frontend: [
+    {
+      id: '1',
+      content: 'Anyone working on the React components update?',
+      sender: 'assistant',
+      username: 'Jordan Dev',
+      avatar: 'JD',
+      timestamp: new Date(Date.now() - 30 * 60000),
+    },
+    {
+      id: '2',
+      content: 'Yes! Just pushed the new button styles to the design system 🎨',
+      sender: 'user',
+      username: 'You',
+      avatar: 'U',
+      timestamp: new Date(Date.now() - 25 * 60000),
+    },
+    {
+      id: '3',
+      content: 'Amazing! Can you add dark mode variants too?',
+      sender: 'assistant',
+      username: 'Jordan Dev',
+      avatar: 'JD',
+      timestamp: new Date(Date.now() - 20 * 60000),
+    },
+  ],
+  backend: [
+    {
+      id: '1',
+      content: 'API endpoints for user auth are ready for testing',
+      sender: 'assistant',
+      username: 'Alex Chen',
+      avatar: 'AC',
+      timestamp: new Date(Date.now() - 45 * 60000),
+    },
+    {
+      id: '2',
+      content: 'Perfect timing! I was about to start integration testing.',
+      sender: 'user',
+      username: 'You',
+      avatar: 'U',
+      timestamp: new Date(Date.now() - 40 * 60000),
+    },
+  ],
+  design: [
+    {
+      id: '1',
+      content: 'Design review tomorrow at 2 PM. Come with your mockups! 🎯',
+      sender: 'assistant',
+      username: 'Morgan Star',
+      avatar: 'MS',
+      timestamp: new Date(Date.now() - 120 * 60000),
+    },
+    {
+      id: '2',
+      content: 'My mockups are ready! See you then 🎨',
+      sender: 'user',
+      username: 'You',
+      avatar: 'U',
+      timestamp: new Date(Date.now() - 115 * 60000),
+    },
+  ],
+  'music-prod': [
+    {
+      id: '1',
+      content: 'New track draft uploaded to the shared folder',
+      sender: 'assistant',
+      username: 'Casey Moon',
+      avatar: 'CM',
+      timestamp: new Date(Date.now() - 100 * 60000),
+    },
+    {
+      id: '2',
+      content: 'Listening now! The production quality is incredible 🎵',
+      sender: 'user',
+      username: 'You',
+      avatar: 'U',
+      timestamp: new Date(Date.now() - 95 * 60000),
+    },
+  ],
+};
+
 export default function Chat() {
   const [activeTab, setActiveTab] = useState<
     | 'home'
@@ -186,6 +296,11 @@ export default function Chat() {
     'messages'
   );
 
+  // Per-channel messages state
+  const [channelMessages, setChannelMessages] = useState<Record<string, Message[]>>(
+    initialChannelMessages
+  );
+
   // ── 1-on-1 call state ─────────────────────────────────────────
   const [callState, setCallState] = useState<
     'idle' | 'calling' | 'incoming' | 'connected' | 'ended'
@@ -263,74 +378,46 @@ export default function Chat() {
     },
   ]);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content:
-        'Hey everyone! Just pushed the new UI updates to the design system 🎨',
-      sender: 'assistant',
-      username: 'Sarah Chen',
-      avatar: 'SC',
-      timestamp: new Date(Date.now() - 15 * 60000),
-    },
-    {
-      id: '2',
-      content:
-        'Looking amazing! The neon accents really make the nebula background pop.',
-      sender: 'user',
-      username: 'You',
-      avatar: 'U',
-      timestamp: new Date(Date.now() - 12 * 60000),
-    },
-    {
-      id: '3',
-      content:
-        "Thanks! We're using semi-transparent glass panels with backdrop blur. It creates this immersive effect that really ties into CloudHop's aesthetic.",
-      sender: 'assistant',
-      username: 'Sarah Chen',
-      avatar: 'SC',
-      timestamp: new Date(Date.now() - 8 * 60000),
-    },
-    {
-      id: '4',
-      content:
-        'This is exactly what we needed. The whole layout feels premium now.',
-      sender: 'user',
-      username: 'You',
-      avatar: 'U',
-      timestamp: new Date(Date.now() - 2 * 60000),
-    },
-  ]);
-
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
     const newMessage: Message = {
-      id: String(messages.length + 1),
+      id: String(Date.now()),
       content: inputValue,
       sender: 'user',
       username: 'You',
       avatar: 'U',
       timestamp: new Date(),
     };
-    setMessages([...messages, newMessage]);
+    
+    // Add message to current channel
+    setChannelMessages((prev) => ({
+      ...prev,
+      [selectedChannel]: [...(prev[selectedChannel] || []), newMessage],
+    }));
+    
     setInputValue('');
+    
+    // Simulate bot response
     setTimeout(() => {
       const responses = [
         "That's awesome! Let me know if you need any adjustments.",
         'Totally agree! This is looking really polished.',
         'Great feedback, thanks for the input!',
+        'Love this idea! When can we implement it?',
+        'Absolutely! I\'ll get started on that right away.',
       ];
-      setMessages((prev) => [
+      const botMessage: Message = {
+        id: String(Date.now()),
+        content: responses[Math.floor(Math.random() * responses.length)],
+        sender: 'assistant',
+        username: 'Assistant',
+        avatar: 'A',
+        timestamp: new Date(),
+      };
+      setChannelMessages((prev) => ({
         ...prev,
-        {
-          id: String(prev.length + 1),
-          content: responses[Math.floor(Math.random() * responses.length)],
-          sender: 'assistant',
-          username: 'Sarah Chen',
-          avatar: 'SC',
-          timestamp: new Date(),
-        },
-      ]);
+        [selectedChannel]: [...(prev[selectedChannel] || []), botMessage],
+      }));
     }, 800);
   };
 
@@ -340,9 +427,11 @@ export default function Chat() {
       handleSendMessage();
     }
   };
+  
   const handleAcceptFriendRequest = (requestId: string) => {
     setFriendRequests(friendRequests.filter((r) => r.id !== requestId));
   };
+  
   const handleDeclineFriendRequest = (requestId: string) => {
     setFriendRequests(friendRequests.filter((r) => r.id !== requestId));
   };
@@ -402,6 +491,7 @@ export default function Chat() {
       },
     ]);
   };
+  
   const handleRemoveAttachment = (id: string) => {
     setAttachments(attachments.filter((a) => a.id !== id));
   };
@@ -437,6 +527,9 @@ export default function Chat() {
   const currentChannel =
     groups.flatMap((g) => g.channels).find((c) => c.id === selectedChannel) ||
     groups[0].channels[0];
+
+  // Get messages for current channel
+  const currentChannelMessages = channelMessages[selectedChannel] || [];
 
   if (activeTab === 'home')
     return (
@@ -905,7 +998,7 @@ export default function Chat() {
             </div>
           </div>
           <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
-            {messages.map((message) => (
+            {currentChannelMessages.map((message) => (
               <div
                 key={message.id}
                 className={cn(
@@ -967,7 +1060,7 @@ export default function Chat() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Message #general..."
+              placeholder={`Message #${currentChannel.name}...`}
               className={cn(
                 'flex-1 rounded-lg px-4 py-3 bg-white/5 border border-cyan-400/30 text-foreground placeholder-muted-foreground outline-none',
                 'focus:border-cyan-400/60 focus:bg-white/10 focus:shadow-lg focus:shadow-cyan-400/20 transition-all'
