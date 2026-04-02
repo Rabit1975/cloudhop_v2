@@ -10,6 +10,7 @@ import {
   Heart,
   LogOut,
   Music as MusicIcon,
+  Loader,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,6 +20,24 @@ interface Song {
   artist: string;
   duration: number;
   videoId?: string;
+}
+
+interface YouTubePlaylistItem {
+  id: string;
+  snippet: {
+    title: string;
+    description: string;
+    thumbnails: {
+      default: { url: string };
+    };
+    resourceId: {
+      videoId: string;
+    };
+    channelTitle: string;
+  };
+  contentDetails: {
+    videoPublishedAt: string;
+  };
 }
 
 interface Playlist {
@@ -37,6 +56,8 @@ export default function Music() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [loadingPlaylists, setLoadingPlaylists] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(70);
@@ -44,26 +65,6 @@ export default function Music() {
   const [isShuffle, setIsShuffle] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [liked, setLiked] = useState(false);
-
-  const playlists: Playlist[] = [
-    {
-      id: 'favorites',
-      name: 'Liked Songs',
-      songs: [
-        { id: '1', title: 'Blinding Lights', artist: 'The Weeknd', duration: 200, videoId: '4NRXx6U8ABQ' },
-        { id: '2', title: 'Shape of You', artist: 'Ed Sheeran', duration: 234, videoId: 'JGwWNGJdvx8' },
-        { id: '3', title: 'Uptown Funk', artist: 'Mark Ronson ft. Bruno Mars', duration: 270, videoId: 'OPf0YbXqDm0' },
-      ],
-    },
-    {
-      id: 'recent',
-      name: 'Recently Played',
-      songs: [
-        { id: '4', title: 'Sunflower', artist: 'Post Malone & Swae Lee', duration: 158, videoId: 'ApXoWvfEYVU' },
-        { id: '5', title: 'Stay With Me', artist: 'Sam Smith', duration: 172, videoId: 'pB-5XG-DbAA' },
-      ],
-    },
-  ];
 
   const allSongs = playlists.flatMap((p) => p.songs);
   const currentSong = allSongs[currentSongIndex];
@@ -73,26 +74,132 @@ export default function Music() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     const userJson = params.get('user');
+    const error = params.get('error');
+
+    if (error) {
+      console.error('❌ OAuth error:', error);
+      alert(`Authentication failed: ${error}`);
+      return;
+    }
 
     if (token && userJson) {
-      const userData = JSON.parse(decodeURIComponent(userJson));
-      setAccessToken(token);
-      setUser(userData);
-      setIsAuthenticated(true);
-      
-      // Clean URL
-      window.history.replaceState({}, document.title, '/app?tab=music');
-      
-      console.log('✅ Authenticated as:', userData.email);
+      try {
+        const userData = JSON.parse(decodeURIComponent(userJson));
+        setAccessToken(token);
+        setUser(userData);
+        setIsAuthenticated(true);
+        
+        // Clean URL
+        window.history.replaceState({}, document.title, '/app?tab=music');
+        
+        console.log('✅ Authenticated as:', userData.email);
+      } catch (e) {
+        console.error('❌ Failed to parse user data:', e);
+      }
     }
   }, []);
+
+  // Fetch playlists when authenticated
+  useEffect(() => {
+    if (!isAuthenticated || !accessToken) return;
+
+    const fetchPlaylists = async () => {
+      setLoadingPlaylists(true);
+      try {
+        // Fetch user's playlists
+        console.log('📡 Fetching YouTube playlists...');
+        const playlistsRes = await fetch('http://localhost:3001/youtube/playlists', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (!playlistsRes.ok) {
+          const errorText = await playlistsRes.text();
+          console.error('❌ Playlists API error:', playlistsRes.status, errorText);
+          throw new Error(`Failed to fetch playlists: ${playlistsRes.status}`);
+        }
+        const youTubePlaylists = await playlistsRes.json();
+        console.log('✅ Found playlists:', youTubePlaylists.length);
+
+        // Fetch items for each playlist
+        const loadedPlaylists: Playlist[] = [];
+
+        for (const yt of youTubePlaylists) {
+          console.log(`📂 Loading playlist: ${yt.snippet.title}`);
+          const itemsRes = await fetch(
+            `http://localhost:3001/youtube/playlist/${yt.id}/items`,
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+
+          if (!itemsRes.ok) {
+            console.warn(`⚠️ Failed to fetch items for ${yt.snippet.title}`);
+            continue;
+          }
+          const items = await itemsRes.json();
+          console.log(`  └─ ${items.length} songs`);
+
+          // Convert YouTube items to Song format
+          const songs = items.map((item: YouTubePlaylistItem) => ({
+            id: item.id,
+            title: item.snippet.title,
+            artist: item.snippet.channelTitle,
+            duration: 0,
+            videoId: item.snippet.resourceId.videoId,
+          }));
+
+          loadedPlaylists.push({
+            id: yt.id,
+            name: yt.snippet.title,
+            songs,
+          });
+        }
+
+        // Fetch liked videos
+        console.log('💚 Fetching liked videos...');
+        const likedRes = await fetch('http://localhost:3001/youtube/liked', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (likedRes.ok) {
+          const likedVideos = await likedRes.json();
+          console.log('✅ Found liked videos:', likedVideos.length);
+          const likedSongs = likedVideos.map((video: any) => ({
+            id: video.id,
+            title: video.snippet.title,
+            artist: video.snippet.channelTitle,
+            duration: 0,
+            videoId: video.id,
+          }));
+
+          if (likedSongs.length > 0) {
+            loadedPlaylists.unshift({
+              id: 'liked',
+              name: '❤️ Liked Videos',
+              songs: likedSongs,
+            });
+          }
+        } else {
+          console.warn('⚠️ Failed to fetch liked videos');
+        }
+
+        console.log('🎵 Total playlists loaded:', loadedPlaylists.length);
+        setPlaylists(loadedPlaylists);
+      } catch (error) {
+        console.error('🔴 Error fetching playlists:', error);
+        alert(`Error loading playlists: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      } finally {
+        setLoadingPlaylists(false);
+      }
+    };
+
+    fetchPlaylists();
+  }, [isAuthenticated, accessToken]);
 
   // Advance progress bar when playing
   useEffect(() => {
     if (!isPlaying) return;
     const interval = setInterval(() => {
       setCurrentTime((prev) => {
-        if (prev >= (currentSong?.duration ?? 0)) {
+        if (prev >= (currentSong?.duration ?? 300)) {
           handleNext();
           return 0;
         }
@@ -104,11 +211,8 @@ export default function Music() {
 
   const handleYouTubeLogin = async () => {
     try {
-      // Get OAuth URL from backend
       const response = await fetch('http://localhost:3001/auth/google/url');
       const { url } = await response.json();
-      
-      // Redirect to Google OAuth
       window.location.href = url;
     } catch (error) {
       console.error('OAuth error:', error);
@@ -120,6 +224,7 @@ export default function Music() {
     setIsAuthenticated(false);
     setUser(null);
     setAccessToken(null);
+    setPlaylists([]);
   };
 
   const handlePlaySong = (songId: string) => {
@@ -187,8 +292,6 @@ export default function Music() {
           </button>
           <div className="text-xs text-muted-foreground mt-6 px-4">
             ⚙️ Make sure the OAuth backend is running on port 3001
-            <br />
-            Run: <code className="bg-black/30 px-2 py-1 rounded text-[10px]">npm run dev:oauth</code>
           </div>
         </div>
       </div>
@@ -276,13 +379,13 @@ export default function Music() {
                 onClick={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
                   const pct = (e.clientX - rect.left) / rect.width;
-                  setCurrentTime(Math.floor(pct * (currentSong?.duration || 1)));
+                  setCurrentTime(Math.floor(pct * (currentSong?.duration || 300)));
                 }}
               >
                 <div
                   className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 transition-all"
                   style={{
-                    width: `${((currentTime || 0) / (currentSong?.duration || 1)) * 100}%`,
+                    width: `${((currentTime || 0) / (currentSong?.duration || 300)) * 100}%`,
                   }}
                 />
               </div>
@@ -364,10 +467,18 @@ export default function Music() {
       {/* Playlist sidebar */}
       <div className="w-72 glass-panel rounded-xl overflow-hidden border-magenta-400/30 flex flex-col">
         <div className="px-4 py-4 border-b border-magenta-400/20 bg-magenta-500/10">
-          <h3 className="font-bold text-foreground text-sm">Your Playlists</h3>
+          <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
+            Your Playlists
+            {loadingPlaylists && <Loader className="w-3 h-3 animate-spin" />}
+          </h3>
           <p className="text-xs text-muted-foreground mt-1">{allSongs.length} songs total</p>
         </div>
         <div className="flex-1 overflow-y-auto">
+          {playlists.length === 0 && !loadingPlaylists && (
+            <div className="px-4 py-6 text-center">
+              <p className="text-xs text-muted-foreground">No playlists found</p>
+            </div>
+          )}
           {playlists.map((playlist) => (
             <div key={playlist.id}>
               <div className="px-4 py-3 border-b border-white/5">
@@ -397,7 +508,7 @@ export default function Music() {
                         <div className="flex-1 min-w-0">
                           <div className="font-medium truncate">{song.title}</div>
                           <div className="text-muted-foreground truncate">
-                            {song.artist} • {formatTime(song.duration)}
+                            {song.artist}
                           </div>
                         </div>
                       </button>
@@ -407,11 +518,6 @@ export default function Music() {
               </div>
             </div>
           ))}
-        </div>
-        <div className="px-4 py-3 border-t border-magenta-400/20">
-          <button className="w-full px-4 py-2 rounded-lg bg-magenta-500/20 border border-magenta-400/50 text-magenta-300 hover:bg-magenta-500/30 transition-all text-sm font-medium">
-            + New Playlist
-          </button>
         </div>
       </div>
     </div>
