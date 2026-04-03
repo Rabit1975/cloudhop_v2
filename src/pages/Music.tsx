@@ -89,6 +89,10 @@ export default function Music() {
         setUser(userData);
         setIsAuthenticated(true);
         
+        // Set auth flag so router allows access to /app
+        localStorage.setItem('cloudhop_authenticated', 'true');
+        localStorage.setItem('cloudhop_user', userData.name || userData.email);
+        
         // Clean URL
         window.history.replaceState({}, document.title, '/app?tab=music');
         
