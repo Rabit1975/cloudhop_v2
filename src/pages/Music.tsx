@@ -72,13 +72,13 @@ export default function Music() {
   // Check for OAuth callback on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const userJson = params.get('user');
-    const error = params.get('error');
+    const token = params.get('oauth_token');
+    const userJson = params.get('oauth_user');
+    const oauthError = params.get('oauth_error');
 
-    if (error) {
-      console.error('❌ OAuth error:', error);
-      alert(`Authentication failed: ${error}`);
+    if (oauthError) {
+      console.error('❌ OAuth error:', oauthError);
+      alert(`Authentication failed: ${oauthError}`);
       return;
     }
 

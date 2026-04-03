@@ -14,9 +14,16 @@ app.use(express.json());
 
 const GOOGLE_CLIENT_ID = '543098707668-d395qnt038q26dvf1kls0tserhckqpj4.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || 'your_client_secret';
-const REDIRECT_URI = process.env.NODE_ENV === 'production' 
-  ? 'https://cloudhop.cloud/auth/google/callback'
-  : 'http://localhost:3001/auth/google/callback';
+
+// Determine redirect URI based on environment
+const getRedirectUri = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://cloudhop.cloud/auth/google/callback';
+  }
+  return 'http://localhost:5173/auth/google/callback';
+};
+
+const REDIRECT_URI = getRedirectUri();
 
 // Step 1: Generate OAuth URL with all required Google scopes
 app.get('/auth/google/url', (req, res) => {
@@ -39,19 +46,26 @@ app.get('/auth/google/url', (req, res) => {
   res.json({ url: authUrl });
 });
 
-// Step 2: Handle OAuth callback
+// Step 2: Handle OAuth callback - exchange code for token
 app.get('/auth/google/callback', async (req, res) => {
-  const { code, error } = req.query;
+  const { code, error, state } = req.query;
+
+  console.log('📥 OAuth callback received');
+  console.log('Code:', code ? 'present' : 'missing');
+  console.log('Error:', error || 'none');
 
   if (error) {
-    return res.redirect(`http://localhost:5173/app?tab=music&error=${error}`);
+    console.error('❌ OAuth error from Google:', error);
+    return res.redirect(`${REDIRECT_URI.split('/auth')[0]}?oauth_error=${error}`);
   }
 
   if (!code) {
-    return res.redirect('http://localhost:5173/app?tab=music&error=no_code');
+    console.error('❌ No authorization code received');
+    return res.redirect(`${REDIRECT_URI.split('/auth')[0]}?oauth_error=no_code`);
   }
 
   try {
+    console.log('🔄 Exchanging code for tokens...');
     // Exchange code for tokens
     const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
       client_id: GOOGLE_CLIENT_ID,
@@ -61,25 +75,37 @@ app.get('/auth/google/callback', async (req, res) => {
       redirect_uri: REDIRECT_URI,
     });
 
-    const { access_token, refresh_token, id_token } = tokenResponse.data;
+    const { access_token, refresh_token, id_token, expires_in } = tokenResponse.data;
+    console.log('✅ Got access token');
 
     // Get user info
+    console.log('👤 Fetching user info...');
     const userResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 
     const user = userResponse.data;
+    console.log('✅ User info retrieved:', user.email);
 
-    // Redirect to frontend with tokens
-    const redirectUrl = `http://localhost:5173/app?tab=music&` +
-      `token=${access_token}` +
-      `&refresh_token=${refresh_token || ''}` +
-      `&user=${encodeURIComponent(JSON.stringify(user))}`;
+    // Redirect to frontend with tokens (same origin, no COOP issues)
+    const frontendUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://cloudhop.cloud'
+      : 'http://localhost:5173';
 
+    const redirectUrl = `${frontendUrl}/app?tab=music&` +
+      `oauth_token=${encodeURIComponent(access_token)}` +
+      `&oauth_refresh=${encodeURIComponent(refresh_token || '')}` +
+      `&oauth_user=${encodeURIComponent(JSON.stringify(user))}` +
+      `&oauth_expires=${expires_in || 3600}`;
+
+    console.log('🔗 Redirecting to:', redirectUrl.split('?')[0]);
     res.redirect(redirectUrl);
-  } catch (error) {
-    console.error('OAuth error:', error.response?.data || error.message);
-    res.redirect(`http://localhost:5173/app?tab=music&error=auth_failed`);
+  } catch (error: any) {
+    console.error('❌ Token exchange failed:', error.response?.data || error.message);
+    const frontendUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://cloudhop.cloud'
+      : 'http://localhost:5173';
+    res.redirect(`${frontendUrl}?oauth_error=auth_failed`);
   }
 });
 
@@ -238,5 +264,6 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ OAuth server running at http://localhost:${PORT}`);
   console.log(`📝 Client ID: ${GOOGLE_CLIENT_ID}`);
+  console.log(`🔗 Redirect URI: ${REDIRECT_URI}`);
   console.log(`📺 YouTube, Contacts, and Calendar scopes available`);
 });
