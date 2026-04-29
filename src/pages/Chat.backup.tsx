@@ -21,7 +21,6 @@ import {
   Video,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
 import CallOverlay from '../CallOverlay';
 import CloudHopLayout from '@/components/CloudHopLayout';
 import GameHub from './GameHub';
@@ -89,118 +88,7 @@ interface Group {
   expanded: boolean;
 }
 
-// Initial messages for each channel
-const initialChannelMessages: Record<string, Message[]> = {
-  general: [
-    {
-      id: '1',
-      content: 'Welcome to #general! This is where we share updates and announcements.',
-      sender: 'assistant',
-      username: 'Admin',
-      avatar: 'A',
-      timestamp: new Date(Date.now() - 60 * 60000),
-    },
-    {
-      id: '2',
-      content: 'Thanks! Looking forward to collaborating with everyone here 👋',
-      sender: 'user',
-      username: 'You',
-      avatar: 'U',
-      timestamp: new Date(Date.now() - 55 * 60000),
-    },
-    {
-      id: '3',
-      content: 'Great to have you on board! Feel free to introduce yourself.',
-      sender: 'assistant',
-      username: 'Sarah Chen',
-      avatar: 'SC',
-      timestamp: new Date(Date.now() - 50 * 60000),
-    },
-  ],
-  frontend: [
-    {
-      id: '1',
-      content: 'Anyone working on the React components update?',
-      sender: 'assistant',
-      username: 'Jordan Dev',
-      avatar: 'JD',
-      timestamp: new Date(Date.now() - 30 * 60000),
-    },
-    {
-      id: '2',
-      content: 'Yes! Just pushed the new button styles to the design system 🎨',
-      sender: 'user',
-      username: 'You',
-      avatar: 'U',
-      timestamp: new Date(Date.now() - 25 * 60000),
-    },
-    {
-      id: '3',
-      content: 'Amazing! Can you add dark mode variants too?',
-      sender: 'assistant',
-      username: 'Jordan Dev',
-      avatar: 'JD',
-      timestamp: new Date(Date.now() - 20 * 60000),
-    },
-  ],
-  backend: [
-    {
-      id: '1',
-      content: 'API endpoints for user auth are ready for testing',
-      sender: 'assistant',
-      username: 'Alex Chen',
-      avatar: 'AC',
-      timestamp: new Date(Date.now() - 45 * 60000),
-    },
-    {
-      id: '2',
-      content: 'Perfect timing! I was about to start integration testing.',
-      sender: 'user',
-      username: 'You',
-      avatar: 'U',
-      timestamp: new Date(Date.now() - 40 * 60000),
-    },
-  ],
-  design: [
-    {
-      id: '1',
-      content: 'Design review tomorrow at 2 PM. Come with your mockups! 🎯',
-      sender: 'assistant',
-      username: 'Morgan Star',
-      avatar: 'MS',
-      timestamp: new Date(Date.now() - 120 * 60000),
-    },
-    {
-      id: '2',
-      content: 'My mockups are ready! See you then 🎨',
-      sender: 'user',
-      username: 'You',
-      avatar: 'U',
-      timestamp: new Date(Date.now() - 115 * 60000),
-    },
-  ],
-  'music-prod': [
-    {
-      id: '1',
-      content: 'New track draft uploaded to the shared folder',
-      sender: 'assistant',
-      username: 'Casey Moon',
-      avatar: 'CM',
-      timestamp: new Date(Date.now() - 100 * 60000),
-    },
-    {
-      id: '2',
-      content: 'Listening now! The production quality is incredible 🎵',
-      sender: 'user',
-      username: 'You',
-      avatar: 'U',
-      timestamp: new Date(Date.now() - 95 * 60000),
-    },
-  ],
-};
-
 export default function Chat() {
-  const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<
     | 'home'
     | 'hophub'
@@ -280,8 +168,6 @@ export default function Chat() {
   const [dmInput, setDmInput] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [mobileChannelsOpen, setMobileChannelsOpen] = useState(false);
-  const [mobilePeopleOpen, setMobilePeopleOpen] = useState(false);
   const [giftsReceived, setGiftsReceived] = useState<Record<string, number>>({
     u1: 3,
     u2: 1,
@@ -298,11 +184,6 @@ export default function Chat() {
   const [showCallMenu, setShowCallMenu] = useState(false);
   const [activeTabView, setActiveTabView] = useState<'messages' | 'requests'>(
     'messages'
-  );
-
-  // Per-channel messages state
-  const [channelMessages, setChannelMessages] = useState<Record<string, Message[]>>(
-    initialChannelMessages
   );
 
   // ── 1-on-1 call state ─────────────────────────────────────────
@@ -382,46 +263,74 @@ export default function Chat() {
     },
   ]);
 
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content:
+        'Hey everyone! Just pushed the new UI updates to the design system 🎨',
+      sender: 'assistant',
+      username: 'Sarah Chen',
+      avatar: 'SC',
+      timestamp: new Date(Date.now() - 15 * 60000),
+    },
+    {
+      id: '2',
+      content:
+        'Looking amazing! The neon accents really make the nebula background pop.',
+      sender: 'user',
+      username: 'You',
+      avatar: 'U',
+      timestamp: new Date(Date.now() - 12 * 60000),
+    },
+    {
+      id: '3',
+      content:
+        "Thanks! We're using semi-transparent glass panels with backdrop blur. It creates this immersive effect that really ties into CloudHop's aesthetic.",
+      sender: 'assistant',
+      username: 'Sarah Chen',
+      avatar: 'SC',
+      timestamp: new Date(Date.now() - 8 * 60000),
+    },
+    {
+      id: '4',
+      content:
+        'This is exactly what we needed. The whole layout feels premium now.',
+      sender: 'user',
+      username: 'You',
+      avatar: 'U',
+      timestamp: new Date(Date.now() - 2 * 60000),
+    },
+  ]);
+
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
     const newMessage: Message = {
-      id: String(Date.now()),
+      id: String(messages.length + 1),
       content: inputValue,
       sender: 'user',
       username: 'You',
       avatar: 'U',
       timestamp: new Date(),
     };
-    
-    // Add message to current channel
-    setChannelMessages((prev) => ({
-      ...prev,
-      [selectedChannel]: [...(prev[selectedChannel] || []), newMessage],
-    }));
-    
+    setMessages([...messages, newMessage]);
     setInputValue('');
-    
-    // Simulate bot response
     setTimeout(() => {
       const responses = [
         "That's awesome! Let me know if you need any adjustments.",
         'Totally agree! This is looking really polished.',
         'Great feedback, thanks for the input!',
-        'Love this idea! When can we implement it?',
-        'Absolutely! I\'ll get started on that right away.',
       ];
-      const botMessage: Message = {
-        id: String(Date.now()),
-        content: responses[Math.floor(Math.random() * responses.length)],
-        sender: 'assistant',
-        username: 'Assistant',
-        avatar: 'A',
-        timestamp: new Date(),
-      };
-      setChannelMessages((prev) => ({
+      setMessages((prev) => [
         ...prev,
-        [selectedChannel]: [...(prev[selectedChannel] || []), botMessage],
-      }));
+        {
+          id: String(prev.length + 1),
+          content: responses[Math.floor(Math.random() * responses.length)],
+          sender: 'assistant',
+          username: 'Sarah Chen',
+          avatar: 'SC',
+          timestamp: new Date(),
+        },
+      ]);
     }, 800);
   };
 
@@ -431,11 +340,9 @@ export default function Chat() {
       handleSendMessage();
     }
   };
-  
   const handleAcceptFriendRequest = (requestId: string) => {
     setFriendRequests(friendRequests.filter((r) => r.id !== requestId));
   };
-  
   const handleDeclineFriendRequest = (requestId: string) => {
     setFriendRequests(friendRequests.filter((r) => r.id !== requestId));
   };
@@ -495,7 +402,6 @@ export default function Chat() {
       },
     ]);
   };
-  
   const handleRemoveAttachment = (id: string) => {
     setAttachments(attachments.filter((a) => a.id !== id));
   };
@@ -531,9 +437,6 @@ export default function Chat() {
   const currentChannel =
     groups.flatMap((g) => g.channels).find((c) => c.id === selectedChannel) ||
     groups[0].channels[0];
-
-  // Get messages for current channel
-  const currentChannelMessages = channelMessages[selectedChannel] || [];
 
   if (activeTab === 'home')
     return (
@@ -588,9 +491,9 @@ export default function Chat() {
   if (selectedDM && activeTab === 'hophub') {
     return (
       <CloudHopLayout activeTab={activeTab} onTabChange={setActiveTab}>
-        <div className="flex h-full flex-col gap-3 overflow-hidden bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10 p-3 md:flex-row md:gap-4 md:p-4">
+        <div className="flex h-full gap-4 p-4 overflow-hidden bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10">
           {/* DM Sidebar */}
-          <div className="hidden w-64 glass-panel rounded-xl overflow-hidden border-cyan-400/30 md:flex md:flex-col">
+          <div className="w-64 glass-panel rounded-xl overflow-hidden flex flex-col border-cyan-400/30">
             <div className="px-4 py-4 border-b border-cyan-400/20 flex items-center justify-between">
               <h2 className="font-bold text-foreground text-lg">Messages</h2>
               <button
@@ -604,10 +507,7 @@ export default function Chat() {
               {directMessages.map((dm) => (
                 <button
                   key={dm.id}
-                  onClick={() => {
-                    setSelectedDM(dm);
-                    setMobilePeopleOpen(false);
-                  }}
+                  onClick={() => setSelectedDM(dm)}
                   className={cn(
                     'w-full px-3 py-3 rounded-lg text-left transition-all flex items-start gap-3',
                     selectedDM.id === dm.id
@@ -649,17 +549,9 @@ export default function Chat() {
           </div>
 
           {/* DM Conversation */}
-          <div className="flex-1 glass-panel rounded-xl overflow-hidden flex flex-col border-cyan-400/30 min-h-0">
-            <div className="px-4 py-3 md:px-6 md:py-4 border-b border-cyan-400/20 flex items-center justify-between gap-3">
+          <div className="flex-1 glass-panel rounded-xl overflow-hidden flex flex-col border-cyan-400/30">
+            <div className="px-6 py-4 border-b border-cyan-400/20 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {isMobile && (
-                  <button
-                    onClick={() => setSelectedDM(null)}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-400/20 bg-white/5 text-muted-foreground hover:text-foreground"
-                  >
-                    <ChevronRight className="w-4 h-4 rotate-180" />
-                  </button>
-                )}
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold">
                     {selectedDM.avatar}
@@ -684,7 +576,7 @@ export default function Chat() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-1 md:gap-2">
+              <div className="flex items-center gap-2">
                 {giftsReceived[selectedDM.userId] > 0 && (
                   <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/30">
                     <Gift className="w-4 h-4 text-cyan-400" />
@@ -756,7 +648,7 @@ export default function Chat() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 md:px-6 md:py-6">
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
               {dmMessages.map((message) => (
                 <div
                   key={message.id}
@@ -826,7 +718,7 @@ export default function Chat() {
             )}
 
             {/* DM Input */}
-            <div className="border-t border-cyan-400/20 p-3 md:p-4 flex gap-2">
+            <div className="border-t border-cyan-400/20 p-4 flex gap-2">
               <div className="group relative">
                 <button className="p-2 hover:bg-cyan-400/10 rounded-lg transition-all text-muted-foreground hover:text-cyan-400">
                   <Paperclip className="w-5 h-5" />
@@ -891,36 +783,12 @@ export default function Chat() {
   // Default HopHub chat
   return (
     <CloudHopLayout activeTab={activeTab} onTabChange={setActiveTab}>
-      <div className="relative flex h-full flex-col gap-3 overflow-hidden bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10 p-3 md:flex-row md:gap-4 md:p-4">
-        {isMobile && mobileChannelsOpen && (
-          <button
-            type="button"
-            aria-label="Close channels"
-            className="absolute inset-0 z-20 bg-slate-950/60 backdrop-blur-sm md:hidden"
-            onClick={() => setMobileChannelsOpen(false)}
-          />
-        )}
-
-        {isMobile && mobilePeopleOpen && (
-          <button
-            type="button"
-            aria-label="Close people panel"
-            className="absolute inset-0 z-20 bg-slate-950/60 backdrop-blur-sm md:hidden"
-            onClick={() => setMobilePeopleOpen(false)}
-          />
-        )}
-
+      <div className="flex h-full gap-4 p-4 overflow-hidden bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10">
         {/* Sidebar */}
         <div
           className={cn(
             'glass-panel rounded-xl overflow-hidden flex flex-col transition-all duration-300',
-            isMobile
-              ? mobileChannelsOpen
-                ? 'absolute inset-y-0 left-0 z-30 w-[85vw] max-w-xs'
-                : 'hidden'
-              : sidebarOpen
-                ? 'w-64'
-                : 'w-0'
+            sidebarOpen ? 'w-64' : 'w-0'
           )}
         >
           <div className="px-4 py-4 border-b border-cyan-400/20 space-y-3">
@@ -972,10 +840,7 @@ export default function Chat() {
                     {group.channels.map((channel) => (
                       <button
                         key={channel.id}
-                        onClick={() => {
-                          setSelectedChannel(channel.id);
-                          if (isMobile) setMobileChannelsOpen(false);
-                        }}
+                        onClick={() => setSelectedChannel(channel.id)}
                         className={cn(
                           'w-full px-3 py-2 rounded-lg text-left transition-all flex items-center gap-2 text-sm group',
                           selectedChannel === channel.id
@@ -1004,18 +869,10 @@ export default function Chat() {
         </div>
 
         {/* Main Chat */}
-        <div className="glass-panel rounded-xl overflow-hidden flex flex-col flex-1 min-h-0">
-          <div className="flex items-center justify-between gap-3 px-4 py-3 md:px-6 md:py-4 border-b border-cyan-400/20">
+        <div className="glass-panel rounded-xl overflow-hidden flex flex-col flex-1">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-cyan-400/20">
             <div>
               <div className="flex items-center gap-2">
-                {isMobile && (
-                  <button
-                    onClick={() => setMobileChannelsOpen(true)}
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-400/20 bg-white/5 text-muted-foreground hover:text-foreground md:hidden"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                )}
                 <Hash className="w-5 h-5 text-cyan-400" />
                 <h2 className="text-xl font-bold text-foreground">
                   {currentChannel.name}
@@ -1042,20 +899,13 @@ export default function Chat() {
                   </div>
                 )}
               </button>
-              <button
-                onClick={() => {
-                  if (isMobile) {
-                    setMobilePeopleOpen(true);
-                  }
-                }}
-                className="p-2 hover:bg-cyan-400/10 rounded-lg transition-all text-muted-foreground hover:text-cyan-400"
-              >
+              <button className="p-2 hover:bg-cyan-400/10 rounded-lg transition-all text-muted-foreground hover:text-cyan-400">
                 <Users className="w-5 h-5" />
               </button>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 md:px-6 md:py-6">
-            {currentChannelMessages.map((message) => (
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+            {messages.map((message) => (
               <div
                 key={message.id}
                 className={cn(
@@ -1111,13 +961,13 @@ export default function Chat() {
               </div>
             ))}
           </div>
-          <div className="border-t border-cyan-400/20 p-3 md:p-6 flex gap-3">
+          <div className="border-t border-cyan-400/20 p-6 flex gap-3">
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={`Message #${currentChannel.name}...`}
+              placeholder="Message #general..."
               className={cn(
                 'flex-1 rounded-lg px-4 py-3 bg-white/5 border border-cyan-400/30 text-foreground placeholder-muted-foreground outline-none',
                 'focus:border-cyan-400/60 focus:bg-white/10 focus:shadow-lg focus:shadow-cyan-400/20 transition-all'
@@ -1139,16 +989,7 @@ export default function Chat() {
         </div>
 
         {/* Right Sidebar */}
-        <div
-          className={cn(
-            'w-72 glass-panel rounded-xl overflow-hidden flex-col border-magenta-400/30',
-            isMobile
-              ? mobilePeopleOpen
-                ? 'absolute inset-x-3 bottom-3 top-20 z-30 flex'
-                : 'hidden'
-              : 'flex'
-          )}
-        >
+        <div className="w-72 glass-panel rounded-xl overflow-hidden flex flex-col border-magenta-400/30">
           <div className="flex border-b border-magenta-400/20">
             <button
               onClick={() => setActiveTabView('messages')}
@@ -1182,10 +1023,7 @@ export default function Chat() {
                   {directMessages.slice(0, 5).map((dm) => (
                     <button
                       key={dm.id}
-                      onClick={() => {
-                        setSelectedDM(dm);
-                        setMobilePeopleOpen(false);
-                      }}
+                      onClick={() => setSelectedDM(dm)}
                       className="w-full px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left border border-transparent hover:border-magenta-400/20"
                     >
                       <div className="flex items-center gap-2 mb-1">

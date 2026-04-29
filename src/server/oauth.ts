@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import axios from 'axios';
 
 const app = express();
 const PORT = 3001;
@@ -14,6 +13,47 @@ app.use(express.json());
 
 const GOOGLE_CLIENT_ID = '543098707668-d395qnt038q26dvf1kls0tserhckqpj4.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || 'your_client_secret';
+
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(url, init);
+  const contentType = response.headers.get('content-type') || '';
+  const payload = contentType.includes('application/json')
+    ? await response.json()
+    : await response.text();
+
+  if (!response.ok) {
+    throw new Error(
+      typeof payload === 'string' ? payload : JSON.stringify(payload)
+    );
+  }
+
+  return payload as T;
+}
+
+function withQuery(url: string, params: Record<string, string | number | boolean>) {
+  const next = new URL(url);
+  for (const [key, value] of Object.entries(params)) {
+    next.searchParams.set(key, String(value));
+  }
+  return next.toString();
+}
+
+const axios = {
+  async get(
+    url: string,
+    options?: {
+      params?: Record<string, string | number | boolean>;
+      headers?: Record<string, string>;
+    }
+  ) {
+    const resolvedUrl = options?.params ? withQuery(url, options.params) : url;
+    return {
+      data: await fetchJson<any>(resolvedUrl, {
+        headers: options?.headers,
+      }),
+    };
+  },
+};
 
 // Determine redirect URI based on environment
 const getRedirectUri = () => {
@@ -67,24 +107,31 @@ app.get('/auth/google/callback', async (req, res) => {
   try {
     console.log('🔄 Exchanging code for tokens...');
     // Exchange code for tokens
-    const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
-      client_id: GOOGLE_CLIENT_ID,
-      client_secret: GOOGLE_CLIENT_SECRET,
-      code,
-      grant_type: 'authorization_code',
-      redirect_uri: REDIRECT_URI,
+    const tokenResponse = await fetchJson<{
+      access_token: string;
+      refresh_token?: string;
+      id_token?: string;
+      expires_in?: number;
+    }>('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: REDIRECT_URI,
+      }),
     });
 
-    const { access_token, refresh_token, id_token, expires_in } = tokenResponse.data;
+    const { access_token, refresh_token, id_token, expires_in } = tokenResponse;
     console.log('✅ Got access token');
 
     // Get user info
     console.log('👤 Fetching user info...');
-    const userResponse = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+    const user = await fetchJson<any>('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${access_token}` },
     });
-
-    const user = userResponse.data;
     console.log('✅ User info retrieved:', user.email);
 
     // Redirect to frontend with tokens (same origin, no COOP issues)
@@ -118,9 +165,9 @@ app.get('/youtube/test', async (req, res) => {
   }
 
   try {
-    const response = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+    const response = { data: await fetchJson<any>('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${token}` },
-    });
+    }) };
 
     console.log('✅ Token is valid for user:', response.data.email);
     res.json({ valid: true, user: response.data });

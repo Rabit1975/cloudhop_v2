@@ -14,8 +14,10 @@ import {
   Send,
   X,
   Sparkles,
+  Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import logoSplash from '../assets/logo-splash.png';
 import nebulaBg from '../assets/nebula3.jpg';
 
@@ -66,10 +68,12 @@ export default function CloudHopLayout({
 }: CloudHopLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [aiMessages, setAiMessages] = useState<{role:'user'|'ai'; text:string}[]>([
     { role: 'ai', text: "Hey! I'm RabbitAI 🐰 Your smart assistant for CloudHop. Ask me anything about games, music, meetings, or just chat!" }
   ]);
   const [aiInput, setAiInput] = useState('');
+  const isMobile = useIsMobile();
   const username = localStorage.getItem('profile_displayName') || localStorage.getItem('cloudhop_user') || 'CloudHopper';
   const userInitial = username.charAt(0).toUpperCase();
 
@@ -101,11 +105,48 @@ export default function CloudHopLayout({
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       />
 
+      {isMobile && mobileNavOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation"
+          className="fixed inset-0 z-30 bg-slate-950/70 backdrop-blur-sm"
+          onClick={() => setMobileNavOpen(false)}
+        />
+      )}
+
+      {isMobile && (
+        <div className="absolute inset-x-0 top-0 z-20 flex h-16 items-center justify-between border-b border-white/10 bg-slate-950/85 px-4 backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-foreground"
+            aria-label="Open navigation"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <div className="min-w-0 text-center">
+            <p className="truncate bg-gradient-to-r from-cyan-400 to-magenta-400 bg-clip-text text-sm font-black text-transparent">
+              CloudHop
+            </p>
+            <p className="truncate text-[10px] text-muted-foreground">
+              {NAV_ITEMS.find((item) => item.id === activeTab)?.label ?? 'App'}
+            </p>
+          </div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs font-semibold text-foreground">
+            {userInitial}
+          </div>
+        </div>
+      )}
+
       {/* Sidebar */}
       <aside
         className={cn(
-          'relative z-10 flex flex-col glass-panel border-r border-white/10 transition-all duration-300',
-          collapsed ? 'w-16' : 'w-56'
+          'z-40 flex flex-col glass-panel border-r border-white/10 transition-all duration-300',
+          isMobile
+            ? mobileNavOpen
+              ? 'fixed inset-y-0 left-0 w-[min(20rem,85vw)] translate-x-0'
+              : 'fixed inset-y-0 left-0 w-[min(20rem,85vw)] -translate-x-full'
+            : cn('relative z-10', collapsed ? 'w-16' : 'w-56')
         )}
       >
         {/* Logo */}
@@ -132,7 +173,10 @@ export default function CloudHopLayout({
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => {
+                onTabChange(item.id);
+                if (isMobile) setMobileNavOpen(false);
+              }}
               className={cn(
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                 activeTab === item.id
@@ -151,7 +195,10 @@ export default function CloudHopLayout({
           {BOTTOM_NAV.map((item) => (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => {
+                onTabChange(item.id);
+                if (isMobile) setMobileNavOpen(false);
+              }}
               className={cn(
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
                 activeTab === item.id
@@ -168,7 +215,7 @@ export default function CloudHopLayout({
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-3 border-t border-white/10 text-muted-foreground hover:text-foreground transition-all flex items-center justify-center"
+          className="hidden p-3 border-t border-white/10 text-muted-foreground hover:text-foreground transition-all md:flex items-center justify-center"
         >
           {collapsed ? (
             <ChevronRight className="w-4 h-4" />
@@ -197,11 +244,13 @@ export default function CloudHopLayout({
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-hidden relative z-10">{children}</main>
+      <main className={cn('flex-1 overflow-hidden relative z-10', isMobile && 'pt-16')}>
+        {children}
+      </main>
 
       {/* RabbitAI Floating Panel */}
       {aiOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 glass-panel rounded-2xl border-cyan-400/30 flex flex-col overflow-hidden shadow-2xl shadow-cyan-500/20" style={{height:'420px'}}>
+        <div className="fixed bottom-20 left-3 right-3 z-50 flex h-[min(70vh,420px)] flex-col overflow-hidden rounded-2xl border border-cyan-400/30 glass-panel shadow-2xl shadow-cyan-500/20 md:bottom-24 md:left-auto md:right-6 md:w-80">
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 border-b border-cyan-400/20 bg-gradient-to-r from-cyan-900/40 to-purple-900/40">
             <img src="/rabbitavatar1.PNG" alt="RabbitAI" className="w-9 h-9 rounded-full object-cover border-2 border-cyan-400/50" />
@@ -251,7 +300,7 @@ export default function CloudHopLayout({
       {/* RabbitAI Toggle Button */}
       <button
         onClick={() => setAiOpen(!aiOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-2xl shadow-cyan-500/40 hover:scale-110 transition-all overflow-hidden border-2 border-cyan-400/60"
+        className="fixed bottom-4 right-4 z-50 h-12 w-12 overflow-hidden rounded-full border-2 border-cyan-400/60 shadow-2xl shadow-cyan-500/40 transition-all hover:scale-110 md:bottom-6 md:right-6 md:h-14 md:w-14"
         title="Open RabbitAI"
       >
         <img src="/rabbitavatar1.PNG" alt="RabbitAI" className="w-full h-full object-cover" />

@@ -69,12 +69,23 @@ export default function Music() {
   const allSongs = playlists.flatMap((p) => p.songs);
   const currentSong = allSongs[currentSongIndex];
 
+useEffect(() => {
+  console.log('🎵 Music component mounted');
+  console.log('isAuthenticated:', isAuthenticated);
+  console.log('accessToken:', accessToken ? 'SET' : 'NULL');
+}, [isAuthenticated, accessToken]);
+
   // Check for OAuth callback on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('oauth_token');
     const userJson = params.get('oauth_user');
     const oauthError = params.get('oauth_error');
+    console.log('OAuth callback check');
+    console.log('current URL:', window.location.href);
+    console.log('oauth_token present:', !!token);
+    console.log('oauth_user present:', !!userJson);
+    console.log('oauth_error:', oauthError);
 
     if (oauthError) {
       console.error('❌ OAuth error:', oauthError);
@@ -85,9 +96,11 @@ export default function Music() {
     if (token && userJson) {
       try {
         const userData = JSON.parse(decodeURIComponent(userJson));
+        console.log('Parsed OAuth user:', userData.email || userData.name);
         setAccessToken(token);
         setUser(userData);
         setIsAuthenticated(true);
+        console.log('Setting auth state from OAuth callback');
         
         // Set auth flag so router allows access to /app
         localStorage.setItem('cloudhop_authenticated', 'true');
@@ -100,12 +113,21 @@ export default function Music() {
       } catch (e) {
         console.error('❌ Failed to parse user data:', e);
       }
+    } else {
+      console.warn('OAuth params missing on mount, Music auth state was not restored from URL');
     }
   }, []);
 
   // Fetch playlists when authenticated
   useEffect(() => {
-    if (!isAuthenticated || !accessToken) return;
+    console.log('Playlist effect fired');
+    console.log('  isAuthenticated:', isAuthenticated);
+    console.log('  accessToken:', accessToken ? 'SET' : 'NULL');
+
+    if (!isAuthenticated || !accessToken) {
+      console.warn('Skipping playlist fetch because auth state is incomplete');
+      return;
+    }
 
     const fetchPlaylists = async () => {
       setLoadingPlaylists(true);

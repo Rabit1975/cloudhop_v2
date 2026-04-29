@@ -13,6 +13,95 @@ interface Game {
   pressKitUrl: string;
 }
 
+const GAME_IDS = [
+  '1v1lol',
+  '2048',
+  '8ball',
+  '99 Balls',
+  'adarkroom',
+  'amongus',
+  'asciispace',
+  'asteroids',
+  'astray',
+  'backcountry',
+  'basketballstars',
+  'blackholesquare',
+  'bloonstd4',
+  'bounceback',
+  'breaklock',
+  'breakout',
+  'Bubble Shooter Wild West',
+  'Candy Riddles Free Match 3 Puzzle',
+  'captaincallisto',
+  'Charm Farm',
+  'chess',
+  'chromaincident',
+  'chrome-dino',
+  'chromedino',
+  'Clap Clap Nightmare',
+  'connect3',
+  'cookieclicker',
+  'crossyroad',
+  'CS Upgrade Gun',
+  'cubefield',
+  'cuttherope',
+  'cuttherope2',
+  'cuttheropeholiday',
+  'cuttheropetimetravel',
+  'Dead Zone Mech OPS',
+  'dinosaur',
+  'doctor-acorn2',
+  'doctor-acorn3',
+  'doge2048',
+  'dogeminer',
+  'doodle-jump',
+  'driftboss',
+  'ducklife',
+  'ducklife2',
+  'ducklife3',
+  'ducklife4',
+  'ducklife5',
+  'edge-surf',
+  'edgenotfound',
+  'elasticmorty',
+  'Eternal Fury',
+  'evilglitch',
+  'factoryballsforever',
+  'Family Relics',
+  'fireboy-and-watergirl-1',
+  'fireboy-and-watergirl-2',
+  'fireboy-and-watergirl-3',
+  'fireboy-and-watergirl-4',
+  'firewater',
+  'flappy-2048',
+  'flappybird',
+  'fnaf',
+  'fnaf2',
+  'fnaf3',
+  'fnaf4',
+  'friendlyfire',
+  'geometry',
+  'geometrydash',
+  'gopher',
+  'Governor of Poker 3',
+  'Hero Ragdoll Fighting',
+  'hextris',
+  'icypurplehead2',
+  "Kumu's Adventure",
+  'Lost in the Forest',
+  'Mad Truck Challenge Special',
+  'Poppy Strike 5',
+  'Run FriendsGame Title',
+  'The Mergest Kingdom',
+  'Tied Up',
+  'Timewalker Survive!',
+  'Virtual Families Cook Off',
+  'Water Shooter',
+  'Worms Zone a Slithery Snake',
+  'Xeno Defense Protocol',
+  'Zombies Battle for Survival',
+];
+
 const CATEGORY_COLORS: Record<string, string> = {
   Action: 'from-red-600 to-orange-500',
   Puzzle: 'from-blue-600 to-cyan-500',
@@ -66,25 +155,9 @@ export default function GameHub() {
         setError(null);
 
         // Fetch the list of games dynamically
-        const gameIds = [
-          '1v1lol', '2048', '8ball', '99 Balls', 'adarkroom', 'amongus', 'asciispace',
-          'asteroids', 'astray', 'backcountry', 'basketballstars', 'blackholesquare',
-          'bloonstd4', 'bounceback', 'breaklock', 'breakout', 'Bubble Shooter Wild West',
-          'Candy Riddles Free Match 3 Puzzle', 'captaincallisto', 'chess', 'chromaincident',
-          'chromedino', 'connect3', 'cookieclicker', 'crossyroad', 'cubefield', 'cuttherope',
-          'cuttherope2', 'cuttheropeholiday', 'cuttheropetimetravel', 'dinosaur',
-          'doctor-acorn2', 'doctor-acorn3', 'doge2048', 'dogeminer', 'doodle-jump',
-          'driftboss', 'ducklife', 'ducklife2', 'ducklife3', 'ducklife4', 'ducklife5',
-          'edgenotfound', 'edge-surf', 'elasticmorty', 'evilglitch', 'factoryballsforever',
-          'fireboy-and-watergirl-1', 'fireboy-and-watergirl-2', 'fireboy-and-watergirl-3',
-          'fireboy-and-watergirl-4', 'firewater', 'flappy-2048', 'flappybird', 'fnaf',
-          'fnaf2', 'fnaf3', 'fnaf4', 'friendlyfire', 'geometry', 'geometrydash', 'gopher',
-          'hextris', 'icypurplehead2', 'qiciengine', 'unity-spectrum'
-        ];
-
         const loadedGames: Game[] = [];
 
-        for (const gameId of gameIds) {
+        for (const gameId of GAME_IDS) {
           try {
             // Determine category based on game name or ID
             let category = 'Arcade';
@@ -270,7 +343,7 @@ export default function GameHub() {
                     alt={featuredGame.name}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/games/default.png';
+                      (e.target as HTMLImageElement).style.display = 'none';
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/50 to-transparent" />
