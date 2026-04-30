@@ -77,3 +77,46 @@ The platform emphasizes:
 
 > *(Add your screenshots here — highly recommended)*
 
+
+---
+
+## ⚡ Key Achievements
+
+- Built and deployed a full-stack platform from the ground up  
+- Implemented containerized environments for consistent deployment  
+- Integrated and troubleshot third-party APIs (OAuth, media services)  
+- Improved performance by removing resource-intensive UI systems  
+- Designed a modular architecture supporting future scalability  
+
+---
+
+## 🧪 Lessons Learned
+
+- Managing third-party API approvals (OAuth, YouTube integration challenges)
+- Debugging real-world deployment issues across environments
+- Balancing feature ambition with performance and maintainability
+- Structuring scalable systems with modular components
+
+---
+
+## 🔮 Future Improvements
+
+- Expanded AI capabilities and automation tools  
+- Enhanced modular plugin system  
+- Additional real-time features and integrations  
+- Continued UI/UX refinement and performance tuning  
+
+---
+
+## 👤 Author
+
+**Matthew Seales**  
+- IT Support | Cloud Developer | Problem Solver  
+- CompTIA A+ Certified  
+- Microsoft Azure Certified  
+
+---
+
+## 📌 Note
+
+CloudHop is an actively evolving project designed to demonstrate real-world development, deployment, and troubleshooting skills relevant to IT and cloud-based roles.
