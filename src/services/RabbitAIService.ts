@@ -37,23 +37,40 @@ class RabbitAIService {
   }
 
   /**
-   * Generate an image from a text prompt.
+   * Generate an image from a text prompt (lazy-loaded, only on demand).
    * Returns an HTMLImageElement or null.
+   * Set shouldLoad=false to just get the URL without fetching.
    */
   async generateImage(
     prompt: string,
-    options: { width?: number; height?: number; quality?: number } = {}
+    options: { width?: number; height?: number; quality?: number; shouldLoad?: boolean } = {}
   ): Promise<HTMLImageElement | null> {
     try {
-      // Use picsum as a placeholder until a real image API is configured
       const seed = encodeURIComponent(prompt.slice(0, 30));
       const w = options.width ?? 400;
       const h = options.height ?? 300;
+      const imgSrc = `https://picsum.photos/seed/${seed}/${w}/${h}`;
+
+      // If shouldLoad is false, just return the URL embedded in an img element without loading
+      if (options.shouldLoad === false) {
+        const img = new Image(w, h);
+        img.src = imgSrc;
+        return img;
+      }
+
+      // Only actually fetch the image if explicitly requested
       const img = new Image(w, h);
-      img.src = `https://picsum.photos/seed/${seed}/${w}/${h}`;
+      img.src = imgSrc;
       await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error('Image load failed'));
+        const timeout = setTimeout(() => reject(new Error('Image load timeout')), 5000);
+        img.onload = () => {
+          clearTimeout(timeout);
+          resolve();
+        };
+        img.onerror = () => {
+          clearTimeout(timeout);
+          reject(new Error('Image load failed'));
+        };
       });
       return img;
     } catch (err) {

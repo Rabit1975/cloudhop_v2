@@ -11,6 +11,7 @@ export default async function handler(req: any, res: any) {
 
   try {
     const usage = await getUserUsage(user.id);
+    res.setHeader('Cache-Control', 'private, max-age=300');
     return res.status(200).json(usage);
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch usage', details: String(error) });

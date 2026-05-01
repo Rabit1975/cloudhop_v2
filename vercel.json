@@ -13,7 +13,7 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/(index\\.html|app.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
@@ -40,6 +40,7 @@
     }
   ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "^(?!/api/|/static/|\\.[^/]+$)(.*)", "destination": "/index.html" }
   ]
 }

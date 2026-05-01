@@ -8,6 +8,7 @@ export default async function handler(req: any, res: any) {
 
   try {
     const plans = await getPlans();
+    res.setHeader('Cache-Control', 'public, max-age=3600');
     return res.status(200).json(plans);
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch plans', details: String(error) });

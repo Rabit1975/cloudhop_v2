@@ -11,6 +11,7 @@ export default async function handler(req: any, res: any) {
 
   try {
     const subscription = await getUserSubscription(user.id);
+    res.setHeader('Cache-Control', 'private, max-age=600');
     return res.status(200).json(subscription);
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch subscription', details: String(error) });
