@@ -104,9 +104,33 @@ services:
     restart: unless-stopped
 
   # ─────────────────────────────────────────────────────────────
+  # OLLAMA - Free local LLM service
+  # Downloads and runs open-source models locally
+  # Models: mistral, llama2, neural-chat, etc.
+  # Usage: docker-compose up ollama
+  # ─────────────────────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: cloudhop-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      OLLAMA_HOST: "0.0.0.0:11434"
+    restart: unless-stopped
+    profiles:
+      - ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─────────────────────────────────────────────────────────────
   # AI SIDECAR - Autonomous AI service (companion to main app)
-  # Handles AI operations independently
-  # Usage: docker-compose up ai-sidecar
+  # Supports both Ollama (free, local) and OpenAI (paid, cloud)
+  # Usage: docker-compose up ai-sidecar ollama
   # ─────────────────────────────────────────────────────────────
   ai-sidecar:
     build:
@@ -121,6 +145,9 @@ services:
       - ./ai:/app/ai
     environment:
       NODE_ENV: development
+      AI_PROVIDER: ${AI_PROVIDER:-ollama}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-mistral}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
@@ -154,3 +181,4 @@ volumes:
   dev_node_modules:
   oauth_node_modules:
   api_node_modules:
+  ollama_data:
