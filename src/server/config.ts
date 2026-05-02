@@ -22,6 +22,8 @@ const allowedOriginsFromEnv = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
   : [];
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export const config = {
   port: getOptionalNumber('PORT', 3001),
   appUrl: process.env.VITE_APP_URL || 'http://localhost:5173',
@@ -29,9 +31,9 @@ export const config = {
     allowedOriginsFromEnv.length > 0
       ? allowedOriginsFromEnv
       : ['http://localhost:5173', 'http://localhost:3000'],
-  supabaseUrl: process.env.SUPABASE_URL || getRequiredEnv('VITE_SUPABASE_URL'),
-  supabaseAnonKey: process.env.SUPABASE_ANON_KEY || getRequiredEnv('VITE_SUPABASE_ANON_KEY'),
-  supabaseServiceRoleKey: getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
+  supabaseUrl: process.env.SUPABASE_URL || getOptionalEnv('VITE_SUPABASE_URL') || 'https://placeholder.supabase.co',
+  supabaseAnonKey: process.env.SUPABASE_ANON_KEY || getOptionalEnv('VITE_SUPABASE_ANON_KEY') || 'placeholder-key',
+  supabaseServiceRoleKey: getOptionalEnv('SUPABASE_SERVICE_ROLE_KEY') || (isDev ? 'placeholder-dev-key' : getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY')),
   stripeSecretKey: getOptionalEnv('STRIPE_SECRET_KEY'),
   stripeWebhookSecret: getOptionalEnv('STRIPE_WEBHOOK_SECRET'),
   stripePricePlus: getOptionalEnv('STRIPE_PRICE_PLUS'),
