@@ -1,0 +1,39 @@
+FROM node:20.18-alpine3.21
+
+# Install development tools, git, Docker CLI, and utilities
+RUN apk add --no-cache \
+    bash \
+    git \
+    openssh-client \
+    curl \
+    jq \
+    docker-cli \
+    docker-compose \
+    sudo
+
+# Install global tools
+RUN npm install -g \
+    tsx \
+    ts-node \
+    typescript \
+    vercel \
+    pnpm
+
+WORKDIR /workspace
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig*.json ./
+
+# Install dependencies
+RUN npm ci --frozen-lockfile 2>/dev/null || npm install
+
+# Copy source code
+COPY . .
+
+# Set up git config for commits
+RUN git config --global user.email "dev-agent@cloudhop.local" && \
+    git config --global user.name "CloudHop Dev Agent"
+
+# Keep container running
+CMD ["tail", "-f", "/dev/null"]

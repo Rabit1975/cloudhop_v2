@@ -1,32 +1,37 @@
+version: '3.9'
+
 services:
-  dev:
+  # ─────────────────────────────────────────────────────────────
+  # DEV AGENT - Autonomous agent for editing repo and running commands
+  # Usage: docker-compose run --rm agent
+  # ─────────────────────────────────────────────────────────────
+  agent:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-    working_dir: /app
-    command: sh -lc "sleep infinity"
+      dockerfile: Dockerfile.agent
+    container_name: cloudhop-agent
+    working_dir: /workspace
     stdin_open: true
     tty: true
     volumes:
-      - .:/app
-      - dev_node_modules:/app/node_modules
+      - ./:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
       NODE_ENV: development
-      CHOKIDAR_USEPOLLING: "true"
-      VITE_API_BASE_URL: http://localhost:3002/api
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
-      OPENAI_MODEL: ${OPENAI_MODEL:-}
-    depends_on:
-      - frontend
-      - oauth
-      - api
-    restart: unless-stopped
+    command: npx tsx scripts/local-agent.ts
+    profiles:
+      - agent
 
+  # ─────────────────────────────────────────────────────────────
+  # FRONTEND - Vite React development server
+  # ─────────────────────────────────────────────────────────────
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    container_name: cloudhop-frontend
     working_dir: /app
     command: npm run dev -- --host 0.0.0.0
     ports:
@@ -37,16 +42,22 @@ services:
     environment:
       NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true"
-      VITE_API_BASE_URL: http://localhost:3002/api
+      VITE_API_BASE_URL: http://api:3002/api
+      VITE_RABBIT_AI_ENDPOINT: http://ai-sidecar:3002
     depends_on:
-      - oauth
       - api
+      - oauth
+      - ai-sidecar
     restart: unless-stopped
 
+  # ─────────────────────────────────────────────────────────────
+  # OAUTH SERVICE - Google OAuth handler
+  # ─────────────────────────────────────────────────────────────
   oauth:
     image: node:20.18-alpine3.21
+    container_name: cloudhop-oauth
     working_dir: /app
-    command: sh -c "npm ci && npm run dev:oauth"
+    command: sh -c "npm ci --frozen-lockfile 2>/dev/null || npm install && npm run dev:oauth"
     ports:
       - "3001:3001"
     volumes:
@@ -54,14 +65,19 @@ services:
       - oauth_node_modules:/app/node_modules
     environment:
       NODE_ENV: development
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-your_client_secret}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      OAUTH_REDIRECT_URI: ${OAUTH_REDIRECT_URI:-http://localhost:5173/app}
     restart: unless-stopped
 
+  # ─────────────────────────────────────────────────────────────
+  # API SERVICE - Backend Express server
+  # ─────────────────────────────────────────────────────────────
   api:
     image: node:20.18-alpine3.21
+    container_name: cloudhop-api
     working_dir: /app
-    command: sh -c "npm ci && npm run dev:server"
+    command: sh -c "npm ci --frozen-lockfile 2>/dev/null || npm install && npm run dev:server"
     ports:
       - "3002:3002"
     volumes:
@@ -70,7 +86,7 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3002
-      ALLOWED_ORIGINS: http://localhost:5173,http://localhost:3000
+      ALLOWED_ORIGINS: http://localhost:5173,http://frontend:5173,http://api:3002
       VITE_APP_URL: http://localhost:5173
       SUPABASE_URL: ${SUPABASE_URL:-}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
@@ -87,34 +103,52 @@ services:
       OPENAI_MODEL: ${OPENAI_MODEL:-}
     restart: unless-stopped
 
+  # ─────────────────────────────────────────────────────────────
+  # AI SIDECAR - Autonomous AI service (companion to main app)
+  # Handles AI operations independently
+  # Usage: docker-compose up ai-sidecar
+  # ─────────────────────────────────────────────────────────────
+  ai-sidecar:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai
+    container_name: cloudhop-ai-sidecar
+    working_dir: /app
+    ports:
+      - "3003:3002"
+    volumes:
+      - ./src/server:/app/src/server
+      - ./ai:/app/ai
+    environment:
+      NODE_ENV: development
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+    depends_on:
+      - api
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ─────────────────────────────────────────────────────────────
+  # PRODUCTION BUILD - Full nginx-based production image
+  # Usage: docker-compose up cloudhop
+  # ─────────────────────────────────────────────────────────────
   cloudhop:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: cloudhop-prod
     ports:
       - "80:80"
     environment:
       NODE_ENV: production
     restart: unless-stopped
-
-  ai-sidecar:
-    profiles: ["ai"]
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    working_dir: /app
-    command: sh -lc "sleep infinity"
-    stdin_open: true
-    tty: true
-    volumes:
-      - .:/app
-      - dev_node_modules:/app/node_modules
-    environment:
-      NODE_ENV: development
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
-      OPENAI_MODEL: ${OPENAI_MODEL:-}
-    restart: unless-stopped
+    profiles:
+      - production
 
 volumes:
   dev_node_modules:

@@ -1,0 +1,26 @@
+FROM node:20.18-alpine3.21
+
+# Install essential tools
+RUN apk add --no-cache \
+    bash \
+    curl \
+    openssl
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig*.json ./
+
+# Install dependencies (production + dev for TypeScript support)
+RUN npm ci --frozen-lockfile 2>/dev/null || npm install
+
+# Copy source files
+COPY src ./src
+COPY ai ./ai
+
+# Expose port for AI service
+EXPOSE 3002
+
+# Run the AI service
+CMD ["npx", "tsx", "src/server/ai-service.ts"]
