@@ -2,10 +2,8 @@
  * Generate a playlist of actual good music based on mood
  * Uses Ollama to create real artist + song combinations
  * 
- * Examples:
- * - Focus: "The Blaze - Virgins", "Tycho - Awake", etc.
- * - Chill: "Bonobo - Kerala", "Floating Points - Silhouette"
- * - Workout: "Justice - D.A.N.C.E.", "The Chemical Brothers - Block Rockin' Beats"
+ * Curated for: NF, I Prevail, Wind Walkers, Logic, Joyner Lucas style
+ * (Hip-hop, rap-rock, alternative metal, emotional lyrics)
  */
 
 async function generateGoodPlaylist(mood: string, prompt: string): Promise<string[]> {
@@ -17,8 +15,9 @@ async function generateGoodPlaylist(mood: string, prompt: string): Promise<strin
         prompt: `Generate a ${mood} playlist for: ${prompt}
 
 Return ONLY a JSON array of 8 real songs with actual artists. Format: "Artist - Song Title"
+Focus on artists like: NF, I Prevail, Wind Walkers, Logic, Joyner Lucas, Eminem, Denzel Curry, Token, Hopsin
 Examples of good formatting:
-["Tycho - Awake", "Bonobo - Kerala", "Jon Hopkins - Emerald Rush"]
+["NF - Clouds", "I Prevail - My Heart", "Wind Walkers - Lost"]
 
 Return ONLY the JSON array, no other text.`,
         type: 'playlist'
@@ -41,87 +40,97 @@ Return ONLY the JSON array, no other text.`,
   } catch (error) {
     console.error('Failed to generate playlist:', error);
     
-    // Actual good fallback playlists by mood
+    // Curated playlists by mood - HIP-HOP / RAP-ROCK / ALT-METAL focused
     const playlists: Record<string, string[]> = {
       focus: [
-        'Tycho - Awake',
-        'Jon Hopkins - Emerald Rush',
-        'Bonobo - Kerala',
-        'Four Tet - Floating',
-        'Floating Points - Silhouette',
-        'Boards of Canada - Everything Hertz',
-        'Aphex Twin - Avril 14th',
-        'Ólafur Arnalds - Near Light'
+        'NF - Clouds',
+        'Logic - Everybody',
+        'Joyner Lucas - Ross Capicchioni',
+        'Token - Headline',
+        'I Prevail - Breaking Down',
+        'Denzel Curry - Ultimate',
+        'Eminem - Lose Yourself',
+        'Hopsin - Ill Mind of Hopsin 5'
       ],
       chill: [
-        'Bonobo - Kerala',
-        'Tycho - Awake',
-        'Floating Points - Silhouette',
-        'The Cinematic Orchestra - To Build A Home',
-        'Zero 7 - In the Waiting Line',
-        'Air - La Femme d\'Argent',
-        'Boards of Canada - Roygbiv',
-        'Ólafur Arnalds - Re:Member'
+        'NF - Let You Down',
+        'Logic - 1-800-273-8255',
+        'Wind Walkers - Lost',
+        'Juice WRLD - Lucid Dreams',
+        'Post Malone - Circles',
+        'The Kid LAROI - WITHOUT YOU',
+        'Lil Peep - Hellboy',
+        'XXXTentacion - Jocelyn (No Bystanders)'
       ],
       workout: [
-        'Justice - D.A.N.C.E.',
-        'The Chemical Brothers - Block Rockin\' Beats',
-        'LCD Soundsystem - All My Friends',
-        'Daft Punk - One More Time',
-        'Fatboy Slim - Praise You',
-        'The Prodigy - Firestarter',
-        'Basement Jaxx - Where\'s Your Head At',
-        'Diplo - Express Yourself'
+        'I Prevail - Bow Down',
+        'NF - PAID MY DUES',
+        'Joyner Lucas - Lil Demon',
+        'Eminem - Till I Collapse',
+        'Token - Eat Sleep Rap Repeat',
+        'Denzel Curry - Ultimate',
+        'Juice WRLD - Robbery',
+        'Logic - Homicide'
       ],
-      happy: [
-        'Pharrell Williams - Happy',
-        'Walking on Sunshine - Katrina & The Waves',
-        'Don\'t Stop Me Now - Queen',
-        'Good As Hell - Lizzo',
-        'Levitating - Dua Lipa',
-        'Walking on Air - Katy Perry',
-        'Shut Up and Dance - WALK THE MOON',
-        'Blinding Lights - The Weeknd'
+      angry: [
+        'I Prevail - My Heart',
+        'NF - PAID MY DUES',
+        'Joyner Lucas - Lil Demon',
+        'Eminem - Kill You',
+        'Denzel Curry - CLOUT COBAIN',
+        'Token - Headline',
+        'Hopsin - Ill Mind of Hopsin 6',
+        'Suicide Boys - STOP BREATHING'
       ],
       sad: [
-        'Bon Iver - Holocene',
-        'Sigur Rós - Hoppípolla',
-        'Explosions in the Sky - Your Hand in Mine',
-        'Ólafur Arnalds - Re:Member',
-        'Nils Frahm - Felt',
-        'Max Richter - On the Nature of Daylight',
-        'Imogen Heap - Hide and Seek',
-        'Grizzly Bear - Two Weeks'
+        'NF - Let You Down',
+        'Logic - 1-800-273-8255',
+        'Wind Walkers - Lost',
+        'Joyner Lucas - I Love You',
+        'Juice WRLD - Legends Never Die',
+        'XXXTentacion - Sad!',
+        'Lil Peep - Falling Down',
+        'The Kid LAROI - Tragic'
+      ],
+      hype: [
+        'I Prevail - Bow Down',
+        'NF - PAID MY DUES',
+        'Token - Eat Sleep Rap Repeat',
+        'Logic - Eminem Tribute',
+        'Joyner Lucas - Ross Capicchioni',
+        'Eminem - Rap God',
+        'Denzel Curry - Ta13oo',
+        'Hopsin - Ill Mind of Hopsin 7'
+      ],
+      motivation: [
+        'NF - PAID MY DUES',
+        'I Prevail - Breaking Down',
+        'Token - Time Will Tell',
+        'Logic - Everybody',
+        'Joyner Lucas - I Love You',
+        'Wind Walkers - Lost',
+        'Eminem - Lose Yourself',
+        'Denzel Curry - Ultimate'
+      ],
+      reflective: [
+        'NF - Let You Down',
+        'Logic - 1-800-273-8255',
+        'Wind Walkers - Lost',
+        'Joyner Lucas - I Love You',
+        'Token - Headline',
+        'NF - Outro',
+        'Logic - Welcome',
+        'I Prevail - My Heart'
       ],
       party: [
-        'Daft Punk - Get Lucky',
-        'MGMT - Electric Feel',
-        'Chromeo - Bonafied Lovin\'',
-        'Nile Rodgers - Le Freak',
-        'Earth, Wind & Fire - September',
-        'Donna Summer - I Feel Love',
-        'The Bee Gees - Stayin\' Alive',
-        'Gloria Gaynor - I Will Survive'
-      ],
-      sleep: [
-        'Ambient 1 - Music for Airports - Brian Eno',
-        'Max Richter - Sleep',
-        'Nils Frahm - All Melody',
-        'Ólafur Arnalds - Island Songs',
-        'Alva Noto - Unitxt',
-        'Lawrence English - Cruel Optimism',
-        'Fennesz - Black Sea',
-        'Pan American - The Delta'
-      ],
-      study: [
-        'Tycho - Awake',
-        'Jon Hopkins - Emerald Rush',
-        'Ólafur Arnalds - Near Light',
-        'Nils Frahm - All Melody',
-        'Max Richter - On the Nature of Daylight',
-        'Kiasmos - Thrown Into The Lift',
-        'Bonobo - Kerala',
-        'Boards of Canada - Roygbiv'
+        'I Prevail - Bow Down',
+        'Logic - Eminem Tribute',
+        'Token - Eat Sleep Rap Repeat',
+        'Eminem - The Real Slim Shady',
+        'Denzel Curry - CASH',
+        'Joyner Lucas - Ross Capicchioni',
+        'Post Malone - Congratulations',
+        'Juice WRLD - Mo City Flexologist'
       ]
     };
 
