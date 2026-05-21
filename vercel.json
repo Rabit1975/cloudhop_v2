@@ -9,6 +9,10 @@
         {
           "key": "Content-Type",
           "value": "text/plain"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     },
@@ -41,6 +45,6 @@
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "^(?!/api/|/static/|/ads\\.txt|/robots\\.txt|/sitemap\\.xml|\\.[^/]+$)(.*)", "destination": "/index.html" }
+    { "source": "^(?!/api/|/static/|\\.)(.*)", "destination": "/index.html" }
   ]
 }
