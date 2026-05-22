@@ -13,95 +13,6 @@ interface Game {
   pressKitUrl: string;
 }
 
-const GAME_IDS = [
-  '1v1lol',
-  '2048',
-  '8ball',
-  '99 Balls',
-  'adarkroom',
-  'amongus',
-  'asciispace',
-  'asteroids',
-  'astray',
-  'backcountry',
-  'basketballstars',
-  'blackholesquare',
-  'bloonstd4',
-  'bounceback',
-  'breaklock',
-  'breakout',
-  'Bubble Shooter Wild West',
-  'Candy Riddles Free Match 3 Puzzle',
-  'captaincallisto',
-  'Charm Farm',
-  'chess',
-  'chromaincident',
-  'chrome-dino',
-  'chromedino',
-  'Clap Clap Nightmare',
-  'connect3',
-  'cookieclicker',
-  'crossyroad',
-  'CS Upgrade Gun',
-  'cubefield',
-  'cuttherope',
-  'cuttherope2',
-  'cuttheropeholiday',
-  'cuttheropetimetravel',
-  'Dead Zone Mech OPS',
-  'dinosaur',
-  'doctor-acorn2',
-  'doctor-acorn3',
-  'doge2048',
-  'dogeminer',
-  'doodle-jump',
-  'driftboss',
-  'ducklife',
-  'ducklife2',
-  'ducklife3',
-  'ducklife4',
-  'ducklife5',
-  'edge-surf',
-  'edgenotfound',
-  'elasticmorty',
-  'Eternal Fury',
-  'evilglitch',
-  'factoryballsforever',
-  'Family Relics',
-  'fireboy-and-watergirl-1',
-  'fireboy-and-watergirl-2',
-  'fireboy-and-watergirl-3',
-  'fireboy-and-watergirl-4',
-  'firewater',
-  'flappy-2048',
-  'flappybird',
-  'fnaf',
-  'fnaf2',
-  'fnaf3',
-  'fnaf4',
-  'friendlyfire',
-  'geometry',
-  'geometrydash',
-  'gopher',
-  'Governor of Poker 3',
-  'Hero Ragdoll Fighting',
-  'hextris',
-  'icypurplehead2',
-  "Kumu's Adventure",
-  'Lost in the Forest',
-  'Mad Truck Challenge Special',
-  'Poppy Strike 5',
-  'Run FriendsGame Title',
-  'The Mergest Kingdom',
-  'Tied Up',
-  'Timewalker Survive!',
-  'Virtual Families Cook Off',
-  'Water Shooter',
-  'Worms Zone a Slithery Snake',
-  'Xeno Defense Protocol',
-  'Zombies Battle for Survival',
-];
-
 const CATEGORY_COLORS: Record<string, string> = {
   Action: 'from-red-600 to-orange-500',
   Puzzle: 'from-blue-600 to-cyan-500',
@@ -138,6 +49,58 @@ const CATEGORY_EMOJI: Record<string, string> = {
   'Match 3': '💎',
 };
 
+const parseGameMonetizeXML = (xmlText: string): Game[] => {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+  
+  if (xmlDoc.parseError.errorCode !== 0) {
+    console.error('XML Parse error:', xmlDoc.parseError.reason);
+    return [];
+  }
+
+  const games: Game[] = [];
+  const gameElements = xmlDoc.getElementsByTagName('game');
+
+  for (let i = 0; i < gameElements.length; i++) {
+    const gameEl = gameElements[i];
+    
+    const id = gameEl.getElementsByTagName('id')[0]?.textContent || '';
+    const name = gameEl.getElementsByTagName('name')[0]?.textContent || '';
+    const categoryRaw = gameEl.getElementsByTagName('category')[0]?.textContent || 'Arcade';
+    const image = gameEl.getElementsByTagName('image')[0]?.textContent || '';
+    const thumbnail = gameEl.getElementsByTagName('thumbnail')[0]?.textContent || image;
+
+    // Map GameMonetize categories to our UI categories
+    let category = 'Arcade';
+    const categoryLower = categoryRaw.toLowerCase();
+    
+    if (categoryLower.includes('action')) category = 'Action';
+    else if (categoryLower.includes('puzzle')) category = 'Puzzle';
+    else if (categoryLower.includes('sport') || categoryLower.includes('ball')) category = 'Sports';
+    else if (categoryLower.includes('adventure')) category = 'Adventure';
+    else if (categoryLower.includes('strategy') || categoryLower.includes('chess')) category = 'Strategy';
+    else if (categoryLower.includes('idle') || categoryLower.includes('clicker')) category = 'Idle';
+    else if (categoryLower.includes('racing') || categoryLower.includes('race')) category = 'Racing';
+    else if (categoryLower.includes('horror') || categoryLower.includes('scary')) category = 'Horror';
+    else if (categoryLower.includes('platformer') || categoryLower.includes('platform')) category = 'Platformer';
+    else if (categoryLower.includes('match') || categoryLower.includes('match-3')) category = 'Match 3';
+    else if (categoryLower.includes('multiplayer')) category = 'Multiplayer';
+    else if (categoryLower.includes('casual')) category = 'Casual';
+
+    if (id && name) {
+      games.push({
+        id,
+        name,
+        category,
+        image: thumbnail || image,
+        pressKitUrl: `https://gamemonetize.com/?p=${id}`, // Fallback to game link
+      });
+    }
+  }
+
+  return games;
+};
+
 export default function GameHub() {
   const [games, setGames] = useState<Game[]>([]);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
@@ -147,64 +110,51 @@ export default function GameHub() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load all games from public/games folder
+  // Load games from GameMonetize feed
   useEffect(() => {
     const loadGames = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Fetch the list of games dynamically
-        const loadedGames: Game[] = [];
+        // Fetch from GameMonetize feed with CORS proxy fallback
+        const feedUrl = 'https://gamemonetize.com/feed.php?format=1&page=1';
+        
+        // Try direct fetch first
+        let response = await fetch(feedUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/xml',
+          },
+        });
 
-        for (const gameId of GAME_IDS) {
-          try {
-            // Determine category based on game name or ID
-            let category = 'Arcade';
-            const lowerGameId = gameId.toLowerCase();
-            
-            if (lowerGameId.includes('duck')) category = 'Sports';
-            else if (lowerGameId.includes('fireboy') || lowerGameId.includes('candy') || lowerGameId.includes('bubble') || lowerGameId.includes('match')) category = 'Puzzle';
-            else if (lowerGameId.includes('doge') || lowerGameId.includes('clicker') || lowerGameId.includes('merge')) category = 'Idle';
-            else if (lowerGameId.includes('chess') || lowerGameId.includes('strategy') || lowerGameId.includes('xeno') || lowerGameId.includes('defense')) category = 'Strategy';
-            else if (lowerGameId.includes('ball') || lowerGameId.includes('8ball') || lowerGameId.includes('shooter') || lowerGameId.includes('water')) category = 'Sports';
-            else if (lowerGameId.includes('rope') || lowerGameId.includes('connect') || lowerGameId.includes('tied')) category = 'Puzzle';
-            else if (lowerGameId.includes('fnaf') || lowerGameId.includes('horror') || lowerGameId.includes('nightmare') || lowerGameId.includes('clap')) category = 'Horror';
-            else if (lowerGameId.includes('race') || lowerGameId.includes('drift') || lowerGameId.includes('truck') || lowerGameId.includes('road')) category = 'Racing';
-            else if (lowerGameId.includes('among') || lowerGameId.includes('social') || lowerGameId.includes('worms') || lowerGameId.includes('snake')) category = 'Multiplayer';
-            else if (lowerGameId.includes('ragdoll') || lowerGameId.includes('fighting') || lowerGameId.includes('hero') || lowerGameId.includes('strike') || lowerGameId.includes('gun') || lowerGameId.includes('mech') || lowerGameId.includes('poppy') || lowerGameId.includes('dead')) category = 'Action';
-            else if (lowerGameId.includes('forest') || lowerGameId.includes('adventure') || lowerGameId.includes('lost') || lowerGameId.includes('timewalker')) category = 'Adventure';
-            else if (lowerGameId.includes('runner') || lowerGameId.includes('run') || lowerGameId.includes('friends')) category = 'Platformer';
-
-            // Use image1.jpg as default - works for old and new GameDistribution games
-            const imageUrl = `/games/${gameId}/image1.jpg`;
-            const pressKitUrl = `/games/${gameId}/${gameId} - Press Kit.pdf`;
-
-            loadedGames.push({
-              id: gameId,
-              name: gameId
-                .replace(/[-_]/g, ' ')
-                .split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' '),
-              category,
-              image: imageUrl,
-              pressKitUrl,
-            });
-          } catch (err) {
-            console.warn(`Failed to load game ${gameId}:`, err);
-          }
+        // If CORS fails, try with a CORS proxy
+        if (!response.ok) {
+          const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
+          response = await fetch(corsProxyUrl);
         }
 
+        if (!response.ok) {
+          throw new Error(`Failed to fetch games: ${response.status}`);
+        }
+
+        const xmlText = await response.text();
+        const loadedGames = parseGameMonetizeXML(xmlText);
+
         if (loadedGames.length === 0) {
-          setError('No games found. Please check your games folder.');
+          setError('No games found in feed. Please check your connection.');
         } else {
           setGames(loadedGames);
           setSelectedGame(loadedGames[0]);
         }
       } catch (err) {
         console.error('Error loading games:', err);
-        setError('Failed to load games. Please try again later.');
+        setError('Failed to load games from GameMonetize. Retrying in 5 seconds...');
+        
+        // Retry after 5 seconds
+        setTimeout(() => {
+          loadGames();
+        }, 5000);
       } finally {
         setLoading(false);
       }
@@ -277,10 +227,10 @@ export default function GameHub() {
         </div>
         <div className="flex-1 relative overflow-hidden">
           <iframe
-            src={`/games/${selectedGame.id}/index.html`}
+            src={`https://gamemonetize.com/?p=${selectedGame.id}`}
             title={selectedGame.name}
             className="absolute inset-0 w-full h-full border-none"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; gamepad"
           />
         </div>
       </div>
@@ -322,7 +272,7 @@ export default function GameHub() {
           {loading && (
             <div className="text-center py-12">
               <Gamepad2 className="w-16 h-16 mx-auto mb-4 text-red-500 animate-bounce" />
-              <p className="text-slate-400 text-lg">Loading your game collection...</p>
+              <p className="text-slate-400 text-lg">Loading your game collection from GameMonetize...</p>
             </div>
           )}
 
@@ -377,7 +327,7 @@ export default function GameHub() {
                           className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-white font-bold flex items-center justify-center gap-2 transition-all text-xs sm:text-base"
                         >
                           <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
-                          <span className="hidden sm:inline">Press Kit</span>
+                          <span className="hidden sm:inline">More Info</span>
                           <span className="sm:hidden">Info</span>
                         </a>
                       </div>
