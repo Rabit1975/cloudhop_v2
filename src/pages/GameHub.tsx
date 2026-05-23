@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Search, Play, ChevronLeft, ChevronRight, X, RotateCcw, Maximize2,
   Star, Gamepad2, Settings, Bell, Download, FileText,
@@ -93,7 +93,7 @@ const parseGameMonetizeXML = (xmlText: string): Game[] => {
         name,
         category,
         image: thumbnail || image,
-        pressKitUrl: `https://gamemonetize.com/?p=${id}`, // Fallback to game link
+        pressKitUrl: `https://gamemonetize.com/?p=${id}`,
       });
     }
   }
@@ -109,59 +109,101 @@ export default function GameHub() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const gridEndRef = useRef<HTMLDivElement>(null);
 
-  // Load games from GameMonetize feed
-  useEffect(() => {
-    const loadGames = async () => {
-      try {
+  // Load games from GameMonetize feed with pagination
+  const loadGamesFromFeed = useCallback(async (page: number = 1, append: boolean = false) => {
+    try {
+      if (!append) {
         setLoading(true);
         setError(null);
+      } else {
+        setLoadingMore(true);
+      }
 
-        // Fetch from GameMonetize feed with CORS proxy fallback
-        const feedUrl = 'https://gamemonetize.com/feed.php?format=1&page=1';
-        
-        // Try direct fetch first
-        let response = await fetch(feedUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/xml',
-          },
-        });
+      // Fetch from GameMonetize feed with pagination
+      const feedUrl = `https://gamemonetize.com/feed.php?format=1&page=${page}`;
+      
+      // Try direct fetch first
+      let response = await fetch(feedUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/xml',
+        },
+      });
 
-        // If CORS fails, try with a CORS proxy
-        if (!response.ok) {
-          const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
-          response = await fetch(corsProxyUrl);
-        }
+      // If CORS fails, try with a CORS proxy
+      if (!response.ok) {
+        const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
+        response = await fetch(corsProxyUrl);
+      }
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch games: ${response.status}`);
-        }
+      if (!response.ok) {
+        throw new Error(`Failed to fetch games: ${response.status}`);
+      }
 
-        const xmlText = await response.text();
-        const loadedGames = parseGameMonetizeXML(xmlText);
+      const xmlText = await response.text();
+      const loadedGames = parseGameMonetizeXML(xmlText);
 
-        if (loadedGames.length === 0) {
+      if (loadedGames.length === 0) {
+        if (!append) {
           setError('No games found in feed. Please check your connection.');
+        }
+        setHasMore(false);
+      } else {
+        if (append) {
+          setGames(prev => [...prev, ...loadedGames]);
         } else {
           setGames(loadedGames);
           setSelectedGame(loadedGames[0]);
         }
-      } catch (err) {
-        console.error('Error loading games:', err);
+        setCurrentPage(page);
+        // Keep hasMore true unless we explicitly know there are no more
+        setHasMore(loadedGames.length > 0);
+      }
+    } catch (err) {
+      console.error('Error loading games:', err);
+      if (!append) {
         setError('Failed to load games from GameMonetize. Retrying in 5 seconds...');
         
         // Retry after 5 seconds
         setTimeout(() => {
-          loadGames();
+          loadGamesFromFeed(page, append);
         }, 5000);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    loadGames();
+    } finally {
+      if (!append) {
+        setLoading(false);
+      } else {
+        setLoadingMore(false);
+      }
+    }
   }, []);
+
+  // Initial load on mount
+  useEffect(() => {
+    loadGamesFromFeed(1, false);
+  }, [loadGamesFromFeed]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (!gridEndRef.current) return;
+    
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+          loadGamesFromFeed(currentPage + 1, true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    
+    observer.observe(gridEndRef.current);
+    return () => observer.disconnect();
+  }, [currentPage, hasMore, loadingMore, loading, loadGamesFromFeed]);
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -249,7 +291,7 @@ export default function GameHub() {
               <h1 className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-red-600 line-clamp-2">
                 STRIKEFORCE
               </h1>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1">Battle Arena Gaming Platform - {games.length} Games</p>
+              <p className="text-slate-400 text-xs sm:text-sm mt-1">Battle Arena Gaming Platform - {games.length} Games Loaded</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <div className="relative flex-1 sm:max-w-sm">
@@ -356,7 +398,7 @@ export default function GameHub() {
                   </div>
                 </div>
 
-                {/* Scrolling Game Grid */}
+                {/* Scrolling Game Grid with Infinite Scroll */}
                 <div className="relative group">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
                     {filteredGames.map((game) => (
@@ -391,6 +433,17 @@ export default function GameHub() {
                       </button>
                     ))}
                   </div>
+                  
+                  {/* Infinite scroll trigger */}
+                  <div ref={gridEndRef} className="h-4" />
+                  
+                  {/* Loading more indicator */}
+                  {loadingMore && (
+                    <div className="text-center py-8">
+                      <Gamepad2 className="w-8 h-8 mx-auto mb-2 text-red-500 animate-spin" />
+                      <p className="text-slate-400 text-sm">Loading more games...</p>
+                    </div>
+                  )}
                 </div>
 
                 {filteredGames.length === 0 && (

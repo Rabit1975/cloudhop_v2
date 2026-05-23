@@ -1,0 +1,147 @@
+CMS DATABASE UPGRADE TUTORIAL
+
+This tool is made for users upgrading from an old CMS version, for example CMS 3.0, to the latest CMS 8.0.
+
+The user will replace the old CMS files with the new CMS files, but must keep their old database and old config file.
+
+IMPORTANT:
+Do not replace this file:
+
+assets/includes/config.php
+
+This file contains the old website database login.
+Keep it, because the upgrade script uses it to connect to the existing database.
+
+
+WHAT THIS TOOL DOES
+
+The tool compares the old database with the latest CMS database.sql structure.
+
+It will:
+
+- Create missing tables.
+- Add missing columns.
+- Keep existing games, users, blogs, settings, and content.
+- Read only CREATE TABLE structure from database.sql.
+- Ignore INSERT INTO data.
+
+It will not import games or overwrite old data.
+
+
+FILES NEEDED
+
+Upload these files to website root:
+
+public_html/upgrade-database.php
+public_html/database.sql
+public_html/tutorial.txt
+
+
+STEP 1: BACKUP OLD WEBSITE
+
+Before doing anything, make a full backup of:
+
+- Website files
+- Database
+
+Do not skip this.
+
+
+STEP 2: REPLACE CMS FILES
+
+Upload the latest CMS files to the website.
+
+Important:
+Do not replace:
+
+assets/includes/config.php
+
+Keep the old config.php from the user's website.
+
+
+STEP 3: UPLOAD DATABASE.SQL
+
+Take the latest CMS 8.0 database backup and rename it to:
+
+database.sql
+
+Upload it to website root:
+
+public_html/database.sql
+
+The file can be full database backup.
+The script will only read table structure and ignore data.
+
+
+STEP 4: OPEN UPGRADE SCRIPT
+
+Open in browser:
+
+https://yourdomain.com/upgrade-database.php
+
+
+STEP 5: ANALYZE FIRST
+
+Click:
+
+Analyze Only
+
+This shows what is missing.
+It does not change the database.
+
+
+STEP 6: RUN UPGRADE
+
+If the analyze report looks good, click:
+ 
+Run Upgrade
+
+The script will add missing tables and missing columns from the latest CMS structure.
+
+
+STEP 7: DELETE DATABASE.SQL
+
+After upgrade is finished, delete:
+
+public_html/database.sql
+
+You can keep upgrade-database.php.
+
+Without database.sql, the upgrade script cannot run anything.
+
+
+COMMON PROBLEMS
+
+Problem:
+database.sql not found
+
+Fix:
+Upload database.sql to the same folder as upgrade-database.php.
+
+
+Problem:
+Database connection not detected
+
+Fix:
+Make sure the old file exists:
+
+assets/includes/config.php
+
+Do not replace it during CMS file upgrade.
+
+
+Problem:
+Page timeout
+
+Fix:
+Use a smaller structure-only database.sql export from phpMyAdmin.
+
+
+SAFE RULE
+
+Backup first.
+Keep old config.php.
+Upload new CMS files.
+Run Analyze Only.
+Run Upgrade.
+Delete database.sql.
