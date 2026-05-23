@@ -51,55 +51,69 @@ const CATEGORY_EMOJI: Record<string, string> = {
 };
 
 const parseGameMonetizeXML = (xmlText: string): Game[] => {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-  
-  if (xmlDoc.parseError.errorCode !== 0) {
-    console.error('XML Parse error:', xmlDoc.parseError.reason);
+  try {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+    
+    // Check for parsing errors
+    if (xmlDoc.parseError?.errorCode !== 0) {
+      console.error('XML Parse error:', xmlDoc.parseError?.reason);
+      return [];
+    }
+
+    // Check if response is HTML (error page)
+    if (xmlDoc.documentElement?.tagName === 'html') {
+      console.error('Received HTML instead of XML');
+      return [];
+    }
+
+    const games: Game[] = [];
+    const gameElements = xmlDoc.getElementsByTagName('game');
+
+    console.log(`Found ${gameElements.length} game elements in XML`);
+
+    for (let i = 0; i < gameElements.length; i++) {
+      const gameEl = gameElements[i];
+      
+      const id = gameEl.getElementsByTagName('id')[0]?.textContent || '';
+      const name = gameEl.getElementsByTagName('name')[0]?.textContent || '';
+      const categoryRaw = gameEl.getElementsByTagName('category')[0]?.textContent || 'Arcade';
+      const image = gameEl.getElementsByTagName('image')[0]?.textContent || '';
+      const thumbnail = gameEl.getElementsByTagName('thumbnail')[0]?.textContent || image;
+
+      // Map GameMonetize categories to our UI categories
+      let category = 'Arcade';
+      const categoryLower = categoryRaw.toLowerCase();
+      
+      if (categoryLower.includes('action')) category = 'Action';
+      else if (categoryLower.includes('puzzle')) category = 'Puzzle';
+      else if (categoryLower.includes('sport') || categoryLower.includes('ball')) category = 'Sports';
+      else if (categoryLower.includes('adventure')) category = 'Adventure';
+      else if (categoryLower.includes('strategy') || categoryLower.includes('chess')) category = 'Strategy';
+      else if (categoryLower.includes('idle') || categoryLower.includes('clicker')) category = 'Idle';
+      else if (categoryLower.includes('racing') || categoryLower.includes('race')) category = 'Racing';
+      else if (categoryLower.includes('horror') || categoryLower.includes('scary')) category = 'Horror';
+      else if (categoryLower.includes('platformer') || categoryLower.includes('platform')) category = 'Platformer';
+      else if (categoryLower.includes('match') || categoryLower.includes('match-3')) category = 'Match 3';
+      else if (categoryLower.includes('multiplayer')) category = 'Multiplayer';
+      else if (categoryLower.includes('casual')) category = 'Casual';
+
+      if (id && name) {
+        games.push({
+          id,
+          name,
+          category,
+          image: thumbnail || image,
+          pressKitUrl: `https://gamemonetize.com/?p=${id}`,
+        });
+      }
+    }
+
+    return games;
+  } catch (err) {
+    console.error('XML parsing exception:', err);
     return [];
   }
-
-  const games: Game[] = [];
-  const gameElements = xmlDoc.getElementsByTagName('game');
-
-  for (let i = 0; i < gameElements.length; i++) {
-    const gameEl = gameElements[i];
-    
-    const id = gameEl.getElementsByTagName('id')[0]?.textContent || '';
-    const name = gameEl.getElementsByTagName('name')[0]?.textContent || '';
-    const categoryRaw = gameEl.getElementsByTagName('category')[0]?.textContent || 'Arcade';
-    const image = gameEl.getElementsByTagName('image')[0]?.textContent || '';
-    const thumbnail = gameEl.getElementsByTagName('thumbnail')[0]?.textContent || image;
-
-    // Map GameMonetize categories to our UI categories
-    let category = 'Arcade';
-    const categoryLower = categoryRaw.toLowerCase();
-    
-    if (categoryLower.includes('action')) category = 'Action';
-    else if (categoryLower.includes('puzzle')) category = 'Puzzle';
-    else if (categoryLower.includes('sport') || categoryLower.includes('ball')) category = 'Sports';
-    else if (categoryLower.includes('adventure')) category = 'Adventure';
-    else if (categoryLower.includes('strategy') || categoryLower.includes('chess')) category = 'Strategy';
-    else if (categoryLower.includes('idle') || categoryLower.includes('clicker')) category = 'Idle';
-    else if (categoryLower.includes('racing') || categoryLower.includes('race')) category = 'Racing';
-    else if (categoryLower.includes('horror') || categoryLower.includes('scary')) category = 'Horror';
-    else if (categoryLower.includes('platformer') || categoryLower.includes('platform')) category = 'Platformer';
-    else if (categoryLower.includes('match') || categoryLower.includes('match-3')) category = 'Match 3';
-    else if (categoryLower.includes('multiplayer')) category = 'Multiplayer';
-    else if (categoryLower.includes('casual')) category = 'Casual';
-
-    if (id && name) {
-      games.push({
-        id,
-        name,
-        category,
-        image: thumbnail || image,
-        pressKitUrl: `https://gamemonetize.com/?p=${id}`,
-      });
-    }
-  }
-
-  return games;
 };
 
 export default function GameHub() {
@@ -115,7 +129,7 @@ export default function GameHub() {
   const [hasMore, setHasMore] = useState(true);
   const gridEndRef = useRef<HTMLDivElement>(null);
 
-  // Load games from GameMonetize feed with pagination (using CORS proxy)
+  // Load games from GameMonetize feed with multiple fallbacks
   const loadGamesFromFeed = useCallback(async (page: number = 1, append: boolean = false) => {
     try {
       if (!append) {
@@ -125,30 +139,51 @@ export default function GameHub() {
         setLoadingMore(true);
       }
 
-      // Use CORS proxy to bypass cross-origin restrictions
       const feedUrl = `https://gamemonetize.com/feed.php?format=1&page=${page}`;
-      const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
-      
-      console.log(`📡 Fetching games page ${page} via CORS proxy...`);
-      const response = await fetch(corsProxyUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/xml, text/plain',
-        },
-      });
+      let xmlText = '';
+      let error_msg = '';
 
-      if (!response.ok) {
-        throw new Error(`CORS proxy error: ${response.status}`);
+      // Try multiple CORS proxies in order
+      const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`,
+        `https://cors-anywhere.herokuapp.com/${feedUrl}`,
+      ];
+
+      for (let i = 0; i < proxies.length; i++) {
+        try {
+          console.log(`📡 Attempt ${i + 1}: Fetching from ${proxies[i].substring(0, 50)}...`);
+          const response = await fetch(proxies[i], {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/xml, text/plain, */*',
+            },
+          });
+
+          if (response.ok) {
+            xmlText = await response.text();
+            console.log(`✅ Successfully fetched ${xmlText.length} bytes`);
+            break;
+          } else {
+            error_msg = `Proxy ${i + 1} returned ${response.status}`;
+            console.warn(error_msg);
+          }
+        } catch (err) {
+          error_msg = `Proxy ${i + 1} failed: ${err instanceof Error ? err.message : 'Unknown'}`;
+          console.warn(error_msg);
+        }
       }
 
-      const xmlText = await response.text();
-      const loadedGames = parseGameMonetizeXML(xmlText);
+      if (!xmlText) {
+        throw new Error(`All proxies failed: ${error_msg}`);
+      }
 
+      // Parse the XML
+      const loadedGames = parseGameMonetizeXML(xmlText);
       console.log(`✅ Loaded ${loadedGames.length} games from page ${page}`);
 
       if (loadedGames.length === 0) {
         if (!append) {
-          setError('No games found in feed. Please check your connection.');
+          setError('No games found in feed. The feed may be temporarily unavailable.');
         }
         setHasMore(false);
       } else {
@@ -164,7 +199,8 @@ export default function GameHub() {
     } catch (err) {
       console.error('Error loading games:', err);
       if (!append) {
-        setError(`Failed to load games: ${err instanceof Error ? err.message : 'Unknown error'}. Retrying in 5 seconds...`);
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(`Failed to load games: ${errorMsg}. Retrying in 5 seconds...`);
         
         // Retry after 5 seconds
         setTimeout(() => {
