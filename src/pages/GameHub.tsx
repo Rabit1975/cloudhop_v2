@@ -4,6 +4,7 @@ import {
   Star, Gamepad2, Settings, Bell, Download, FileText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import API_CONFIG from '@/config/api';
 
 interface Game {
   id: string;
@@ -114,7 +115,7 @@ export default function GameHub() {
   const [hasMore, setHasMore] = useState(true);
   const gridEndRef = useRef<HTMLDivElement>(null);
 
-  // Load games from GameMonetize feed with pagination
+  // Load games from GameMonetize feed with pagination (using CORS proxy)
   const loadGamesFromFeed = useCallback(async (page: number = 1, append: boolean = false) => {
     try {
       if (!append) {
@@ -124,29 +125,26 @@ export default function GameHub() {
         setLoadingMore(true);
       }
 
-      // Fetch from GameMonetize feed with pagination
+      // Use CORS proxy to bypass cross-origin restrictions
       const feedUrl = `https://gamemonetize.com/feed.php?format=1&page=${page}`;
+      const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
       
-      // Try direct fetch first
-      let response = await fetch(feedUrl, {
+      console.log(`📡 Fetching games page ${page} via CORS proxy...`);
+      const response = await fetch(corsProxyUrl, {
         method: 'GET',
         headers: {
-          'Accept': 'application/xml',
+          'Accept': 'application/xml, text/plain',
         },
       });
 
-      // If CORS fails, try with a CORS proxy
       if (!response.ok) {
-        const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
-        response = await fetch(corsProxyUrl);
-      }
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch games: ${response.status}`);
+        throw new Error(`CORS proxy error: ${response.status}`);
       }
 
       const xmlText = await response.text();
       const loadedGames = parseGameMonetizeXML(xmlText);
+
+      console.log(`✅ Loaded ${loadedGames.length} games from page ${page}`);
 
       if (loadedGames.length === 0) {
         if (!append) {
@@ -161,13 +159,12 @@ export default function GameHub() {
           setSelectedGame(loadedGames[0]);
         }
         setCurrentPage(page);
-        // Keep hasMore true unless we explicitly know there are no more
         setHasMore(loadedGames.length > 0);
       }
     } catch (err) {
       console.error('Error loading games:', err);
       if (!append) {
-        setError('Failed to load games from GameMonetize. Retrying in 5 seconds...');
+        setError(`Failed to load games: ${err instanceof Error ? err.message : 'Unknown error'}. Retrying in 5 seconds...`);
         
         // Retry after 5 seconds
         setTimeout(() => {

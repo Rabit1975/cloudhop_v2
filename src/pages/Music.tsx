@@ -13,6 +13,7 @@ import {
   Loader,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import API_CONFIG from '@/config/api';
 
 interface Song {
   id: string;
@@ -69,11 +70,12 @@ export default function Music() {
   const allSongs = playlists.flatMap((p) => p.songs);
   const currentSong = allSongs[currentSongIndex];
 
-useEffect(() => {
-  console.log('🎵 Music component mounted');
-  console.log('isAuthenticated:', isAuthenticated);
-  console.log('accessToken:', accessToken ? 'SET' : 'NULL');
-}, [isAuthenticated, accessToken]);
+  useEffect(() => {
+    console.log('🎵 Music component mounted');
+    console.log('isAuthenticated:', isAuthenticated);
+    console.log('accessToken:', accessToken ? 'SET' : 'NULL');
+    console.log('OAuth URL:', API_CONFIG.OAUTH_URL);
+  }, [isAuthenticated, accessToken]);
 
   // Check for OAuth callback on mount
   useEffect(() => {
@@ -133,8 +135,8 @@ useEffect(() => {
       setLoadingPlaylists(true);
       try {
         // Fetch user's playlists
-        console.log('📡 Fetching YouTube playlists...');
-        const playlistsRes = await fetch('http://localhost:3001/youtube/playlists', {
+        console.log('📡 Fetching YouTube playlists from:', API_CONFIG.OAUTH_URL);
+        const playlistsRes = await fetch(`${API_CONFIG.OAUTH_URL}/youtube/playlists`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
@@ -152,7 +154,7 @@ useEffect(() => {
         for (const yt of youTubePlaylists) {
           console.log(`📂 Loading playlist: ${yt.snippet.title}`);
           const itemsRes = await fetch(
-            `http://localhost:3001/youtube/playlist/${yt.id}/items`,
+            `${API_CONFIG.OAUTH_URL}/youtube/playlist/${yt.id}/items`,
             { headers: { Authorization: `Bearer ${accessToken}` } }
           );
 
@@ -181,7 +183,7 @@ useEffect(() => {
 
         // Fetch liked videos
         console.log('💚 Fetching liked videos...');
-        const likedRes = await fetch('http://localhost:3001/youtube/liked', {
+        const likedRes = await fetch(`${API_CONFIG.OAUTH_URL}/youtube/liked`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
@@ -237,12 +239,27 @@ useEffect(() => {
 
   const handleYouTubeLogin = async () => {
     try {
-      const response = await fetch('http://localhost:3001/auth/google/url');
+      console.log('🔐 Initiating OAuth login from:', API_CONFIG.OAUTH_URL);
+      const response = await fetch(`${API_CONFIG.OAUTH_URL}/auth/google/url`);
+      
+      if (!response.ok) {
+        throw new Error(`OAuth server error: ${response.status}`);
+      }
+      
       const { url } = await response.json();
+      console.log('🔗 Redirecting to Google OAuth...');
       window.location.href = url;
     } catch (error) {
       console.error('OAuth error:', error);
-      alert('Failed to initiate Google Sign-In. Make sure backend is running on port 3001.');
+      alert(
+        `Failed to initiate Google Sign-In.\n\n` +
+        `Environment: ${window.location.hostname}\n` +
+        `OAuth URL: ${API_CONFIG.OAUTH_URL}\n\n` +
+        `Make sure:\n` +
+        `1. Backend is running on port 3001 (npm run dev:oauth)\n` +
+        `2. GOOGLE_CLIENT_SECRET is set in .env.local\n` +
+        `3. Redirect URI is registered in Google Cloud Console`
+      );
     }
   };
 
@@ -317,7 +334,8 @@ useEffect(() => {
             Sign In with Google
           </button>
           <div className="text-xs text-muted-foreground mt-6 px-4">
-            ⚙️ Make sure the OAuth backend is running on port 3001
+            <div>⚙️ OAuth Server: <code className="bg-black/50 px-2 py-1 rounded">{API_CONFIG.OAUTH_URL}</code></div>
+            <div className="mt-2">To start: <code className="bg-black/50 px-2 py-1 rounded">npm run dev:oauth</code></div>
           </div>
         </div>
       </div>
