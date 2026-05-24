@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "download-images": "node download-game-images.js",
     "agent": "tsx src/scripts/dev-agent.ts",
     "agent:build": "npm run agent build",
     "agent:test": "npm run agent test",
