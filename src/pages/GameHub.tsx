@@ -71,7 +71,7 @@ const parseGameMonetizeJSON = (jsonData: any): Game[] => {
       const id = game.id || game.guid || game.link?.split('?p=')[1] || '';
       const name = game.title || game.name || '';
       const categoryRaw = game.category || game.categories?.[0] || 'Arcade';
-      const image = game.image || game.thumbnail || game.enclosure?.url || '';
+      const image = game.thumb || game.image || game.thumbnail || game.enclosure?.url || '';
       const description = game.description || '';
 
       if (!id || !name) return;
