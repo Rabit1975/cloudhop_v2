@@ -48,3 +48,4 @@
     { "source": "^(?!/api/|/static/|\\.)(.*)", "destination": "/index.html" }
   ]
 }
+}
