@@ -4,7 +4,6 @@ import {
   Star, Gamepad2, Settings, Bell, Download, FileText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import API_CONFIG from '@/config/api';
 
 interface Game {
   id: string;
@@ -50,38 +49,34 @@ const CATEGORY_EMOJI: Record<string, string> = {
   'Match 3': '💎',
 };
 
-const parseGameMonetizeXML = (xmlText: string): Game[] => {
+const parseGameMonetizeJSON = (jsonData: any): Game[] => {
   try {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-    
-    // Check for parsing errors
-    if (xmlDoc.parseError?.errorCode !== 0) {
-      console.error('XML Parse error:', xmlDoc.parseError?.reason);
-      return [];
+    // Handle different JSON structures
+    let games: any[] = [];
+
+    if (Array.isArray(jsonData)) {
+      games = jsonData;
+    } else if (jsonData.rss?.channel?.[0]?.item) {
+      games = jsonData.rss.channel[0].item;
+    } else if (jsonData.items) {
+      games = jsonData.items;
+    } else if (jsonData.games) {
+      games = jsonData.games;
     }
 
-    // Check if response is HTML (error page)
-    if (xmlDoc.documentElement?.tagName === 'html') {
-      console.error('Received HTML instead of XML');
-      return [];
-    }
+    const parsedGames: Game[] = [];
 
-    const games: Game[] = [];
-    const gameElements = xmlDoc.getElementsByTagName('game');
+    games.forEach((game: any) => {
+      // Extract fields based on GameMonetize structure
+      const id = game.id || game.guid || game.link?.split('?p=')[1] || '';
+      const name = game.title || game.name || '';
+      const categoryRaw = game.category || game.categories?.[0] || 'Arcade';
+      const image = game.image || game.thumbnail || game.enclosure?.url || '';
+      const description = game.description || '';
 
-    console.log(`Found ${gameElements.length} game elements in XML`);
+      if (!id || !name) return;
 
-    for (let i = 0; i < gameElements.length; i++) {
-      const gameEl = gameElements[i];
-      
-      const id = gameEl.getElementsByTagName('id')[0]?.textContent || '';
-      const name = gameEl.getElementsByTagName('name')[0]?.textContent || '';
-      const categoryRaw = gameEl.getElementsByTagName('category')[0]?.textContent || 'Arcade';
-      const image = gameEl.getElementsByTagName('image')[0]?.textContent || '';
-      const thumbnail = gameEl.getElementsByTagName('thumbnail')[0]?.textContent || image;
-
-      // Map GameMonetize categories to our UI categories
+      // Map categories
       let category = 'Arcade';
       const categoryLower = categoryRaw.toLowerCase();
       
@@ -98,20 +93,18 @@ const parseGameMonetizeXML = (xmlText: string): Game[] => {
       else if (categoryLower.includes('multiplayer')) category = 'Multiplayer';
       else if (categoryLower.includes('casual')) category = 'Casual';
 
-      if (id && name) {
-        games.push({
-          id,
-          name,
-          category,
-          image: thumbnail || image,
-          pressKitUrl: `https://gamemonetize.com/?p=${id}`,
-        });
-      }
-    }
+      parsedGames.push({
+        id,
+        name,
+        category,
+        image,
+        pressKitUrl: `https://gamemonetize.com/?p=${id}`,
+      });
+    });
 
-    return games;
+    return parsedGames;
   } catch (err) {
-    console.error('XML parsing exception:', err);
+    console.error('JSON parsing error:', err);
     return [];
   }
 };
@@ -124,119 +117,46 @@ export default function GameHub() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
   const gridEndRef = useRef<HTMLDivElement>(null);
 
-  // Load games from GameMonetize feed with multiple fallbacks
-  const loadGamesFromFeed = useCallback(async (page: number = 1, append: boolean = false) => {
+  // Load games from local JSON file
+  const loadGames = useCallback(async () => {
     try {
-      if (!append) {
-        setLoading(true);
-        setError(null);
-      } else {
-        setLoadingMore(true);
+      setLoading(true);
+      setError(null);
+
+      console.log('📡 Fetching games from /rssfeed.json...');
+      const response = await fetch('/rssfeed.json');
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch games: ${response.status}`);
       }
 
-      const feedUrl = `https://gamemonetize.com/feed.php?format=1&page=${page}`;
-      let xmlText = '';
-      let error_msg = '';
+      const jsonData = await response.json();
+      console.log('✅ Loaded JSON data:', jsonData);
 
-      // Try multiple CORS proxies in order
-      const proxies = [
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`,
-        `https://cors-anywhere.herokuapp.com/${feedUrl}`,
-      ];
-
-      for (let i = 0; i < proxies.length; i++) {
-        try {
-          console.log(`📡 Attempt ${i + 1}: Fetching from ${proxies[i].substring(0, 50)}...`);
-          const response = await fetch(proxies[i], {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/xml, text/plain, */*',
-            },
-          });
-
-          if (response.ok) {
-            xmlText = await response.text();
-            console.log(`✅ Successfully fetched ${xmlText.length} bytes`);
-            break;
-          } else {
-            error_msg = `Proxy ${i + 1} returned ${response.status}`;
-            console.warn(error_msg);
-          }
-        } catch (err) {
-          error_msg = `Proxy ${i + 1} failed: ${err instanceof Error ? err.message : 'Unknown'}`;
-          console.warn(error_msg);
-        }
-      }
-
-      if (!xmlText) {
-        throw new Error(`All proxies failed: ${error_msg}`);
-      }
-
-      // Parse the XML
-      const loadedGames = parseGameMonetizeXML(xmlText);
-      console.log(`✅ Loaded ${loadedGames.length} games from page ${page}`);
+      const loadedGames = parseGameMonetizeJSON(jsonData);
+      console.log(`✅ Parsed ${loadedGames.length} games`);
 
       if (loadedGames.length === 0) {
-        if (!append) {
-          setError('No games found in feed. The feed may be temporarily unavailable.');
-        }
-        setHasMore(false);
+        setError('No games found in feed. Check the JSON file format.');
       } else {
-        if (append) {
-          setGames(prev => [...prev, ...loadedGames]);
-        } else {
-          setGames(loadedGames);
-          setSelectedGame(loadedGames[0]);
-        }
-        setCurrentPage(page);
-        setHasMore(loadedGames.length > 0);
+        setGames(loadedGames);
+        setSelectedGame(loadedGames[0]);
       }
     } catch (err) {
       console.error('Error loading games:', err);
-      if (!append) {
-        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-        setError(`Failed to load games: ${errorMsg}. Retrying in 5 seconds...`);
-        
-        // Retry after 5 seconds
-        setTimeout(() => {
-          loadGamesFromFeed(page, append);
-        }, 5000);
-      }
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      setError(`Failed to load games: ${errorMsg}`);
     } finally {
-      if (!append) {
-        setLoading(false);
-      } else {
-        setLoadingMore(false);
-      }
+      setLoading(false);
     }
   }, []);
 
-  // Initial load on mount
+  // Load on mount
   useEffect(() => {
-    loadGamesFromFeed(1, false);
-  }, [loadGamesFromFeed]);
-
-  // Infinite scroll observer
-  useEffect(() => {
-    if (!gridEndRef.current) return;
-    
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
-          loadGamesFromFeed(currentPage + 1, true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    
-    observer.observe(gridEndRef.current);
-    return () => observer.disconnect();
-  }, [currentPage, hasMore, loadingMore, loading, loadGamesFromFeed]);
+    loadGames();
+  }, [loadGames]);
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -347,7 +267,7 @@ export default function GameHub() {
           {loading && (
             <div className="text-center py-12">
               <Gamepad2 className="w-16 h-16 mx-auto mb-4 text-red-500 animate-bounce" />
-              <p className="text-slate-400 text-lg">Loading your game collection from GameMonetize...</p>
+              <p className="text-slate-400 text-lg">Loading your game collection...</p>
             </div>
           )}
 
@@ -355,6 +275,7 @@ export default function GameHub() {
           {error && (
             <div className="rounded-xl bg-red-500/10 border border-red-500/30 p-6 text-center">
               <p className="text-red-400 font-bold">{error}</p>
+              <p className="text-red-300 text-sm mt-2">Make sure /rssfeed.json exists in the public folder</p>
             </div>
           )}
 
@@ -431,7 +352,7 @@ export default function GameHub() {
                   </div>
                 </div>
 
-                {/* Scrolling Game Grid with Infinite Scroll */}
+                {/* Game Grid */}
                 <div className="relative group">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
                     {filteredGames.map((game) => (
@@ -467,16 +388,8 @@ export default function GameHub() {
                     ))}
                   </div>
                   
-                  {/* Infinite scroll trigger */}
+                  {/* Scroll trigger */}
                   <div ref={gridEndRef} className="h-4" />
-                  
-                  {/* Loading more indicator */}
-                  {loadingMore && (
-                    <div className="text-center py-8">
-                      <Gamepad2 className="w-8 h-8 mx-auto mb-2 text-red-500 animate-spin" />
-                      <p className="text-slate-400 text-sm">Loading more games...</p>
-                    </div>
-                  )}
                 </div>
 
                 {filteredGames.length === 0 && (
