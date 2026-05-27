@@ -2,7 +2,7 @@ import {
   exchangeCodeForToken,
   fetchGoogleUser,
   getFrontendUrl,
-} from '../../../_shared.js';
+} from '../../_shared.js';
 
 export default async function handler(req: any, res: any) {
   const { code, error } = req.query;
