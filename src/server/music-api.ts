@@ -103,7 +103,6 @@ export async function exchangeCodeForToken(req: any, code: string) {
   return fetchJson<{
     access_token: string;
     refresh_token?: string;
-    id_token?: string;
     expires_in?: number;
   }>('https://oauth2.googleapis.com/token', {
     method: 'POST',
