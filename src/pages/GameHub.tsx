@@ -10,6 +10,7 @@ interface Game {
   name: string;
   category: string;
   image: string;
+  playUrl: string;
   pressKitUrl: string;
 }
 
@@ -71,10 +72,16 @@ const parseGameMonetizeJSON = (jsonData: any): Game[] => {
       const id = game.id || game.guid || game.link?.split('?p=')[1] || '';
       const name = game.title || game.name || '';
       const categoryRaw = game.category || game.categories?.[0] || 'Arcade';
-      const image = game.thumb || game.image || game.thumbnail || game.enclosure?.url || '';
-      const description = game.description || '';
+      let imageUrl = game.thumb || game.image || game.thumbnail || game.enclosure?.url || '';
+      
+      // Proxy GameMonetize images through CORS-friendly service
+      if (imageUrl && imageUrl.includes('gamemonetize.com')) {
+        imageUrl = `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl)}&n=-1`;
+      }
+      
+      const playUrl = game.url || '';
 
-      if (!id || !name) return;
+      if (!id || !name || !playUrl) return;
 
       // Map categories
       let category = 'Arcade';
@@ -97,7 +104,8 @@ const parseGameMonetizeJSON = (jsonData: any): Game[] => {
         id,
         name,
         category,
-        image,
+        image: imageUrl,
+        playUrl,
         pressKitUrl: `https://gamemonetize.com/?p=${id}`,
       });
     });
@@ -125,8 +133,9 @@ export default function GameHub() {
       setLoading(true);
       setError(null);
 
-      console.log('📡 Fetching games from /rssfeed.json...');
-      const response = await fetch('/rssfeed.json');
+      const feedUrl = `${import.meta.env.BASE_URL}rssfeed.json`;
+      console.log(`📡 Fetching games from ${feedUrl}...`);
+      const response = await fetch(feedUrl);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch games: ${response.status}`);
@@ -222,7 +231,7 @@ export default function GameHub() {
         </div>
         <div className="flex-1 relative overflow-hidden">
           <iframe
-            src={`https://gamemonetize.com/?p=${selectedGame.id}`}
+            src={selectedGame.playUrl}
             title={selectedGame.name}
             className="absolute inset-0 w-full h-full border-none"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; gamepad"

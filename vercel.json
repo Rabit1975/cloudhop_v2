@@ -21,7 +21,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: https://vercel.live https://pagead2.googlesyndication.com https://accounts.google.com 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; connect-src 'self' https: wss: http://localhost:3001 http://localhost:3002; frame-src 'self' https://accounts.google.com https://gamemonetize.com; style-src 'self' https: 'unsafe-inline'"
+          "value": "default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; script-src 'self' https: https://vercel.live https://pagead2.googlesyndication.com https://accounts.google.com 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; connect-src 'self' https: wss: http://localhost:3001 http://localhost:3002; frame-src 'self' https://accounts.google.com https://gamemonetize.com https://html5.gamemonetize.co; style-src 'self' https: 'unsafe-inline'"
         },
         {
           "key": "Cross-Origin-Opener-Policy",
@@ -45,6 +45,6 @@
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "^(?!/api/|/static/|\\.)(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/|static/|assets/|.*\\..*).*)", "destination": "/index.html" }
   ]
 }
