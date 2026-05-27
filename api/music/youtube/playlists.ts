@@ -1,4 +1,4 @@
-import { fetchYouTube, getBearerToken } from '../../_shared.js';
+import { fetchYouTube, getBearerToken } from '../_shared.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method && req.method !== 'GET') {
