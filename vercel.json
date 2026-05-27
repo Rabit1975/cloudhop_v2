@@ -44,6 +44,11 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/music/auth/google/url", "destination": "/api/music/index?route=auth/google/url" },
+    { "source": "/api/music/auth/google/callback", "destination": "/api/music/index?route=auth/google/callback" },
+    { "source": "/api/music/youtube/playlists", "destination": "/api/music/index?route=youtube/playlists" },
+    { "source": "/api/music/youtube/playlist-items", "destination": "/api/music/index?route=youtube/playlist-items" },
+    { "source": "/api/music/youtube/liked", "destination": "/api/music/index?route=youtube/liked" },
     { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/((?!api/|static/|assets/|.*\\..*).*)", "destination": "/index.html" }
   ]
