@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Search, Play, ChevronLeft, ChevronRight, X, RotateCcw, Maximize2,
   Star, Gamepad2, Settings, Bell, Download, FileText,
@@ -13,6 +13,95 @@ interface Game {
   playUrl: string;
   pressKitUrl: string;
 }
+
+const GAME_IDS = [
+  '1v1lol',
+  '2048',
+  '8ball',
+  '99 Balls',
+  'adarkroom',
+  'amongus',
+  'asciispace',
+  'asteroids',
+  'astray',
+  'backcountry',
+  'basketballstars',
+  'blackholesquare',
+  'bloonstd4',
+  'bounceback',
+  'breaklock',
+  'breakout',
+  'Bubble Shooter Wild West',
+  'Candy Riddles Free Match 3 Puzzle',
+  'captaincallisto',
+  'Charm Farm',
+  'chess',
+  'chromaincident',
+  'chrome-dino',
+  'chromedino',
+  'Clap Clap Nightmare',
+  'connect3',
+  'cookieclicker',
+  'crossyroad',
+  'CS Upgrade Gun',
+  'cubefield',
+  'cuttherope',
+  'cuttherope2',
+  'cuttheropeholiday',
+  'cuttheropetimetravel',
+  'Dead Zone Mech OPS',
+  'dinosaur',
+  'doctor-acorn2',
+  'doctor-acorn3',
+  'doge2048',
+  'dogeminer',
+  'doodle-jump',
+  'driftboss',
+  'ducklife',
+  'ducklife2',
+  'ducklife3',
+  'ducklife4',
+  'ducklife5',
+  'edge-surf',
+  'edgenotfound',
+  'elasticmorty',
+  'Eternal Fury',
+  'evilglitch',
+  'factoryballsforever',
+  'Family Relics',
+  'fireboy-and-watergirl-1',
+  'fireboy-and-watergirl-2',
+  'fireboy-and-watergirl-3',
+  'fireboy-and-watergirl-4',
+  'firewater',
+  'flappy-2048',
+  'flappybird',
+  'fnaf',
+  'fnaf2',
+  'fnaf3',
+  'fnaf4',
+  'friendlyfire',
+  'geometry',
+  'geometrydash',
+  'gopher',
+  'Governor of Poker 3',
+  'Hero Ragdoll Fighting',
+  'hextris',
+  'icypurplehead2',
+  "Kumu's Adventure",
+  'Lost in the Forest',
+  'Mad Truck Challenge Special',
+  'Poppy Strike 5',
+  'Run FriendsGame Title',
+  'The Mergest Kingdom',
+  'Tied Up',
+  'Timewalker Survive!',
+  'Virtual Families Cook Off',
+  'Water Shooter',
+  'Worms Zone a Slithery Snake',
+  'Xeno Defense Protocol',
+  'Zombies Battle for Survival',
+];
 
 const CATEGORY_COLORS: Record<string, string> = {
   Action: 'from-red-600 to-orange-500',
@@ -50,73 +139,6 @@ const CATEGORY_EMOJI: Record<string, string> = {
   'Match 3': '💎',
 };
 
-const parseGameMonetizeJSON = (jsonData: any): Game[] => {
-  try {
-    // Handle different JSON structures
-    let games: any[] = [];
-
-    if (Array.isArray(jsonData)) {
-      games = jsonData;
-    } else if (jsonData.rss?.channel?.[0]?.item) {
-      games = jsonData.rss.channel[0].item;
-    } else if (jsonData.items) {
-      games = jsonData.items;
-    } else if (jsonData.games) {
-      games = jsonData.games;
-    }
-
-    const parsedGames: Game[] = [];
-
-    games.forEach((game: any) => {
-      // Extract fields based on GameMonetize structure
-      const id = game.id || game.guid || game.link?.split('?p=')[1] || '';
-      const name = game.title || game.name || '';
-      const categoryRaw = game.category || game.categories?.[0] || 'Arcade';
-      let imageUrl = game.thumb || game.image || game.thumbnail || game.enclosure?.url || '';
-      
-      // Proxy GameMonetize images through CORS-friendly service
-      if (imageUrl && imageUrl.includes('gamemonetize.com')) {
-        imageUrl = `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl)}&n=-1`;
-      }
-      
-      const playUrl = game.url || '';
-
-      if (!id || !name || !playUrl) return;
-
-      // Map categories
-      let category = 'Arcade';
-      const categoryLower = categoryRaw.toLowerCase();
-      
-      if (categoryLower.includes('action')) category = 'Action';
-      else if (categoryLower.includes('puzzle')) category = 'Puzzle';
-      else if (categoryLower.includes('sport') || categoryLower.includes('ball')) category = 'Sports';
-      else if (categoryLower.includes('adventure')) category = 'Adventure';
-      else if (categoryLower.includes('strategy') || categoryLower.includes('chess')) category = 'Strategy';
-      else if (categoryLower.includes('idle') || categoryLower.includes('clicker')) category = 'Idle';
-      else if (categoryLower.includes('racing') || categoryLower.includes('race')) category = 'Racing';
-      else if (categoryLower.includes('horror') || categoryLower.includes('scary')) category = 'Horror';
-      else if (categoryLower.includes('platformer') || categoryLower.includes('platform')) category = 'Platformer';
-      else if (categoryLower.includes('match') || categoryLower.includes('match-3')) category = 'Match 3';
-      else if (categoryLower.includes('multiplayer')) category = 'Multiplayer';
-      else if (categoryLower.includes('casual')) category = 'Casual';
-
-      parsedGames.push({
-        id,
-        name,
-        category,
-        image: imageUrl,
-        playUrl,
-        pressKitUrl: `https://gamemonetize.com/?p=${id}`,
-      });
-    });
-
-    return parsedGames;
-  } catch (err) {
-    console.error('JSON parsing error:', err);
-    return [];
-  }
-};
-
 export default function GameHub() {
   const [games, setGames] = useState<Game[]>([]);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
@@ -125,47 +147,52 @@ export default function GameHub() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const gridEndRef = useRef<HTMLDivElement>(null);
 
-  // Load games from local JSON file
-  const loadGames = useCallback(async () => {
+  useEffect(() => {
     try {
       setLoading(true);
       setError(null);
 
-      const feedUrl = `${import.meta.env.BASE_URL}rssfeed.json`;
-      console.log(`📡 Fetching games from ${feedUrl}...`);
-      const response = await fetch(feedUrl);
+      const loadedGames: Game[] = GAME_IDS.map((gameId) => {
+        let category = 'Arcade';
+        const lowerGameId = gameId.toLowerCase();
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch games: ${response.status}`);
-      }
+        if (lowerGameId.includes('duck')) category = 'Sports';
+        else if (lowerGameId.includes('fireboy') || lowerGameId.includes('candy') || lowerGameId.includes('bubble') || lowerGameId.includes('match')) category = 'Puzzle';
+        else if (lowerGameId.includes('doge') || lowerGameId.includes('clicker') || lowerGameId.includes('merge')) category = 'Idle';
+        else if (lowerGameId.includes('chess') || lowerGameId.includes('strategy') || lowerGameId.includes('xeno') || lowerGameId.includes('defense')) category = 'Strategy';
+        else if (lowerGameId.includes('ball') || lowerGameId.includes('8ball') || lowerGameId.includes('shooter') || lowerGameId.includes('water')) category = 'Sports';
+        else if (lowerGameId.includes('rope') || lowerGameId.includes('connect') || lowerGameId.includes('tied')) category = 'Puzzle';
+        else if (lowerGameId.includes('fnaf') || lowerGameId.includes('horror') || lowerGameId.includes('nightmare') || lowerGameId.includes('clap')) category = 'Horror';
+        else if (lowerGameId.includes('race') || lowerGameId.includes('drift') || lowerGameId.includes('truck')) category = 'Racing';
+        else if (lowerGameId.includes('among') || lowerGameId.includes('worms') || lowerGameId.includes('snake')) category = 'Multiplayer';
+        else if (lowerGameId.includes('ragdoll') || lowerGameId.includes('fighting') || lowerGameId.includes('hero') || lowerGameId.includes('strike') || lowerGameId.includes('gun') || lowerGameId.includes('mech') || lowerGameId.includes('poppy') || lowerGameId.includes('dead')) category = 'Action';
+        else if (lowerGameId.includes('forest') || lowerGameId.includes('adventure') || lowerGameId.includes('lost') || lowerGameId.includes('timewalker')) category = 'Adventure';
+        else if (lowerGameId.includes('runner') || lowerGameId.includes('run') || lowerGameId.includes('friends')) category = 'Platformer';
 
-      const jsonData = await response.json();
-      console.log('✅ Loaded JSON data:', jsonData);
+        return {
+          id: gameId,
+          name: gameId
+            .replace(/[-_]/g, ' ')
+            .split(' ')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' '),
+          category,
+          image: `${import.meta.env.BASE_URL}games/${gameId}/image1.jpg`,
+          playUrl: `${import.meta.env.BASE_URL}games/${gameId}/index.html`,
+          pressKitUrl: `${import.meta.env.BASE_URL}games/${gameId}/${gameId} - Press Kit.pdf`,
+        };
+      });
 
-      const loadedGames = parseGameMonetizeJSON(jsonData);
-      console.log(`✅ Parsed ${loadedGames.length} games`);
-
-      if (loadedGames.length === 0) {
-        setError('No games found in feed. Check the JSON file format.');
-      } else {
-        setGames(loadedGames);
-        setSelectedGame(loadedGames[0]);
-      }
+      setGames(loadedGames);
+      setSelectedGame(loadedGames[0] ?? null);
     } catch (err) {
-      console.error('Error loading games:', err);
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(`Failed to load games: ${errorMsg}`);
+      console.error('Error loading local games:', err);
+      setError('Failed to load local games.');
     } finally {
       setLoading(false);
     }
   }, []);
-
-  // Load on mount
-  useEffect(() => {
-    loadGames();
-  }, [loadGames]);
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -284,7 +311,7 @@ export default function GameHub() {
           {error && (
             <div className="rounded-xl bg-red-500/10 border border-red-500/30 p-6 text-center">
               <p className="text-red-400 font-bold">{error}</p>
-              <p className="text-red-300 text-sm mt-2">Make sure /rssfeed.json exists in the public folder</p>
+              <p className="text-red-300 text-sm mt-2">Make sure the `public/games` library is present in production.</p>
             </div>
           )}
 
@@ -397,8 +424,6 @@ export default function GameHub() {
                     ))}
                   </div>
                   
-                  {/* Scroll trigger */}
-                  <div ref={gridEndRef} className="h-4" />
                 </div>
 
                 {filteredGames.length === 0 && (
