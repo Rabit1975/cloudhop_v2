@@ -12,14 +12,9 @@ export const API_CONFIG = {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       return 'http://localhost:3001';
     }
-    
-    // Production
-    if (window.location.hostname === 'cloudhop.cloud') {
-      return 'https://cloudhop.cloud:3001'; // Or use your production OAuth server
-    }
-    
-    // Fallback
-    return 'http://localhost:3001';
+
+    // Non-local environments use the same-origin Vercel API.
+    return `${window.location.origin}/api/music`;
   },
 
   // GameMonetize Feed (with CORS proxy)
@@ -36,12 +31,8 @@ export const API_CONFIG = {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       return 'http://localhost:3002';
     }
-    
-    if (window.location.hostname === 'cloudhop.cloud') {
-      return 'https://cloudhop.cloud:3002';
-    }
-    
-    return 'http://localhost:3002';
+
+    return `${window.location.origin}/api`;
   },
 };
 

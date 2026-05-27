@@ -154,7 +154,7 @@ export default function Music() {
         for (const yt of youTubePlaylists) {
           console.log(`📂 Loading playlist: ${yt.snippet.title}`);
           const itemsRes = await fetch(
-            `${API_CONFIG.OAUTH_URL}/youtube/playlist/${yt.id}/items`,
+            `${API_CONFIG.OAUTH_URL}/youtube/playlist-items?playlistId=${encodeURIComponent(yt.id)}`,
             { headers: { Authorization: `Bearer ${accessToken}` } }
           );
 
@@ -256,9 +256,9 @@ export default function Music() {
         `Environment: ${window.location.hostname}\n` +
         `OAuth URL: ${API_CONFIG.OAUTH_URL}\n\n` +
         `Make sure:\n` +
-        `1. Backend is running on port 3001 (npm run dev:oauth)\n` +
-        `2. GOOGLE_CLIENT_SECRET is set in .env.local\n` +
-        `3. Redirect URI is registered in Google Cloud Console`
+        `1. Local dev is running npm run dev:oauth when using localhost\n` +
+        `2. GOOGLE_CLIENT_SECRET is set in the active environment\n` +
+        `3. The Google redirect URI matches the current environment`
       );
     }
   };
@@ -335,7 +335,7 @@ export default function Music() {
           </button>
           <div className="text-xs text-muted-foreground mt-6 px-4">
             <div>⚙️ OAuth Server: <code className="bg-black/50 px-2 py-1 rounded">{API_CONFIG.OAUTH_URL}</code></div>
-            <div className="mt-2">To start: <code className="bg-black/50 px-2 py-1 rounded">npm run dev:oauth</code></div>
+            <div className="mt-2">Local dev only: <code className="bg-black/50 px-2 py-1 rounded">npm run dev:oauth</code></div>
           </div>
         </div>
       </div>
