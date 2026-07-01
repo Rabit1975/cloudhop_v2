@@ -115,6 +115,7 @@ export default function GameHub() {
   const [games, setGames] = useState<Game[]>([]);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -166,11 +167,21 @@ export default function GameHub() {
     return () => clearInterval(interval);
   }, [games]);
 
-  const filteredGames = games.filter((g) =>
-    g.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredGames = games
+    .filter((g) => g.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .filter((g) => !selectedCategory || g.category === selectedCategory);
 
   const displayedGames = filteredGames.slice(0, displayedGamesCount);
+
+  // Get unique categories with counts
+  const categoryCounts = games.reduce(
+    (acc, game) => {
+      acc[game.category] = (acc[game.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+  const categories = Object.keys(categoryCounts).sort();
 
   const handleCarouselPrev = () => {
     const newIndex = (carouselIndex - 1 + games.length) % games.length;
@@ -228,6 +239,37 @@ export default function GameHub() {
                 <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
               </button>
             </div>
+
+            {!loading && !error && (
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <button
+                  onClick={() => setSelectedCategory(null)}
+                  className={cn(
+                    'px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm transition-all',
+                    !selectedCategory
+                      ? 'bg-red-600 text-white'
+                      : 'bg-slate-800/50 border border-slate-700 text-slate-300 hover:border-slate-500'
+                  )}
+                >
+                  All ({games.length})
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={cn(
+                      'px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5',
+                      selectedCategory === cat
+                        ? 'bg-red-600 text-white'
+                        : 'bg-slate-800/50 border border-slate-700 text-slate-300 hover:border-slate-500'
+                    )}
+                  >
+                    <span>{CATEGORY_EMOJI[cat] || '🎮'}</span>
+                    {cat} ({categoryCounts[cat]})
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {loading && (
