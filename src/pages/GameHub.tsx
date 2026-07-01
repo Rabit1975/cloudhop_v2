@@ -1,30 +1,6 @@
-  const handleCarouselPrev = () => {
-    const newIndex = (carouselIndex - 1 + games.length) % games.length;
-    setCarouselIndex(newIndex);
-    setSelectedGame(games[newIndex]);
-  };
-
-  const handleCarouselNext = () => {
-    const newIndex = (carouselIndex + 1) % games.length;
-    setCarouselIndex(newIndex);
-    setSelectedGame(games[newIndex]);
-  };
-
-  const handleFeaturedCarouselPrev = () => {
-    setFeaturedCarouselIndex((prev) => (prev - 1 + games.length) % games.length);
-  };
-
-  const handleFeaturedCarouselNext = () => {
-    setFeaturedCarouselIndex((prev) => (prev + 1) % games.length);
-  };
-
-  // Get 6 featured games for carousel (starting from featuredCarouselIndex)
-  const featuredGames = Array.from({ length: 6 }).map((_, i) => 
-    games[(featuredCarouselIndex + i) % games.length]
-  );import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Search,
-  Play,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
@@ -143,7 +119,6 @@ export default function GameHub() {
   const [featuredCarouselIndex, setFeaturedCarouselIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [gameIsPlaying, setGameIsPlaying] = useState(false);
   const [displayedGamesCount, setDisplayedGamesCount] = useState(12);
 
   useEffect(() => {
@@ -207,6 +182,23 @@ export default function GameHub() {
   );
   const categories = Object.keys(categoryCounts).sort();
 
+  // Get 6 featured games for carousel
+  const featuredGames = Array.from({ length: 6 }).map((_, i) => 
+    games[(featuredCarouselIndex + i) % games.length]
+  );
+
+  const handleCarouselPrev = () => {
+    const newIndex = (carouselIndex - 1 + games.length) % games.length;
+    setCarouselIndex(newIndex);
+    setSelectedGame(games[newIndex]);
+  };
+
+  const handleCarouselNext = () => {
+    const newIndex = (carouselIndex + 1) % games.length;
+    setCarouselIndex(newIndex);
+    setSelectedGame(games[newIndex]);
+  };
+
   const handleFeaturedCarouselPrev = () => {
     setFeaturedCarouselIndex((prev) => (prev - 1 + games.length) % games.length);
   };
@@ -215,18 +207,8 @@ export default function GameHub() {
     setFeaturedCarouselIndex((prev) => (prev + 1) % games.length);
   };
 
-  // Get 6 featured games for carousel (starting from featuredCarouselIndex)
-  const featuredGames = Array.from({ length: 6 }).map((_, i) => 
-    games[(featuredCarouselIndex + i) % games.length]
-  );
-
   const handleOpenGame = (game: Game) => {
     window.open(game.playUrl, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleCloseGame = () => {
-    setGameIsPlaying(false);
-    setTimeout(() => setSelectedGame(null), 300);
   };
 
   const handleLoadMore = () => {
@@ -263,38 +245,38 @@ export default function GameHub() {
                 <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
               </button>
             </div>
+          </div>
 
-            {!loading && !error && (
-              <div className="flex flex-wrap gap-2 sm:gap-3">
+          {!loading && !error && (
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <button
+                onClick={() => setSelectedCategory(null)}
+                className={cn(
+                  'px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm transition-all',
+                  !selectedCategory
+                    ? 'bg-red-600 text-white'
+                    : 'bg-slate-800/50 border border-slate-700 text-slate-300 hover:border-slate-500'
+                )}
+              >
+                All ({games.length})
+              </button>
+              {categories.map((cat) => (
                 <button
-                  onClick={() => setSelectedCategory(null)}
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
                   className={cn(
-                    'px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm transition-all',
-                    !selectedCategory
+                    'px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5',
+                    selectedCategory === cat
                       ? 'bg-red-600 text-white'
                       : 'bg-slate-800/50 border border-slate-700 text-slate-300 hover:border-slate-500'
                   )}
                 >
-                  All ({games.length})
+                  <span>{CATEGORY_EMOJI[cat] || '🎮'}</span>
+                  {cat} ({categoryCounts[cat]})
                 </button>
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={cn(
-                      'px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5',
-                      selectedCategory === cat
-                        ? 'bg-red-600 text-white'
-                        : 'bg-slate-800/50 border border-slate-700 text-slate-300 hover:border-slate-500'
-                    )}
-                  >
-                    <span>{CATEGORY_EMOJI[cat] || '🎮'}</span>
-                    {cat} ({categoryCounts[cat]})
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
 
           {loading && (
             <div className="text-center py-12">
@@ -342,13 +324,13 @@ export default function GameHub() {
                         </p>
                       </div>
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 pt-2 sm:pt-4">
-                      <button
-                        onClick={() => handleOpenGame(featuredGame)}
-                        className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold flex items-center justify-center gap-2 transition-all active:scale-95 text-xs sm:text-base"
-                      >
-                        <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
-                        Open Game
-                      </button>
+                        <button
+                          onClick={() => handleOpenGame(featuredGame)}
+                          className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold flex items-center justify-center gap-2 transition-all active:scale-95 text-xs sm:text-base"
+                        >
+                          <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
+                          Open Game
+                        </button>
                         <a
                           href={featuredGame.pressKitUrl}
                           target="_blank"
@@ -387,10 +369,7 @@ export default function GameHub() {
                     {featuredGames.map((game) => (
                       <button
                         key={game.id}
-                        onClick={() => {
-                          setSelectedGame(game);
-                          setGameIsPlaying(true);
-                        }}
+                        onClick={() => handleOpenGame(game)}
                         className="group relative rounded-lg overflow-hidden border border-slate-700 hover:border-red-500/50 transition-all hover:shadow-lg hover:shadow-red-500/20 active:scale-95 sm:active:scale-100"
                       >
                         <div
@@ -424,28 +403,6 @@ export default function GameHub() {
                   </div>
                 </div>
               )}
-
-              {gameIsPlaying && selectedGame && (
-                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-                  <div className="relative w-full max-w-6xl rounded-2xl overflow-hidden border border-red-500/30 bg-slate-950 animate-in zoom-in-95">
-                    <button
-                      onClick={handleCloseGame}
-                      className="absolute top-2 right-2 z-10 p-2 rounded-full bg-red-600 hover:bg-red-700 text-white transition-all"
-                    >
-                      <ChevronLeft className="w-6 h-6" />
-                    </button>
-                    <div className="relative w-full" style={{ paddingBottom: `${(selectedGame.height || 600) / (selectedGame.width || 800) * 100}%` }}>
-                      <iframe
-                        src={selectedGame.playUrl}
-                        title={selectedGame.name}
-                        className="absolute inset-0 w-full h-full"
-                        allowFullScreen
-                        frameBorder="0"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}  
 
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between">
@@ -536,7 +493,7 @@ export default function GameHub() {
                     Live Feed Active ✓
                   </h3>
                   <p className="text-slate-400 text-xs sm:text-base">
-                    {gameIsPlaying ? '✓ Games now embed inside CloudHop!' : 'Games embedded within CloudHop - click a game to play inside your site (no external links).'}
+                    Games open in new tabs - keeps you on CloudHop while playing!
                   </p>
                 </div>
               )}
