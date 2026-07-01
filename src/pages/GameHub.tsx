@@ -1,4 +1,27 @@
-import { useEffect, useState } from 'react';
+  const handleCarouselPrev = () => {
+    const newIndex = (carouselIndex - 1 + games.length) % games.length;
+    setCarouselIndex(newIndex);
+    setSelectedGame(games[newIndex]);
+  };
+
+  const handleCarouselNext = () => {
+    const newIndex = (carouselIndex + 1) % games.length;
+    setCarouselIndex(newIndex);
+    setSelectedGame(games[newIndex]);
+  };
+
+  const handleFeaturedCarouselPrev = () => {
+    setFeaturedCarouselIndex((prev) => (prev - 1 + games.length) % games.length);
+  };
+
+  const handleFeaturedCarouselNext = () => {
+    setFeaturedCarouselIndex((prev) => (prev + 1) % games.length);
+  };
+
+  // Get 6 featured games for carousel (starting from featuredCarouselIndex)
+  const featuredGames = Array.from({ length: 6 }).map((_, i) => 
+    games[(featuredCarouselIndex + i) % games.length]
+  );import { useEffect, useState } from 'react';
 import {
   Search,
   Play,
@@ -117,6 +140,7 @@ export default function GameHub() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [featuredCarouselIndex, setFeaturedCarouselIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [gameIsPlaying, setGameIsPlaying] = useState(false);
@@ -183,17 +207,18 @@ export default function GameHub() {
   );
   const categories = Object.keys(categoryCounts).sort();
 
-  const handleCarouselPrev = () => {
-    const newIndex = (carouselIndex - 1 + games.length) % games.length;
-    setCarouselIndex(newIndex);
-    setSelectedGame(games[newIndex]);
+  const handleFeaturedCarouselPrev = () => {
+    setFeaturedCarouselIndex((prev) => (prev - 1 + games.length) % games.length);
   };
 
-  const handleCarouselNext = () => {
-    const newIndex = (carouselIndex + 1) % games.length;
-    setCarouselIndex(newIndex);
-    setSelectedGame(games[newIndex]);
+  const handleFeaturedCarouselNext = () => {
+    setFeaturedCarouselIndex((prev) => (prev + 1) % games.length);
   };
+
+  // Get 6 featured games for carousel (starting from featuredCarouselIndex)
+  const featuredGames = Array.from({ length: 6 }).map((_, i) => 
+    games[(featuredCarouselIndex + i) % games.length]
+  );
 
   const handleOpenGame = (game: Game) => {
     setSelectedGame(game);
@@ -336,6 +361,67 @@ export default function GameHub() {
                         </a>
                       </div>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {games.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm sm:text-base font-black text-white">Featured Games</h3>
+                    <div className="flex gap-1 sm:gap-2">
+                      <button
+                        onClick={handleFeaturedCarouselPrev}
+                        className="p-1.5 sm:p-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+                      >
+                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                      </button>
+                      <button
+                        onClick={handleFeaturedCarouselNext}
+                        className="p-1.5 sm:p-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+                      >
+                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
+                    {featuredGames.map((game) => (
+                      <button
+                        key={game.id}
+                        onClick={() => {
+                          setSelectedGame(game);
+                          setGameIsPlaying(true);
+                        }}
+                        className="group relative rounded-lg overflow-hidden border border-slate-700 hover:border-red-500/50 transition-all hover:shadow-lg hover:shadow-red-500/20 active:scale-95 sm:active:scale-100"
+                      >
+                        <div
+                          className={cn(
+                            'relative h-20 sm:h-24 md:h-28 bg-gradient-to-br flex items-center justify-center overflow-hidden',
+                            CATEGORY_COLORS[game.category] || CATEGORY_COLORS.Arcade
+                          )}
+                        >
+                          <img
+                            src={game.image}
+                            alt={game.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                          <span className="absolute text-lg sm:text-xl opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                            {CATEGORY_EMOJI[game.category] || '🎮'}
+                          </span>
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                            <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                          </div>
+                        </div>
+                        <div className="p-1 sm:p-1.5 bg-slate-900">
+                          <h4 className="font-bold text-white text-[8px] sm:text-[9px] leading-tight line-clamp-1 group-hover:text-red-400 transition-colors">
+                            {game.name}
+                          </h4>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
