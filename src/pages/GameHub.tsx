@@ -221,8 +221,7 @@ export default function GameHub() {
   );
 
   const handleOpenGame = (game: Game) => {
-    setSelectedGame(game);
-    setGameIsPlaying(true);
+    window.open(game.playUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleCloseGame = () => {
@@ -343,13 +342,13 @@ export default function GameHub() {
                         </p>
                       </div>
                       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 pt-2 sm:pt-4">
-                        <button
-                          onClick={() => handleOpenGame(featuredGame)}
-                          className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold flex items-center justify-center gap-2 transition-all active:scale-95 text-xs sm:text-base"
-                        >
-                          <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
-                          Open Game
-                        </button>
+                      <button
+                        onClick={() => handleOpenGame(featuredGame)}
+                        className="px-3 sm:px-6 py-2 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold flex items-center justify-center gap-2 transition-all active:scale-95 text-xs sm:text-base"
+                      >
+                        <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
+                        Open Game
+                      </button>
                         <a
                           href={featuredGame.pressKitUrl}
                           target="_blank"
@@ -446,7 +445,7 @@ export default function GameHub() {
                     </div>
                   </div>
                 </div>
-              )}
+              )}  
 
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between">
