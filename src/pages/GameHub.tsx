@@ -18,6 +18,8 @@ interface Game {
   image: string;
   playUrl: string;
   pressKitUrl: string;
+  width?: number;
+  height?: number;
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -102,6 +104,8 @@ const parseGameMonetizeJSON = (jsonData: unknown): Game[] => {
         image: imageUrl,
         playUrl,
         pressKitUrl: playUrl,
+        width: typeof record.width === 'number' ? record.width : 800,
+        height: typeof record.height === 'number' ? record.height : 600,
       };
     })
     .filter((game): game is Game => Boolean(game));
@@ -114,6 +118,8 @@ export default function GameHub() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [gameIsPlaying, setGameIsPlaying] = useState(false);
+  const [displayedGamesCount, setDisplayedGamesCount] = useState(12);
 
   useEffect(() => {
     const loadGames = async () => {
@@ -164,6 +170,8 @@ export default function GameHub() {
     g.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const displayedGames = filteredGames.slice(0, displayedGamesCount);
+
   const handleCarouselPrev = () => {
     const newIndex = (carouselIndex - 1 + games.length) % games.length;
     setCarouselIndex(newIndex);
@@ -178,7 +186,16 @@ export default function GameHub() {
 
   const handleOpenGame = (game: Game) => {
     setSelectedGame(game);
-    window.open(game.playUrl, '_blank', 'noopener,noreferrer');
+    setGameIsPlaying(true);
+  };
+
+  const handleCloseGame = () => {
+    setGameIsPlaying(false);
+    setTimeout(() => setSelectedGame(null), 300);
+  };
+
+  const handleLoadMore = () => {
+    setDisplayedGamesCount((prev) => Math.min(prev + 12, filteredGames.length));
   };
 
   const featuredGame = selectedGame || games[carouselIndex];
@@ -281,6 +298,28 @@ export default function GameHub() {
                 </div>
               )}
 
+              {gameIsPlaying && selectedGame && (
+                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
+                  <div className="relative w-full max-w-6xl rounded-2xl overflow-hidden border border-red-500/30 bg-slate-950 animate-in zoom-in-95">
+                    <button
+                      onClick={handleCloseGame}
+                      className="absolute top-2 right-2 z-10 p-2 rounded-full bg-red-600 hover:bg-red-700 text-white transition-all"
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <div className="relative w-full" style={{ paddingBottom: `${(selectedGame.height || 600) / (selectedGame.width || 800) * 100}%` }}>
+                      <iframe
+                        src={selectedGame.playUrl}
+                        title={selectedGame.name}
+                        className="absolute inset-0 w-full h-full"
+                        allowFullScreen
+                        frameBorder="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm sm:text-lg font-black text-white">
@@ -304,7 +343,7 @@ export default function GameHub() {
 
                 <div className="relative group">
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
-                    {filteredGames.map((game) => (
+                    {displayedGames.map((game) => (
                       <button
                         key={game.id}
                         onClick={() => handleOpenGame(game)}
@@ -344,11 +383,22 @@ export default function GameHub() {
                   </div>
                 </div>
 
-                {filteredGames.length === 0 && (
+                {displayedGames.length === 0 && (
                   <div className="text-center py-8 sm:py-12">
                     <p className="text-slate-400 text-sm sm:text-base">
                       No games found matching "{searchQuery}"
                     </p>
+                  </div>
+                )}
+
+                {displayedGamesCount < filteredGames.length && (
+                  <div className="flex justify-center pt-4 sm:pt-6">
+                    <button
+                      onClick={handleLoadMore}
+                      className="px-6 sm:px-8 py-2 sm:py-3 rounded-lg bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold transition-all text-sm sm:text-base"
+                    >
+                      Load More Games ({displayedGamesCount}/{filteredGames.length})
+                    </button>
                   </div>
                 )}
               </div>
@@ -356,10 +406,10 @@ export default function GameHub() {
               {!searchQuery && (
                 <div className="rounded-xl bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 p-4 sm:p-6">
                   <h3 className="text-lg sm:text-2xl font-black text-white mb-1 sm:mb-2">
-                    Live Feed Active
+                    Live Feed Active ✓
                   </h3>
                   <p className="text-slate-400 text-xs sm:text-base">
-                    This catalog now uses your current GameMonetize feed only. Games open in a new tab because the remote host blocks iframe embedding on your site.
+                    {gameIsPlaying ? '✓ Games now embed inside CloudHop!' : 'Games embedded within CloudHop - click a game to play inside your site (no external links).'}
                   </p>
                 </div>
               )}
